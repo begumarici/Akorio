@@ -7,7 +7,7 @@
 
 import Foundation
 
-let akRootNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+let akorioRootNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 struct ChordType: Identifiable {
     let key: String
@@ -16,7 +16,7 @@ struct ChordType: Identifiable {
     var id: String { key }
 }
 
-let akCommonTypes: [ChordType] = [
+let akorioCommonTypes: [ChordType] = [
     ChordType(key: "maj", display: "Major", suffix: ""),
     ChordType(key: "min", display: "minor", suffix: "m"),
     ChordType(key: "7", display: "7", suffix: "7"),
@@ -25,7 +25,7 @@ let akCommonTypes: [ChordType] = [
     ChordType(key: "sus4", display: "sus4", suffix: "sus4"),
 ]
 
-let akMoreTypes: [ChordType] = [
+let akorioMoreTypes: [ChordType] = [
     ChordType(key: "dim", display: "dim", suffix: "dim"),
     ChordType(key: "aug", display: "aug", suffix: "aug"),
     ChordType(key: "sus2", display: "sus2", suffix: "sus2"),
@@ -37,7 +37,7 @@ struct ChordItem: Identifiable, Equatable {
     var id: String { label }
 }
 
-enum OrderMode: String, Codable, CaseIterable {
+enum OrderMode: String, Codable, CaseIterable, Hashable {
     case sequential
     case random
     case randomNoRepeat
@@ -51,7 +51,7 @@ enum OrderMode: String, Codable, CaseIterable {
     }
 }
 
-enum MetronomeSound: String, Codable, CaseIterable {
+enum MetronomeSound: String, Codable, CaseIterable, Hashable {
     case click
     case wood
     case beep

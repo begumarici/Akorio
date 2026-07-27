@@ -8,8 +8,7 @@
 import SwiftUI
 import SwiftData
 
-enum AppScreen {
-    case selector
+enum AppScreen: Hashable {
     case practice
     case saved
     case settings
@@ -17,7 +16,10 @@ enum AppScreen {
 
 @Observable
 final class AppViewModel {
-    var screen: AppScreen = .selector
+    /// The Selector screen is always the root; pushed screens live here.
+    /// Bound directly to a `NavigationStack(path:)`, so pop (including the
+    /// edge-swipe-back gesture) is handled natively.
+    var path: [AppScreen] = []
 
     // MARK: - Selector
     var selectedRoot: String?
@@ -43,8 +45,33 @@ final class AppViewModel {
     var defaultBeatsPerChord = 4
     var soundPickerOpen = false
 
+    /// The real-time practice session (timer, count-in, click sounds).
+    /// Kept as its own `@Observable` engine — see MetronomeEngine.swift.
+    let metronome = MetronomeEngine()
+
     private var modelContext: ModelContext?
     private var settingsRecord: AppSettings?
+
+    init() {
+        metronome.configurationProvider = { [weak self] in
+            guard let self else {
+                return MetronomeEngine.Configuration(
+                    chordLabels: [], bpm: 80, beatsPerChord: 4, orderMode: .sequential,
+                    countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false
+                )
+            }
+            return MetronomeEngine.Configuration(
+                chordLabels: self.chords.map { $0.label },
+                bpm: self.bpm,
+                beatsPerChord: self.beatsPerChord,
+                orderMode: self.orderMode,
+                countInEnabled: self.countInEnabled,
+                metronomeSoundEnabled: self.metronomeSoundEnabled,
+                metronomeSound: self.metronomeSound,
+                hapticEnabled: self.hapticEnabled
+            )
+        }
+    }
 
     // MARK: - Setup
     func configure(context: ModelContext) {
@@ -84,12 +111,18 @@ final class AppViewModel {
     }
 
     // MARK: - Navigation
-    func goToSettings() { screen = .settings }
-    func goToSelectorFromSettings() { screen = .selector }
-    func goToSaved() { screen = .saved }
-    func goToSelectorFromSaved() { screen = .selector }
-    func goToPractice() { screen = .practice }
-    func goToSelector() { screen = .selector }
+    func goToSettings() { path.append(.settings) }
+    func goToSaved() { path.append(.saved) }
+
+    func goToPractice() {
+        metronome.stop()
+        path.append(.practice)
+    }
+
+    func goToSelector() {
+        metronome.stop()
+        path.removeAll()
+    }
 
     // MARK: - Root note / chord type selection
     func selectRoot(_ note: String) {
@@ -192,7 +225,7 @@ final class AppViewModel {
         orderMode = savedSet.orderMode
         countInEnabled = savedSet.countInEnabled
         metronomeSoundEnabled = savedSet.metronomeSoundEnabled
-        screen = .selector
+        goToSelector()
     }
 
     func deleteSavedSet(_ savedSet: SavedChordSet) {
@@ -203,5 +236,17 @@ final class AppViewModel {
         let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         savedSet.name = trimmed
+    }
+
+    // MARK: - Metronome passthrough
+    var isPlaying: Bool { metronome.isPlaying }
+    var isCountingIn: Bool { metronome.isCountingIn }
+    var countInBeatsLeft: Int { metronome.countInBeatsLeft }
+    var currentChordLabel: String { metronome.currentChordLabel }
+    var nextChordLabel: String { metronome.nextChordLabel }
+    var beatInCurrentChord: Int { metronome.beatInCurrentChord }
+
+    func togglePlay() {
+        metronome.toggle()
     }
 }
