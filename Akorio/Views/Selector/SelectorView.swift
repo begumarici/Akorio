@@ -53,21 +53,30 @@ struct SelectorView: View {
                     .foregroundColor(.akorioNeutral500)
             }
             Spacer()
-            HStack(spacing: 8) {
-                Button {
-                    viewModel.goToSaved()
-                } label: {
-                    Text("Kayıtlı Setler\(savedSets.isEmpty ? "" : " (\(savedSets.count))")")
-                }
-                .buttonStyle(AkorioSecondaryButtonStyle())
-
-                Button {
-                    viewModel.goToSettings()
-                } label: {
-                    Image(systemName: "gearshape")
-                }
-                .buttonStyle(AkorioIconButtonStyle())
+            
+            Button {
+                viewModel.goToSaved()
+            } label: {
+                Image(systemName: "music.note.list")
             }
+            .buttonStyle(AkorioIconButtonStyle())
+            .overlay(alignment: .topTrailing) {
+                if !savedSets.isEmpty {
+                    Text("\(savedSets.count)")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(4)
+                        .background(Circle().fill(Color.akorioAccent500))
+                        .offset(x: 6, y: -6)
+                }
+            }
+
+            Button {
+                viewModel.goToSettings()
+            } label: {
+                Image(systemName: "gearshape")
+            }
+            .buttonStyle(AkorioIconButtonStyle())
         }
     }
 

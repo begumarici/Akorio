@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-/// A single selected chord shown as a pill: drag handle, label, remove button.
+/// A single selected chord shown as a pill: label, remove button.
 /// Reordering itself (drag source / drop target) is wired up where this chip
-/// is placed in a list, not inside the chip itself.
+/// is placed in a list, not inside the chip itself — dragging works via
+/// press-and-hold, the same as any other draggable iOS content.
 struct AkorioChordChip: View {
     let label: String
     var onRemove: () -> Void
 
     var body: some View {
         HStack(spacing: 6) {
-            dragHandle
             Text(label)
                 .font(.system(size: 13, weight: .medium))
             Button(action: onRemove) {
@@ -36,18 +36,6 @@ struct AkorioChordChip: View {
         .overlay(
             Capsule().stroke(Color.akorioAccent600, lineWidth: 1)
         )
-    }
-
-    private var dragHandle: some View {
-        VStack(spacing: 3) {
-            ForEach(0..<3, id: \.self) { _ in
-                HStack(spacing: 3) {
-                    Circle().frame(width: 3, height: 3)
-                    Circle().frame(width: 3, height: 3)
-                }
-            }
-        }
-        .opacity(0.6)
     }
 }
 
