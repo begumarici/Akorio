@@ -62,26 +62,50 @@ struct SelectorView: View {
 
     // MARK: - Greeting
     private var greetingSection: some View {
-        ZStack(alignment: .bottomLeading) {
-            LinearGradient(
-                colors: [Color.akorioAccent900, Color.akorioAccent700],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+        ZStack(alignment: .leading) {
+            Image("Guitar")
+                .resizable()
+                .scaledToFill()
+                .frame(height: 130)
+                .clipped()
+                .opacity(0.6)
+                .mask(
+                    LinearGradient(
+                        stops: [
+                            .init(color: .clear, location: 0),
+                            .init(color: .clear, location: 0.35),
+                            .init(color: .black, location: 0.6),
+                            .init(color: .black, location: 0.85),
+                            .init(color: .clear, location: 1),
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .mask(
+                    LinearGradient(
+                        stops: [
+                            .init(color: .clear, location: 0),
+                            .init(color: .black, location: 0.2),
+                            .init(color: .black, location: 0.8),
+                            .init(color: .clear, location: 1),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Merhaba! 👋")
                     .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(.akorioText)
                 Text("Düzenli pratik yap, gelişimini gör.")
                     .font(.system(size: 14))
-                    .foregroundColor(.akorioAccent200)
+                    .foregroundColor(.akorioNeutral400)
             }
-            .padding(20)
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 120)
-        .clipShape(RoundedRectangle(cornerRadius: AkorioRadius.lg))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 130)
     }
 
     // MARK: - Level picker
