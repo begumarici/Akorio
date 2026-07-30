@@ -41,6 +41,15 @@ enum ChordLevel: String, CaseIterable, Hashable {
         }
     }
 
+    var icon: String {
+        switch self {
+        case .beginner: return "target"
+        case .intermediate: return "moon.stars.fill"
+        case .advanced: return "flame.fill"
+        case .expert: return "flag.checkered"
+        }
+    }
+
     var chordLabels: [String] {
         let beginner = ["Am", "Em", "Dm"]
         let intermediate = beginner + ["C", "G", "D", "A"]
