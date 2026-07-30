@@ -7,22 +7,18 @@
 
 import SwiftUI
 
-/// Full-width, outlined accent button. Used for primary calls to action
+/// Full-width, filled accent button. Used for primary calls to action
 /// like "Pratiğe Başla" / "Başlat".
 struct AkorioPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.system(size: 15, weight: .medium))
-            .foregroundColor(.akorioAccent300)
+            .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 48)
             .background(
                 RoundedRectangle(cornerRadius: AkorioRadius.md)
-                    .fill(configuration.isPressed ? Color.akorioAccent500.opacity(0.22) : Color.clear)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: AkorioRadius.md)
-                    .stroke(Color.akorioAccent500, lineWidth: 1)
+                    .fill(configuration.isPressed ? Color.akorioAccent600 : Color.akorioAccent500)
             )
     }
 }

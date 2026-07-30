@@ -11,18 +11,27 @@ struct LevelDetailView: View {
     let viewModel: AppViewModel
     let level: ChordLevel
 
+    private var selectedCount: Int {
+        viewModel.chords.filter { level.chordLabels.contains($0.label) }.count
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 header
 
-                Text(level.subtitle)
-                    .font(.system(size: 13))
-                    .foregroundColor(.akorioNeutral500)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(level.subtitle + ".")
+                        .font(.system(size: 13))
+                        .foregroundColor(.akorioNeutral500)
+                    Text("Pratiğe başlamak için akorlarını seç.")
+                        .font(.system(size: 13))
+                        .foregroundColor(.akorioNeutral500)
+                }
 
-                AkorioFlowLayout(spacing: 8) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
                     ForEach(level.chordLabels, id: \.self) { label in
-                        ChordPill(
+                        ChordCard(
                             label: label,
                             isSelected: viewModel.chords.contains { $0.label == label }
                         ) {
@@ -30,6 +39,11 @@ struct LevelDetailView: View {
                         }
                     }
                 }
+
+                Text("\(selectedCount) / \(level.chordLabels.count) akor seçildi")
+                    .font(.system(size: 13))
+                    .foregroundColor(.akorioNeutral500)
+                    .frame(maxWidth: .infinity)
             }
             .padding(20)
         }
@@ -61,25 +75,38 @@ struct LevelDetailView: View {
     }
 }
 
-// MARK: - Chord pill
-private struct ChordPill: View {
+// MARK: - Chord card
+private struct ChordCard: View {
     let label: String
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(label)
-                .font(.system(size: 14, weight: isSelected ? .semibold : .regular))
-                .foregroundColor(isSelected ? .akorioAccent100 : .akorioText)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 9)
-                .background(
-                    Capsule().fill(isSelected ? Color.akorioAccent800 : Color.clear)
-                )
-                .overlay(
-                    Capsule().stroke(isSelected ? Color.akorioAccent500 : Color.akorioDivider, lineWidth: 1)
-                )
+            VStack(spacing: 10) {
+                Text(label)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.black)
+                ChordDiagramView(shape: ChordShapeLibrary.shape(for: label))
+            }
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: AkorioRadius.md)
+                    .fill(Color.white)
+            )
+            .overlay(alignment: .topTrailing) {
+                if isSelected {
+                    ZStack {
+                        Circle().fill(Color.green)
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 20, height: 20)
+                    .offset(x: 6, y: -6)
+                }
+            }
         }
         .buttonStyle(.plain)
     }
