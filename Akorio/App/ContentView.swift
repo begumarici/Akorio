@@ -31,6 +31,8 @@ struct ContentView: View {
                         PracticeView(viewModel: viewModel)
                     case .settings:
                         SettingsView(viewModel: viewModel)
+                    case .levelDetail(let level):
+                        LevelDetailView(viewModel: viewModel, level: level)
                     }
                 }
                 .toolbar(.hidden, for: .navigationBar)

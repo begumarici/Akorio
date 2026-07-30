@@ -12,6 +12,7 @@ enum AppScreen: Hashable {
     case practice
     case saved
     case settings
+    case levelDetail(ChordLevel)
 }
 
 @Observable
@@ -19,11 +20,21 @@ final class AppViewModel {
     /// The Selector screen is always the root; pushed screens live here.
     /// Bound directly to a `NavigationStack(path:)`, so pop (including the
     /// edge-swipe-back gesture) is handled natively.
-    var path: [AppScreen] = []
+    ///
+    /// Cleanup lives here (not in a navigation function) because the native
+    /// swipe-back gesture mutates `path` directly — it never calls our
+    /// methods, so any "reset when returning home" logic has to react to
+    /// `path` itself, not to how it changed.
+    var path: [AppScreen] = [] {
+        didSet {
+            if path.isEmpty && !oldValue.isEmpty {
+                metronome.stop()
+                chords = []
+            }
+        }
+    }
 
     // MARK: - Selector
-    var selectedRoot: String?
-    var showMoreTypes = false
     var chords: [ChordItem] = []
 
     // MARK: - Practice settings (live, editable; seeded from AppSettings defaults)
@@ -113,43 +124,27 @@ final class AppViewModel {
     // MARK: - Navigation
     func goToSettings() { path.append(.settings) }
     func goToSaved() { path.append(.saved) }
+    func goToLevelDetail(_ level: ChordLevel) { path.append(.levelDetail(level)) }
 
     func goToPractice() {
         metronome.stop()
         path.append(.practice)
     }
 
-    func goToSelector() {
-        metronome.stop()
-        path.removeAll()
+    /// Pops one screen — used by every back button. Mirrors the swipe-back
+    /// gesture (one step at a time) instead of jumping straight to Home.
+    func goBack() {
+        guard !path.isEmpty else { return }
+        path.removeLast()
     }
 
-    // MARK: - Root note / chord type selection
-    func selectRoot(_ note: String) {
-        selectedRoot = note
-        showMoreTypes = false
-    }
-
-    func toggleType(_ type: ChordType) {
-        guard let root = selectedRoot else { return }
-        let label = root + type.suffix
+    // MARK: - Chord selection
+    func toggleChordLabel(_ label: String) {
         if let index = chords.firstIndex(where: { $0.label == label }) {
             chords.remove(at: index)
         } else {
             chords.append(ChordItem(label: label))
         }
-    }
-
-    func removeChord(_ label: String) {
-        chords.removeAll { $0.label == label }
-    }
-
-    func moveChords(from source: IndexSet, to destination: Int) {
-        chords.move(fromOffsets: source, toOffset: destination)
-    }
-
-    func toggleMoreTypes() {
-        showMoreTypes.toggle()
     }
 
     // MARK: - Practice setting adjustments
@@ -225,7 +220,8 @@ final class AppViewModel {
         orderMode = savedSet.orderMode
         countInEnabled = savedSet.countInEnabled
         metronomeSoundEnabled = savedSet.metronomeSoundEnabled
-        goToSelector()
+        metronome.stop()
+        path = [.practice]
     }
 
     func deleteSavedSet(_ savedSet: SavedChordSet) {

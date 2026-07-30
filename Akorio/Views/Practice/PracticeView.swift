@@ -43,7 +43,7 @@ struct PracticeView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Button {
-                viewModel.goToSelector()
+                viewModel.goBack()
             } label: {
                 Image(systemName: "chevron.left")
             }
