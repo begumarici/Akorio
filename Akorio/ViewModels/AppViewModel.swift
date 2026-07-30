@@ -40,8 +40,7 @@ final class AppViewModel {
     // MARK: - Practice settings (live, editable; seeded from AppSettings defaults)
     var bpm = 80
     var beatsPerChord = 4
-    var orderMode: OrderMode = .sequential
-    var orderPickerOpen = false
+    var preventBackToBackRepeat = true
     var countInEnabled = true
     var metronomeSoundEnabled = true
 
@@ -54,6 +53,7 @@ final class AppViewModel {
     var hapticEnabled = false
     var defaultBpm = 80
     var defaultBeatsPerChord = 4
+    var showChordDiagram = false
     var soundPickerOpen = false
 
     /// The real-time practice session (timer, count-in, click sounds).
@@ -67,7 +67,7 @@ final class AppViewModel {
         metronome.configurationProvider = { [weak self] in
             guard let self else {
                 return MetronomeEngine.Configuration(
-                    chordLabels: [], bpm: 80, beatsPerChord: 4, orderMode: .sequential,
+                    chordLabels: [], bpm: 80, beatsPerChord: 4, preventBackToBackRepeat: true,
                     countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false
                 )
             }
@@ -75,7 +75,7 @@ final class AppViewModel {
                 chordLabels: self.chords.map { $0.label },
                 bpm: self.bpm,
                 beatsPerChord: self.beatsPerChord,
-                orderMode: self.orderMode,
+                preventBackToBackRepeat: self.preventBackToBackRepeat,
                 countInEnabled: self.countInEnabled,
                 metronomeSoundEnabled: self.metronomeSoundEnabled,
                 metronomeSound: self.metronomeSound,
@@ -109,6 +109,7 @@ final class AppViewModel {
         hapticEnabled = settingsRecord.hapticEnabled
         defaultBpm = settingsRecord.defaultBpm
         defaultBeatsPerChord = settingsRecord.defaultBeatsPerChord
+        showChordDiagram = settingsRecord.showChordDiagram
         bpm = settingsRecord.defaultBpm
         beatsPerChord = settingsRecord.defaultBeatsPerChord
     }
@@ -117,6 +118,7 @@ final class AppViewModel {
         guard let settingsRecord else { return }
         settingsRecord.metronomeSound = metronomeSound
         settingsRecord.hapticEnabled = hapticEnabled
+        settingsRecord.showChordDiagram = showChordDiagram
         settingsRecord.defaultBpm = defaultBpm
         settingsRecord.defaultBeatsPerChord = defaultBeatsPerChord
     }
@@ -156,13 +158,13 @@ final class AppViewModel {
     func incBeats() { beatsPerChord = clampBeats(beatsPerChord + 1) }
     func decBeats() { beatsPerChord = clampBeats(beatsPerChord - 1) }
 
-    func toggleOrderPicker() { orderPickerOpen.toggle() }
-    func selectOrderMode(_ mode: OrderMode) {
-        orderMode = mode
-        orderPickerOpen = false
-    }
+    func toggleBackToBackRepeat() { preventBackToBackRepeat.toggle() }
     func toggleCountIn() { countInEnabled.toggle() }
     func toggleMetronomeSoundEnabled() { metronomeSoundEnabled.toggle() }
+    func toggleShowChordDiagram() {
+        showChordDiagram.toggle()
+        persistSettings()
+    }
 
     // MARK: - Settings screen actions
     func toggleSoundPicker() { soundPickerOpen.toggle() }
@@ -205,7 +207,7 @@ final class AppViewModel {
             chordLabels: chords.map { $0.label },
             bpm: bpm,
             beatsPerChord: beatsPerChord,
-            orderMode: orderMode,
+            preventBackToBackRepeat: preventBackToBackRepeat,
             countInEnabled: countInEnabled,
             metronomeSoundEnabled: metronomeSoundEnabled
         )
@@ -217,7 +219,7 @@ final class AppViewModel {
         chords = savedSet.chordLabels.map { ChordItem(label: $0) }
         bpm = savedSet.bpm
         beatsPerChord = savedSet.beatsPerChord
-        orderMode = savedSet.orderMode
+        preventBackToBackRepeat = savedSet.preventBackToBackRepeat
         countInEnabled = savedSet.countInEnabled
         metronomeSoundEnabled = savedSet.metronomeSoundEnabled
         metronome.stop()

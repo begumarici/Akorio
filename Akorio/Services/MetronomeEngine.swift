@@ -22,7 +22,7 @@ final class MetronomeEngine {
         let chordLabels: [String]
         let bpm: Int
         let beatsPerChord: Int
-        let orderMode: OrderMode
+        let preventBackToBackRepeat: Bool
         let countInEnabled: Bool
         let metronomeSoundEnabled: Bool
         let metronomeSound: MetronomeSound
@@ -39,7 +39,7 @@ final class MetronomeEngine {
     /// Set once by `AppViewModel` at startup.
     var configurationProvider: () -> Configuration = {
         Configuration(
-            chordLabels: [], bpm: 80, beatsPerChord: 4, orderMode: .sequential,
+            chordLabels: [], bpm: 80, beatsPerChord: 4, preventBackToBackRepeat: true,
             countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false
         )
     }
@@ -63,7 +63,10 @@ final class MetronomeEngine {
         guard !config.chordLabels.isEmpty else { return }
 
         let beatSeconds = 60.0 / Double(config.bpm)
-        let first = pickNextChord(from: config, excluding: nil)
+        // The first chord is always the first one the user selected — not
+        // randomized — so whatever's shown as "next" before the session
+        // starts is guaranteed to be what actually plays first.
+        let first = config.chordLabels[0]
         let second = pickNextChord(from: config, excluding: first)
 
         if config.countInEnabled {
@@ -94,27 +97,28 @@ final class MetronomeEngine {
         stopTimer()
         isPlaying = false
         isCountingIn = false
+        // Clear the chord state too — otherwise the next time this screen
+        // appears (possibly with a totally different chord selection) it
+        // would briefly show stale labels left over from the last session.
+        currentChordLabel = ""
+        nextChordLabel = ""
+        beatInCurrentChord = -1
     }
 
     private func pickNextChord(from config: Configuration, excluding: String?) -> String {
         let labels = config.chordLabels
         guard !labels.isEmpty else { return "" }
         if labels.count == 1 { return labels[0] }
-
-        switch config.orderMode {
-        case .sequential:
-            let currentIndex = excluding.flatMap { labels.firstIndex(of: $0) } ?? -1
-            return labels[(currentIndex + 1) % labels.count]
-        case .random:
+ 
+        guard config.preventBackToBackRepeat else {
             return labels.randomElement() ?? ""
-        case .randomNoRepeat:
-            var pool = labels
-            if let excluding {
-                pool.removeAll { $0 == excluding }
-            }
-            if pool.isEmpty { pool = labels }
-            return pool.randomElement() ?? ""
         }
+        var pool = labels
+        if let excluding {
+            pool.removeAll { $0 == excluding }
+        }
+        if pool.isEmpty { pool = labels }
+        return pool.randomElement() ?? ""
     }
 
     private func countInTick() {

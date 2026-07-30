@@ -14,17 +14,22 @@ final class AppSettings {
     var hapticEnabled: Bool
     var defaultBpm: Int
     var defaultBeatsPerChord: Int
+    // Defaulted so SwiftData can lightweight-migrate existing rows when
+    // this attribute is added to the schema (see SavedChordSet for why).
+    var showChordDiagram: Bool = false
 
     init(
         metronomeSound: MetronomeSound = .click,
         hapticEnabled: Bool = false,
         defaultBpm: Int = 80,
-        defaultBeatsPerChord: Int = 4
+        defaultBeatsPerChord: Int = 4,
+        showChordDiagram: Bool = false
     ) {
         self.metronomeSoundRaw = metronomeSound.rawValue
         self.hapticEnabled = hapticEnabled
         self.defaultBpm = defaultBpm
         self.defaultBeatsPerChord = defaultBeatsPerChord
+        self.showChordDiagram = showChordDiagram
     }
 
     var metronomeSound: MetronomeSound {

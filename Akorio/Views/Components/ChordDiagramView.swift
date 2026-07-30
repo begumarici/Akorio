@@ -13,12 +13,13 @@ import SwiftUI
 /// charts read: black ink on paper, regardless of the app's own theme.
 struct ChordDiagramView: View {
     let shape: ChordShape
+    var scale: CGFloat = 1
 
     private let stringCount = 6
     private let fretCount = 4
-    private let gridSize = CGSize(width: 84, height: 76)
-    private let dotRadius: CGFloat = 5
-    private let markerRowHeight: CGFloat = 14
+    private var gridSize: CGSize { CGSize(width: 84 * scale, height: 76 * scale) }
+    private var dotRadius: CGFloat { 5 * scale }
+    private var markerRowHeight: CGFloat { 14 * scale }
 
     /// Both the grid lines and the ×/○ markers use this for a string's x
     /// position, so they always line up — inset by `dotRadius` on each
@@ -32,9 +33,9 @@ struct ChordDiagramView: View {
         HStack(alignment: .top, spacing: 4) {
             if shape.baseFret > 1 {
                 Text("\(shape.baseFret)")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 10 * scale, weight: .semibold))
                     .foregroundColor(.black.opacity(0.6))
-                    .padding(.top, markerRowHeight + 6)
+                    .padding(.top, markerRowHeight + 6 * scale)
             }
 
             VStack(spacing: 4) {
@@ -52,7 +53,7 @@ struct ChordDiagramView: View {
         ZStack(alignment: .topLeading) {
             ForEach(0..<stringCount, id: \.self) { index in
                 Text(marker(for: index))
-                    .font(.system(size: 9, weight: .semibold))
+                    .font(.system(size: 9 * scale, weight: .semibold))
                     .foregroundColor(.black.opacity(0.55))
                     .position(x: stringX(index, in: gridSize.width), y: markerRowHeight / 2)
             }
@@ -73,7 +74,7 @@ struct ChordDiagramView: View {
             var path = Path()
             path.move(to: CGPoint(x: x, y: 0))
             path.addLine(to: CGPoint(x: x, y: size.height))
-            context.stroke(path, with: .color(.black.opacity(0.7)), lineWidth: 1)
+            context.stroke(path, with: .color(.black.opacity(0.7)), lineWidth: 1 * scale)
         }
 
         let left = stringX(0, in: size.width)
@@ -84,7 +85,7 @@ struct ChordDiagramView: View {
             path.move(to: CGPoint(x: left, y: y))
             path.addLine(to: CGPoint(x: right, y: y))
             let isNut = i == 0 && shape.baseFret == 1
-            context.stroke(path, with: .color(.black.opacity(0.7)), lineWidth: isNut ? 3 : 1)
+            context.stroke(path, with: .color(.black.opacity(0.7)), lineWidth: (isNut ? 3 : 1) * scale)
         }
     }
 

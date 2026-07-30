@@ -9,6 +9,12 @@ import SwiftUI
 
 struct PracticeView: View {
     @Bindable var viewModel: AppViewModel
+    @State private var isSettingsExpanded = true
+
+    private var upcomingChordLabel: String {
+        if !viewModel.nextChordLabel.isEmpty { return viewModel.nextChordLabel }
+        return viewModel.chords.first?.label ?? "—"
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,11 +25,16 @@ struct PracticeView: View {
             chordDisplay
                 .frame(maxHeight: .infinity)
 
-            VStack(spacing: 10) {
-                statRow
-                orderPicker
-                toggleRows
+            DisclosureGroup("Ayarlar", isExpanded: $isSettingsExpanded) {
+                VStack(spacing: 10) {
+                    statRow
+                    toggleRows
+                }
+                .padding(.top, 10)
             }
+            .tint(.akorioNeutral500)
+            .foregroundColor(.akorioNeutral500)
+            .font(.system(size: 13, weight: .medium))
             .padding(.horizontal, 20)
 
             playButton
@@ -74,21 +85,39 @@ struct PracticeView: View {
                 Text("\(viewModel.countInBeatsLeft)")
                     .font(.system(size: 104, weight: .medium))
                     .foregroundColor(.akorioNeutral300)
-            } else {
-                ZStack {
-                    Circle()
-                        .fill(Color.akorioAccent900)
-                        .frame(width: 180, height: 180)
-                    Circle()
-                        .stroke(Color.akorioAccent700, lineWidth: 1)
-                        .frame(width: 180, height: 180)
+                Text("Sıradaki: \(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)")
+                    .font(.system(size: 14))
+                    .foregroundColor(.akorioNeutral500)
+            } else if viewModel.isPlaying {
+                if viewModel.showChordDiagram {
                     Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
-                        .font(.system(size: 64, weight: .semibold))
-                        .foregroundColor(.akorioAccent100)
-                }
-                .shadow(color: Color.akorioAccent500.opacity(0.25), radius: 30)
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.akorioText)
 
-                Text("Sıradaki: \(viewModel.nextChordLabel.isEmpty ? "—" : viewModel.nextChordLabel)")
+                    if !viewModel.currentChordLabel.isEmpty {
+                        ChordDiagramView(shape: ChordShapeLibrary.shape(for: viewModel.currentChordLabel), scale: 1.4)
+                            .padding(10)
+                            .background(
+                                RoundedRectangle(cornerRadius: AkorioRadius.md)
+                                    .fill(Color.white)
+                            )
+                    }
+                } else {
+                    ZStack {
+                        Circle()
+                            .fill(Color.akorioAccent900)
+                            .frame(width: 180, height: 180)
+                        Circle()
+                            .stroke(Color.akorioAccent700, lineWidth: 1)
+                            .frame(width: 180, height: 180)
+                        Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
+                            .font(.system(size: 64, weight: .semibold))
+                            .foregroundColor(.akorioAccent100)
+                    }
+                    .shadow(color: Color.akorioAccent500.opacity(0.25), radius: 30)
+                }
+
+                Text("Sıradaki: \(upcomingChordLabel)")
                     .font(.system(size: 14))
                     .foregroundColor(.akorioNeutral500)
 
@@ -99,6 +128,14 @@ struct PracticeView: View {
                             .frame(width: 9, height: 9)
                     }
                 }
+            } else {
+                Text("—")
+                    .font(.system(size: 64, weight: .semibold))
+                    .foregroundColor(.akorioNeutral700)
+
+                Text("Sıradaki: \(upcomingChordLabel)")
+                    .font(.system(size: 14))
+                    .foregroundColor(.akorioNeutral500)
             }
         }
     }
@@ -111,57 +148,27 @@ struct PracticeView: View {
         }
     }
 
-    // MARK: - Order picker
-    private var orderPicker: some View {
-        Button {
-            viewModel.toggleOrderPicker()
-        } label: {
-            HStack {
-                Text("Sıralama")
-                    .foregroundColor(.akorioText)
-                Spacer()
-                Text(viewModel.orderMode.label)
-                    .foregroundColor(.akorioAccent300)
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 10))
-                    .foregroundColor(.akorioNeutral500)
-            }
-            .font(.system(size: 14))
-            .padding(14)
-        }
-        .buttonStyle(.plain)
-        .background(Color.akorioSurface)
-        .cornerRadius(AkorioRadius.md)
-        .overlay(alignment: .top) {
-            if viewModel.orderPickerOpen {
-                VStack(spacing: 0) {
-                    ForEach(OrderMode.allCases, id: \.self) { mode in
-                        Button {
-                            viewModel.selectOrderMode(mode)
-                        } label: {
-                            HStack {
-                                Text(mode.label)
-                                    .foregroundColor(mode == viewModel.orderMode ? .akorioAccent100 : .akorioText)
-                                Spacer()
-                            }
-                            .font(.system(size: 14))
-                            .padding(14)
-                            .background(mode == viewModel.orderMode ? Color.akorioAccent800 : Color.akorioSurface)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .cornerRadius(AkorioRadius.md)
-                .shadow(color: .black.opacity(0.35), radius: 12, y: 4)
-                .offset(y: 48)
-            }
-        }
-        .zIndex(1)
-    }
-
     // MARK: - Toggles
     private var toggleRows: some View {
         VStack(spacing: 1) {
+            HStack {
+                Text("Akor diyagramı göster").foregroundColor(.akorioText)
+                Spacer()
+                AkorioToggle(isOn: viewModel.showChordDiagram) { viewModel.toggleShowChordDiagram() }
+            }
+            .font(.system(size: 14))
+            .padding(14)
+            .background(Color.akorioSurface)
+
+            HStack {
+                Text("Üst üste gösterme").foregroundColor(.akorioText)
+                Spacer()
+                AkorioToggle(isOn: viewModel.preventBackToBackRepeat) { viewModel.toggleBackToBackRepeat() }
+            }
+            .font(.system(size: 14))
+            .padding(14)
+            .background(Color.akorioSurface)
+
             HStack {
                 Text("Başlangıç sayımı").foregroundColor(.akorioText)
                 Spacer()

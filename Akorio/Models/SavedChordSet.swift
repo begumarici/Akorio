@@ -15,7 +15,11 @@ final class SavedChordSet {
     var chordLabels: [String]
     var bpm: Int
     var beatsPerChord: Int
-    var orderModeRaw: String
+    // Defaulted (not just set in init) so SwiftData can lightweight-migrate
+    // existing rows when this attribute is added to the schema, instead of
+    // crashing with "missing attribute values on mandatory destination
+    // attribute" the way it did without a default.
+    var preventBackToBackRepeat: Bool = true
     var countInEnabled: Bool
     var metronomeSoundEnabled: Bool
     var createdAt: Date
@@ -25,7 +29,7 @@ final class SavedChordSet {
         chordLabels: [String],
         bpm: Int,
         beatsPerChord: Int,
-        orderMode: OrderMode,
+        preventBackToBackRepeat: Bool,
         countInEnabled: Bool,
         metronomeSoundEnabled: Bool
     ) {
@@ -34,15 +38,10 @@ final class SavedChordSet {
         self.chordLabels = chordLabels
         self.bpm = bpm
         self.beatsPerChord = beatsPerChord
-        self.orderModeRaw = orderMode.rawValue
+        self.preventBackToBackRepeat = preventBackToBackRepeat
         self.countInEnabled = countInEnabled
         self.metronomeSoundEnabled = metronomeSoundEnabled
         self.createdAt = Date()
-    }
-
-    var orderMode: OrderMode {
-        get { OrderMode(rawValue: orderModeRaw) ?? .sequential }
-        set { orderModeRaw = newValue.rawValue }
     }
 
     var subtitle: String {
