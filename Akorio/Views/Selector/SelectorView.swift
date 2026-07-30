@@ -58,6 +58,7 @@ struct SelectorView: View {
             }
             .buttonStyle(AkorioIconButtonStyle())
         }
+        .zIndex(1)
     }
 
     // MARK: - Greeting
@@ -68,6 +69,7 @@ struct SelectorView: View {
                 .scaledToFill()
                 .frame(height: 130)
                 .clipped()
+                .allowsHitTesting(false)
                 .opacity(0.6)
                 .mask(
                     LinearGradient(
@@ -106,6 +108,7 @@ struct SelectorView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 130)
+        .clipped()
     }
 
     // MARK: - Level picker
