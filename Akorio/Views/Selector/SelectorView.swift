@@ -52,6 +52,13 @@ struct SelectorView: View {
             }
 
             Button {
+                viewModel.goToTuner()
+            } label: {
+                Image(systemName: "tuningfork")
+            }
+            .buttonStyle(AkorioIconButtonStyle())
+
+            Button {
                 viewModel.goToSettings()
             } label: {
                 Image(systemName: "gearshape")
