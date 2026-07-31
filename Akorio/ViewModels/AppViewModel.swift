@@ -30,6 +30,8 @@ final class AppViewModel {
             if path.isEmpty && !oldValue.isEmpty {
                 metronome.stop()
                 chords = []
+                bpm = defaultBpm
+                beatsPerChord = defaultBeatsPerChord
             }
         }
     }
