@@ -22,9 +22,17 @@ final class TunerEngine {
     var isListening = false
     var currentPitch: NotePitch?
     var permissionState: PermissionState = .undetermined
+    /// Set when the audio session/engine fails to start despite having mic
+    /// permission — distinct from `permissionState`, which only tracks
+    /// whether the user has said yes to the mic prompt.
+    var failedToStart = false
 
     private let engine = AVAudioEngine()
     private var isForeground = true
+    /// Whether the tuner screen currently wants to be listening — separate
+    /// from `isListening`, which also gets torn down while backgrounded.
+    /// Lets `handleWillEnterForeground` know whether to resume.
+    private var isActive = false
     private let sampleRate = 44_100.0
     // Small enough to keep updates feeling instant, still several periods of
     // even the lowest guitar string (E2, ~82Hz) for a reliable YIN read.
@@ -53,15 +61,22 @@ final class TunerEngine {
 
     @objc private func handleDidEnterBackground() {
         isForeground = false
-        stop()
+        teardown()
     }
 
     @objc private func handleWillEnterForeground() {
         isForeground = true
+        // Only resume if the tuner screen is still the one asking for it —
+        // `teardown()` on backgrounding cleared `isListening`, but the user's
+        // intent (captured in `isActive`) survives the round trip.
+        guard isActive, permissionState == .granted else { return }
+        beginListening()
     }
 
     func start() {
+        isActive = true
         guard !isListening else { return }
+        failedToStart = false
 
         switch AVAudioApplication.shared.recordPermission {
         case .granted:
@@ -83,6 +98,11 @@ final class TunerEngine {
     }
 
     func stop() {
+        isActive = false
+        teardown()
+    }
+
+    private func teardown() {
         guard isListening else { return }
         engine.inputNode.removeTap(onBus: 0)
         engine.stop()
@@ -92,18 +112,23 @@ final class TunerEngine {
 
     private func beginListening() {
         guard isForeground else { return }
+        failedToStart = false
 
         do {
             let session = AVAudioSession.sharedInstance()
             try session.setCategory(.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
             try session.setActive(true)
         } catch {
+            failedToStart = true
             return
         }
 
         let inputNode = engine.inputNode
         let format = inputNode.inputFormat(forBus: 0)
-        guard format.sampleRate > 0 else { return }
+        guard format.sampleRate > 0 else {
+            failedToStart = true
+            return
+        }
 
         inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: format) { [weak self] buffer, _ in
             self?.process(buffer: buffer, sampleRate: format.sampleRate)
@@ -114,6 +139,7 @@ final class TunerEngine {
             isListening = true
         } catch {
             inputNode.removeTap(onBus: 0)
+            failedToStart = true
         }
     }
 

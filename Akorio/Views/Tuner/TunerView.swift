@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct TunerView: View {
     let viewModel: AppViewModel
@@ -27,10 +28,11 @@ struct TunerView: View {
 
             Spacer()
 
-            switch engine.permissionState {
-            case .denied:
+            if engine.permissionState == .denied {
                 permissionDeniedContent
-            default:
+            } else if engine.failedToStart {
+                startFailedContent
+            } else {
                 tunerContent
             }
 
@@ -179,6 +181,22 @@ struct TunerView: View {
         }
     }
 
+    // MARK: - Start failed
+    private var startFailedContent: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 32))
+                .foregroundColor(.akorioNeutral500)
+            Text("Mikrofon başlatılamadı.")
+                .font(.system(size: 14))
+                .foregroundColor(.akorioNeutral400)
+                .multilineTextAlignment(.center)
+            Button("Tekrar Dene") { engine.start() }
+                .buttonStyle(AkorioSecondaryButtonStyle())
+        }
+        .padding(.horizontal, 24)
+    }
+
     // MARK: - Permission denied
     private var permissionDeniedContent: some View {
         VStack(spacing: 12) {
@@ -189,10 +207,12 @@ struct TunerView: View {
                 .font(.system(size: 14))
                 .foregroundColor(.akorioNeutral400)
                 .multilineTextAlignment(.center)
-            Text("Ayarlar > Akorio > Mikrofon üzerinden izin verebilirsin.")
-                .font(.system(size: 13))
-                .foregroundColor(.akorioNeutral600)
-                .multilineTextAlignment(.center)
+            Button("Ayarlara Git") {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            }
+            .buttonStyle(AkorioSecondaryButtonStyle())
+            .padding(.top, 4)
         }
         .padding(.horizontal, 24)
     }
