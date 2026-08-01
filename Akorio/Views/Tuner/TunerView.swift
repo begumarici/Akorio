@@ -69,9 +69,13 @@ struct TunerView: View {
 
     // MARK: - Main content
     private var tunerContent: some View {
-        VStack(spacing: 36) {
+        VStack(spacing: 24) {
             noteBadge
-            meter
+            ChromaticStripView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor)
+            GuitarHeadstockView(
+                activeString: engine.currentPitch?.closestGuitarString,
+                statusColor: statusColor
+            )
         }
     }
 
@@ -82,101 +86,41 @@ struct TunerView: View {
                 .fill(
                     RadialGradient(
                         colors: [statusColor.opacity(0.22), Color.clear],
-                        center: .center, startRadius: 10, endRadius: 130
+                        center: .center, startRadius: 10, endRadius: 110
                     )
                 )
-                .frame(width: 240, height: 240)
+                .frame(width: 200, height: 200)
                 .animation(.easeOut(duration: 0.25), value: isInTune)
 
             Circle()
                 .fill(Color.akorioSurface)
-                .frame(width: 180, height: 180)
+                .frame(width: 150, height: 150)
 
             Circle()
                 .stroke(statusColor, lineWidth: 3)
-                .frame(width: 180, height: 180)
+                .frame(width: 150, height: 150)
                 .shadow(color: isInTune ? statusColor.opacity(0.7) : .clear, radius: 14)
                 .animation(.easeOut(duration: 0.25), value: statusColor)
 
             VStack(spacing: 2) {
                 HStack(alignment: .top, spacing: 2) {
                     Text(engine.currentPitch?.noteName ?? "–")
-                        .font(.system(size: 64, weight: .bold))
+                        .font(.system(size: 52, weight: .bold))
                         .foregroundColor(.akorioText)
                         .contentTransition(.numericText())
 
                     if let octave = engine.currentPitch?.octave {
                         Text("\(octave)")
-                            .font(.system(size: 22, weight: .semibold))
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.akorioNeutral400)
-                            .padding(.top, 10)
+                            .padding(.top, 8)
                     }
                 }
                 .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
 
-                Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "Bir tele çal")
+                Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
                     .font(.system(size: 12))
                     .foregroundColor(.akorioNeutral500)
-            }
-        }
-    }
-
-    /// -50...50 cent meter. Center = in tune; a ±5 cent dead zone reads as
-    /// "close enough" so the indicator isn't hunting on every tiny wobble.
-    private var meter: some View {
-        VStack(spacing: 10) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(Color.akorioSurface)
-                    .frame(height: 8)
-
-                HStack(spacing: 0) {
-                    ForEach([-40, -20, 0, 20, 40], id: \.self) { tick in
-                        if tick != -40 { Spacer() }
-                        Rectangle()
-                            .fill(Color.akorioDivider)
-                            .frame(width: tick == 0 ? 2 : 1, height: tick == 0 ? 16 : 10)
-                    }
-                }
-
-                GeometryReader { proxy in
-                    let cents = engine.currentPitch?.cents ?? 0
-                    let clamped = max(-50, min(50, cents))
-                    let x = proxy.size.width / 2 + (clamped / 50) * (proxy.size.width / 2)
-
-                    Capsule()
-                        .fill(statusColor)
-                        .frame(width: 6, height: 30)
-                        .shadow(color: isInTune ? statusColor.opacity(0.8) : .clear, radius: 8)
-                        .position(x: x, y: proxy.size.height / 2)
-                        .animation(.spring(response: 0.2, dampingFraction: 0.7), value: cents)
-                }
-                .frame(height: 30)
-            }
-            .frame(height: 30)
-            .frame(maxWidth: 260)
-
-            HStack {
-                Text("PES")
-                Spacer()
-                statusLabel
-                Spacer()
-                Text("TİZ")
-            }
-            .font(.system(size: 10, weight: .semibold))
-            .tracking(0.6)
-            .foregroundColor(.akorioNeutral600)
-            .frame(maxWidth: 260)
-        }
-    }
-
-    private var statusLabel: some View {
-        Group {
-            if let cents = engine.currentPitch?.cents {
-                Text(isInTune ? "TAM" : (cents < 0 ? "PESLEŞTİR" : "SIKILAŞTIR"))
-                    .foregroundColor(isInTune ? .green : .akorioNeutral500)
-            } else {
-                Text("—")
             }
         }
     }
