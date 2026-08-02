@@ -12,12 +12,18 @@ enum AppScreen: Hashable {
     case practice
     case saved
     case settings
-    case tuner
     case levelDetail(ChordLevel)
+}
+
+enum AppTab: Hashable {
+    case home
+    case tuner
 }
 
 @Observable
 final class AppViewModel {
+    var selectedTab: AppTab = .home
+
     /// The Selector screen is always the root; pushed screens live here.
     /// Bound directly to a `NavigationStack(path:)`, so pop (including the
     /// edge-swipe-back gesture) is handled natively.
@@ -129,7 +135,6 @@ final class AppViewModel {
     // MARK: - Navigation
     func goToSettings() { path.append(.settings) }
     func goToSaved() { path.append(.saved) }
-    func goToTuner() { path.append(.tuner) }
     func goToLevelDetail(_ level: ChordLevel) { path.append(.levelDetail(level)) }
 
     func goToPractice() {

@@ -14,6 +14,32 @@ struct ContentView: View {
     @State private var viewModel = AppViewModel()
 
     var body: some View {
+        TabView(selection: $viewModel.selectedTab) {
+            homeTab
+                .tabItem { Label("Ana Sayfa", systemImage: "house.fill") }
+                .tag(AppTab.home)
+
+            tunerTab
+                .tabItem { Label("Akort Aleti", systemImage: "tuningfork") }
+                .tag(AppTab.tuner)
+        }
+        .tint(.akorioAccent400)
+        .preferredColorScheme(.dark)
+        .onAppear {
+            viewModel.configure(context: modelContext)
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            // Backgrounding tears down the audio session's IO cycle; if the
+            // metronome timer fires after that, AVAudioPlayerNode.play()
+            // throws an uncaught NSException and crashes the app. Stop the
+            // session the moment we leave the foreground.
+            if newPhase != .active {
+                viewModel.metronome.stop()
+            }
+        }
+    }
+
+    private var homeTab: some View {
         NavigationStack(path: $viewModel.path) {
             ZStack {
                 Color.akorioBg.ignoresSafeArea()
@@ -31,8 +57,6 @@ struct ContentView: View {
                         PracticeView(viewModel: viewModel)
                     case .settings:
                         SettingsView(viewModel: viewModel)
-                    case .tuner:
-                        TunerView(viewModel: viewModel)
                     case .levelDetail(let level):
                         LevelDetailView(viewModel: viewModel, level: level)
                     }
@@ -40,18 +64,15 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .navigationBar)
             }
         }
-        .preferredColorScheme(.dark)
-        .onAppear {
-            viewModel.configure(context: modelContext)
-        }
-        .onChange(of: scenePhase) { _, newPhase in
-            // Backgrounding tears down the audio session's IO cycle; if the
-            // metronome timer fires after that, AVAudioPlayerNode.play()
-            // throws an uncaught NSException and crashes the app. Stop the
-            // session the moment we leave the foreground.
-            if newPhase != .active {
-                viewModel.metronome.stop()
+    }
+
+    private var tunerTab: some View {
+        NavigationStack {
+            ZStack {
+                Color.akorioBg.ignoresSafeArea()
+                TunerView()
             }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }

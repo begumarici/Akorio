@@ -29,7 +29,7 @@ struct SelectorView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Text("Akorio")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.system(size: 32, weight: .semibold))
                 .foregroundColor(.akorioText)
 
             Spacer()
@@ -50,13 +50,6 @@ struct SelectorView: View {
                         .offset(x: 6, y: -6)
                 }
             }
-
-            Button {
-                viewModel.goToTuner()
-            } label: {
-                Image(systemName: "tuningfork")
-            }
-            .buttonStyle(AkorioIconButtonStyle())
 
             Button {
                 viewModel.goToSettings()

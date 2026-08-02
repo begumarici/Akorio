@@ -9,7 +9,6 @@ import SwiftUI
 import UIKit
 
 struct TunerView: View {
-    let viewModel: AppViewModel
     @State private var engine = TunerEngine()
 
     private var isInTune: Bool {
@@ -39,20 +38,18 @@ struct TunerView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
-        .onAppear { engine.start() }
+        .onAppear {
+            // Deferred a tick so starting the audio session (a real,
+            // synchronous AVFoundation cost) doesn't block the tab-switch
+            // transition's first frame and make it stutter.
+            DispatchQueue.main.async { engine.start() }
+        }
         .onDisappear { engine.stop() }
     }
 
     // MARK: - Header
     private var header: some View {
         HStack(spacing: 12) {
-            Button {
-                viewModel.goBack()
-            } label: {
-                Image(systemName: "chevron.left")
-            }
-            .buttonStyle(AkorioIconButtonStyle())
-
             VStack(alignment: .leading, spacing: 1) {
                 Text("Akort Aleti")
                     .font(.system(size: 20, weight: .semibold))
@@ -165,6 +162,6 @@ struct TunerView: View {
 #Preview {
     ZStack {
         Color.akorioBg.ignoresSafeArea()
-        TunerView(viewModel: AppViewModel())
+        TunerView()
     }
 }
