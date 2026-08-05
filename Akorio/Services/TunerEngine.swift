@@ -44,6 +44,46 @@ final class TunerEngine {
     private let analysisQueue = DispatchQueue(label: "com.akorio.tuner.analysis")
     private var isProcessing = false
 
+    // MARK: Note tracking
+    //
+    // Raw per-buffer YIN output is too jumpy to display directly: silence
+    // and ambient noise produce phantom notes, a pluck's attack transient
+    // misreads for a frame or two, and a decaying string occasionally
+    // throws a wild wrong-note frame. The tracker below turns raw readings
+    // into a stable display using two ideas:
+    //
+    // 1. Loudness hysteresis — it takes a *loud* signal (a fresh pluck,
+    //    `acquireRMS`) to claim a new note, but only a faint one
+    //    (`holdRMS`) to keep tracking the note already shown. Ambient
+    //    sound never crosses the acquire bar, and a ringing string's
+    //    quiet tail can update cents but can never jump to a different
+    //    note — jumping requires the loudness of a new pluck.
+    // 2. Two-frame confirmation — a *different* note is only accepted
+    //    after two consecutive buffers agree on it (~90ms, still feels
+    //    immediate), so a single misread frame can't flicker the display.
+
+    /// Minimum RMS for a reading to claim a NEW note. A deliberate pluck
+    /// near the phone easily exceeds this; room chatter does not.
+    private let acquireRMS: Float = 0.01
+    /// Minimum RMS to keep tracking the note already displayed — much
+    /// lower, so the display follows the string's long quiet ring-out.
+    private let holdRMS: Float = 0.004
+    /// Readings within this many cents of the shown note count as "the
+    /// same note wobbling", updated instantly with no confirmation.
+    private let sameNoteCents = 80.0
+    /// How closely two consecutive frames must agree to confirm a new note.
+    private let agreementCents = 40.0
+
+    /// Last frame's reading that didn't match the displayed note — the
+    /// candidate awaiting its confirming second frame. Main thread only.
+    private var pendingFrequency: Double?
+    /// Consecutive near-silent frames; a short run clears the display so a
+    /// single dropout between buffers doesn't blank a ringing note.
+    private var quietFrames = 0
+    /// Consecutive audible-but-unpitched frames (talking, handling noise);
+    /// clears the display once it's evidently not a note anymore.
+    private var pitchlessFrames = 0
+
     init() {
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleDidEnterBackground),
@@ -108,6 +148,9 @@ final class TunerEngine {
         engine.stop()
         isListening = false
         currentPitch = nil
+        pendingFrequency = nil
+        quietFrames = 0
+        pitchlessFrames = 0
     }
 
     private func beginListening() {
@@ -151,12 +194,61 @@ final class TunerEngine {
         let samples = Array(UnsafeBufferPointer(start: channelData[0], count: frameCount))
 
         analysisQueue.async { [weak self] in
-            let frequency = PitchDetector.detectPitch(buffer: samples, sampleRate: sampleRate)
-            let pitch = frequency.flatMap { NotePitch(frequency: $0) }
+            guard let self else { return }
+            let sumOfSquares = samples.reduce(Float(0)) { $0 + $1 * $1 }
+            let rms = (sumOfSquares / Float(samples.count)).squareRoot()
+            // Skip YIN entirely below the hold floor — it's the expensive
+            // part, and a buffer that quiet is silence either way.
+            let frequency = rms >= self.holdRMS
+                ? PitchDetector.detectPitch(buffer: samples, sampleRate: sampleRate)
+                : nil
             DispatchQueue.main.async {
-                self?.currentPitch = pitch
-                self?.isProcessing = false
+                self.ingest(frequency: frequency, rms: rms)
+                self.isProcessing = false
             }
         }
+    }
+
+    private func ingest(frequency: Double?, rms: Float) {
+        guard rms >= holdRMS else {
+            pendingFrequency = nil
+            quietFrames += 1
+            if quietFrames >= 3 { currentPitch = nil }
+            return
+        }
+        quietFrames = 0
+
+        guard let frequency else {
+            pendingFrequency = nil
+            pitchlessFrames += 1
+            if pitchlessFrames >= 6 { currentPitch = nil }
+            return
+        }
+        pitchlessFrames = 0
+
+        // Same note as displayed (or a slow tuning drift into a neighbor):
+        // track it instantly, even at ring-out volume.
+        if let shown = currentPitch?.frequency, cents(between: frequency, and: shown) <= sameNoteCents {
+            currentPitch = NotePitch(frequency: frequency)
+            pendingFrequency = nil
+            return
+        }
+
+        // A different note (or the first note from a blank display): only
+        // accept once two consecutive frames agree AND it arrived with
+        // pluck-level loudness.
+        if let pending = pendingFrequency,
+           cents(between: frequency, and: pending) <= agreementCents,
+           rms >= acquireRMS {
+            currentPitch = NotePitch(frequency: frequency)
+            pendingFrequency = nil
+            return
+        }
+
+        pendingFrequency = frequency
+    }
+
+    private func cents(between a: Double, and b: Double) -> Double {
+        abs(1200 * log2(a / b))
     }
 }

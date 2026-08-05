@@ -46,29 +46,34 @@ enum PitchDetector {
             normalized[lag] = runningSum == 0 ? 1 : difference[lag] * Double(lag) / runningSum
         }
 
-        // Step 3: absolute threshold — first dip below threshold, or if none
-        // qualifies, the global minimum (best-effort fallback).
+        // Step 3: pick the period among the convincing dips. Classic YIN
+        // takes the first dip below an absolute threshold, but a guitar
+        // string's strong 2nd harmonic can carve a dip at HALF the true
+        // period that sneaks under the threshold first — reading a whole
+        // octave high (E2 shows as E3). The tell: dips at true periods
+        // (T, 2T, …) all bottom out near the floor, while a half-period
+        // impostor's dip is measurably shallower, because odd harmonics
+        // don't repeat there. So: find the deepest dip overall, then take
+        // the smallest-lag local minimum that is nearly as deep.
+        var deepest = 1.0
+        for lag in minLag...maxLag where normalized[lag] < deepest {
+            deepest = normalized[lag]
+        }
+        // No dip below the threshold means no convincing periodicity —
+        // report nothing rather than guess; ambient noise stays blank.
+        guard deepest < clarityThreshold else { return nil }
+
+        let cutoff = min(max(deepest * 1.6, deepest + 0.03), clarityThreshold)
         var bestLag = -1
-        var lag = minLag
-        while lag <= maxLag {
-            if normalized[lag] < clarityThreshold {
-                // Walk to the local minimum around this dip.
-                while lag + 1 <= maxLag && normalized[lag + 1] < normalized[lag] {
-                    lag += 1
-                }
+        for lag in minLag...maxLag {
+            let isLocalMin = normalized[lag] <= normalized[lag - 1]
+                && (lag == maxLag || normalized[lag] <= normalized[lag + 1])
+            if isLocalMin && normalized[lag] <= cutoff {
                 bestLag = lag
                 break
             }
-            lag += 1
         }
-
-        if bestLag == -1 {
-            guard let minIndex = normalized[minLag...maxLag].indices.min(by: { normalized[$0] < normalized[$1] }),
-                  normalized[minIndex] < 0.5 else {
-                return nil
-            }
-            bestLag = minIndex
-        }
+        guard bestLag > 0 else { return nil }
 
         // Step 4: parabolic interpolation around bestLag for sub-sample precision.
         let refinedLag = parabolicInterpolation(around: bestLag, in: normalized)
