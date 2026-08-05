@@ -16,6 +16,7 @@ import SwiftUI
 struct GuitarHeadstockView: View {
     let activeString: GuitarString?
     let statusColor: Color
+    var lockedStrings: Set<GuitarString> = []
 
     private let canvasSize = CGSize(width: 260, height: 280)
     private let headstockRect = CGRect(x: 75, y: 10, width: 110, height: 160)
@@ -24,6 +25,15 @@ struct GuitarHeadstockView: View {
     private let fretboardOrder: [GuitarString] = [.e2, .a2, .d3, .g3, .b3, .e4]
 
     private var nutPoint: CGPoint { CGPoint(x: headstockRect.midX, y: headstockRect.maxY) }
+
+
+    private func isHighlighted(_ string: GuitarString) -> Bool {
+        string == activeString || lockedStrings.contains(string)
+    }
+
+    private func highlightColor(for string: GuitarString) -> Color {
+        lockedStrings.contains(string) ? .green : statusColor
+    }
 
     private var neckRect: CGRect {
         CGRect(
@@ -87,9 +97,8 @@ struct GuitarHeadstockView: View {
             .frame(width: canvasSize.width, height: canvasSize.height)
 
             ForEach(pegLayout, id: \.0.id) { string, isLeft, row in
-                let isActive = string == activeString
-                pegStem(isLeft: isLeft, row: row, isActive: isActive)
-                pegPost(isActive: isActive)
+                pegStem(isLeft: isLeft, row: row, string: string)
+                pegPost(string: string)
                     .position(pegAnchor(isLeft: isLeft, row: row))
                 pegButton(for: string, isLeft: isLeft)
                     .position(pegButtonCenter(isLeft: isLeft, row: row))
@@ -106,7 +115,7 @@ struct GuitarHeadstockView: View {
     private func drawString(_ string: GuitarString, isLeft: Bool, row: Int, in context: inout GraphicsContext) {
         let anchor = pegAnchor(isLeft: isLeft, row: row)
         let x = fretboardX(for: string)
-        let isActive = string == activeString
+        let isActive = isHighlighted(string)
 
         var path = Path()
         path.move(to: anchor)
@@ -115,7 +124,7 @@ struct GuitarHeadstockView: View {
 
         context.stroke(
             path,
-            with: .color(isActive ? statusColor : Color.akorioNeutral400.opacity(0.8)),
+            with: .color(isActive ? highlightColor(for: string) : Color.akorioNeutral400.opacity(0.8)),
             lineWidth: isActive ? 2 : 1.2
         )
     }
@@ -151,19 +160,19 @@ struct GuitarHeadstockView: View {
 
     /// The metal grommet where the string actually threads through, right at
     /// the headstock edge — separate from the tuning knob itself.
-    private func pegPost(isActive: Bool) -> some View {
+    private func pegPost(string: GuitarString) -> some View {
         Circle()
-            .fill(isActive ? statusColor : Color.akorioNeutral400)
+            .fill(isHighlighted(string) ? highlightColor(for: string) : Color.akorioNeutral400)
             .frame(width: 12, height: 12)
             .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
     }
 
     /// The shaft connecting the post to the tuning knob.
-    private func pegStem(isLeft: Bool, row: Int, isActive: Bool) -> some View {
+    private func pegStem(isLeft: Bool, row: Int, string: GuitarString) -> some View {
         let anchor = pegAnchor(isLeft: isLeft, row: row)
         let knob = pegButtonCenter(isLeft: isLeft, row: row)
         return Rectangle()
-            .fill(isActive ? statusColor : Color.akorioNeutral500)
+            .fill(isHighlighted(string) ? highlightColor(for: string) : Color.akorioNeutral500)
             .frame(width: abs(knob.x - anchor.x) - 10, height: 4)
             .position(x: (anchor.x + knob.x) / 2, y: anchor.y)
     }
@@ -172,7 +181,8 @@ struct GuitarHeadstockView: View {
     /// round bulb tapering to a point that meets the post, the way a real
     /// tuning machine button looks from this angle.
     private func pegButton(for string: GuitarString, isLeft: Bool) -> some View {
-        let isActive = string == activeString
+        let isActive = isHighlighted(string)
+        let color = highlightColor(for: string)
         let width: CGFloat = 54
         let height: CGFloat = 32
         // Left pegs point right (toward the headstock); right pegs point left.
@@ -181,7 +191,7 @@ struct GuitarHeadstockView: View {
 
         return ZStack {
             TuningKnobShape(pointsRight: pointsRight)
-                .fill(isActive ? statusColor : Color.akorioSurface)
+                .fill(isActive ? color : Color.akorioSurface)
             TuningKnobShape(pointsRight: pointsRight)
                 .stroke(isActive ? Color.clear : Color.akorioDivider, lineWidth: 1.5)
 
@@ -196,7 +206,7 @@ struct GuitarHeadstockView: View {
             .offset(x: textOffset)
         }
         .frame(width: width, height: height)
-        .shadow(color: isActive ? statusColor.opacity(0.6) : .clear, radius: 8)
+        .shadow(color: isActive ? color.opacity(0.6) : .clear, radius: 8)
         .animation(.easeOut(duration: 0.2), value: isActive)
     }
 }

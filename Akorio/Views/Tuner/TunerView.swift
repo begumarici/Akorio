@@ -10,6 +10,7 @@ import UIKit
 
 struct TunerView: View {
     @State private var engine = TunerEngine()
+    @State private var lockedStrings: Set<GuitarString> = []
 
     private var isInTune: Bool {
         guard let cents = engine.currentPitch?.cents else { return false }
@@ -45,6 +46,10 @@ struct TunerView: View {
             DispatchQueue.main.async { engine.start() }
         }
         .onDisappear { engine.stop() }
+        .onChange(of: isInTune) { _, newValue in
+            guard newValue, let string = engine.currentPitch?.closestGuitarString else { return }
+            lockedStrings.insert(string)
+        }
     }
 
     // MARK: - Header
@@ -60,6 +65,18 @@ struct TunerView: View {
             }
 
             Spacer()
+
+            Button {
+                lockedStrings.removeAll()
+            } label: {
+                Image(systemName: "arrow.counterclockwise")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.akorioNeutral400)
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(Color.akorioSurface))
+            }
+            .disabled(lockedStrings.isEmpty)
+            .opacity(lockedStrings.isEmpty ? 0.4 : 1)
         }
         .padding(.top, 8)
     }
@@ -71,7 +88,8 @@ struct TunerView: View {
             ChromaticStripView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor)
             GuitarHeadstockView(
                 activeString: engine.currentPitch?.closestGuitarString,
-                statusColor: statusColor
+                statusColor: statusColor,
+                lockedStrings: lockedStrings
             )
         }
     }
