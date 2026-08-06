@@ -35,7 +35,7 @@ struct SavedSetsView: View {
             .padding(20)
         }
         .confirmationDialog(
-            "\"\(pendingDelete?.name ?? "")\" silinsin mi?",
+            String(format: String(localized: "\"%@\" silinsin mi?"), pendingDelete?.name ?? ""),
             isPresented: Binding(
                 get: { pendingDelete != nil },
                 set: { isPresented in if !isPresented { pendingDelete = nil } }

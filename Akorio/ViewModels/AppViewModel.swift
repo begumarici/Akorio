@@ -200,7 +200,7 @@ final class AppViewModel {
         if let modelContext, let fetched = try? modelContext.fetchCount(FetchDescriptor<SavedChordSet>()) {
             count = fetched
         }
-        saveNameInput = "Akor Seti \(count + 1)"
+        saveNameInput = String(format: String(localized: "Akor Seti %@"), "\(count + 1)")
         saveDialogOpen = true
     }
 
@@ -212,7 +212,7 @@ final class AppViewModel {
         guard let modelContext else { return }
         let trimmedName = saveNameInput.trimmingCharacters(in: .whitespacesAndNewlines)
         let newSet = SavedChordSet(
-            name: trimmedName.isEmpty ? "Akor Seti" : trimmedName,
+            name: trimmedName.isEmpty ? String(localized: "Akor Seti") : trimmedName,
             chordLabels: chords.map { $0.label },
             bpm: bpm,
             beatsPerChord: beatsPerChord,

@@ -111,8 +111,8 @@ struct SettingsView: View {
             Text("VARSAYILAN PRATİK AYARLARI").sectionHeaderStyle()
 
             HStack(spacing: 10) {
-                AkorioStatBox(title: "BPM", value: viewModel.defaultBpm, onDecrement: viewModel.decDefaultBpm, onIncrement: viewModel.incDefaultBpm)
-                AkorioStatBox(title: "Vuruş/Akor", value: viewModel.defaultBeatsPerChord, onDecrement: viewModel.decDefaultBeats, onIncrement: viewModel.incDefaultBeats)
+                AkorioStatBox(title: String(localized: "BPM"), value: viewModel.defaultBpm, onDecrement: viewModel.decDefaultBpm, onIncrement: viewModel.incDefaultBpm)
+                AkorioStatBox(title: String(localized: "Vuruş/Akor"), value: viewModel.defaultBeatsPerChord, onDecrement: viewModel.decDefaultBeats, onIncrement: viewModel.incDefaultBeats)
             }
 
             Text("Yeni bir pratik oturumu bu değerlerle başlar.")

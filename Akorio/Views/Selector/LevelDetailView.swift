@@ -40,7 +40,7 @@ struct LevelDetailView: View {
                     }
                 }
 
-                Text("\(selectedCount) / \(level.chordLabels.count) akor seçildi")
+                Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
                     .font(.system(size: 13))
                     .foregroundColor(.akorioNeutral500)
                     .frame(maxWidth: .infinity)

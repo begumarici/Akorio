@@ -16,28 +16,28 @@ enum ChordLevel: String, CaseIterable, Hashable {
 
     var tabTitle: String {
         switch self {
-        case .beginner: return "Giriş"
-        case .intermediate: return "Orta"
-        case .advanced: return "Zor"
-        case .expert: return "İleri"
+        case .beginner: return String(localized: "Giriş")
+        case .intermediate: return String(localized: "Orta")
+        case .advanced: return String(localized: "Zor")
+        case .expert: return String(localized: "İleri")
         }
     }
 
     var title: String {
         switch self {
-        case .beginner: return "Giriş Seviyesi"
-        case .intermediate: return "Orta Seviye"
-        case .advanced: return "Zor Seviye"
-        case .expert: return "İleri Seviye"
+        case .beginner: return String(localized: "Giriş Seviyesi")
+        case .intermediate: return String(localized: "Orta Seviye")
+        case .advanced: return String(localized: "Zor Seviye")
+        case .expert: return String(localized: "İleri Seviye")
         }
     }
 
     var subtitle: String {
         switch self {
-        case .beginner: return "Başlangıç için en temel akorlar"
-        case .intermediate: return "Bilgini genişlet, yeni akorlar ekle"
-        case .advanced: return "Daha zorlu akorlar ve geçişler"
-        case .expert: return "Tüm akorlar, sınırlarını zorla"
+        case .beginner: return String(localized: "Başlangıç için en temel akorlar")
+        case .intermediate: return String(localized: "Bilgini genişlet, yeni akorlar ekle")
+        case .advanced: return String(localized: "Daha zorlu akorlar ve geçişler")
+        case .expert: return String(localized: "Tüm akorlar, sınırlarını zorla")
         }
     }
 

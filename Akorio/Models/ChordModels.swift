@@ -21,9 +21,9 @@ enum MetronomeSound: String, Codable, CaseIterable, Hashable {
 
     var label: String {
         switch self {
-        case .click: return "Klasik Klik"
-        case .wood: return "Tahta Blok"
-        case .beep: return "Bip"
+        case .click: return String(localized: "Klasik Klik")
+        case .wood: return String(localized: "Tahta Blok")
+        case .beep: return String(localized: "Bip")
         }
     }
 }

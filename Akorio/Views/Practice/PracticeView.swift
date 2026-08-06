@@ -85,7 +85,7 @@ struct PracticeView: View {
                 Text("\(viewModel.countInBeatsLeft)")
                     .font(.system(size: 104, weight: .medium))
                     .foregroundColor(.akorioNeutral300)
-                Text("Sıradaki: \(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)")
+                Text(String(format: String(localized: "Sıradaki: %@"), viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel))
                     .font(.system(size: 14))
                     .foregroundColor(.akorioNeutral500)
             } else if viewModel.isPlaying {
@@ -117,7 +117,7 @@ struct PracticeView: View {
                     .shadow(color: Color.akorioAccent500.opacity(0.25), radius: 30)
                 }
 
-                Text("Sıradaki: \(upcomingChordLabel)")
+                Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
                     .font(.system(size: 14))
                     .foregroundColor(.akorioNeutral500)
 
@@ -133,7 +133,7 @@ struct PracticeView: View {
                     .font(.system(size: 64, weight: .semibold))
                     .foregroundColor(.akorioNeutral700)
 
-                Text("Sıradaki: \(upcomingChordLabel)")
+                Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
                     .font(.system(size: 14))
                     .foregroundColor(.akorioNeutral500)
             }
@@ -143,8 +143,8 @@ struct PracticeView: View {
     // MARK: - BPM / beats
     private var statRow: some View {
         HStack(spacing: 10) {
-            AkorioStatBox(title: "BPM", value: viewModel.bpm, onDecrement: viewModel.decBpm, onIncrement: viewModel.incBpm)
-            AkorioStatBox(title: "Vuruş/Akor", value: viewModel.beatsPerChord, onDecrement: viewModel.decBeats, onIncrement: viewModel.incBeats)
+            AkorioStatBox(title: String(localized: "BPM"), value: viewModel.bpm, onDecrement: viewModel.decBpm, onIncrement: viewModel.incBpm)
+            AkorioStatBox(title: String(localized: "Vuruş/Akor"), value: viewModel.beatsPerChord, onDecrement: viewModel.decBeats, onIncrement: viewModel.incBeats)
         }
     }
 

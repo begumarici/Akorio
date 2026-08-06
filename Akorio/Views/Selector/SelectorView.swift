@@ -153,7 +153,7 @@ private struct LevelRow: View {
                         .foregroundColor(.akorioNeutral500)
                 }
                 Spacer()
-                Text("\(level.chordLabels.count) akor")
+                Text(String(format: String(localized: "%@ akor"), "\(level.chordLabels.count)"))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.akorioNeutral500)
                 Image(systemName: "chevron.right")
