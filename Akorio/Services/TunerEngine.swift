@@ -24,7 +24,12 @@ final class TunerEngine {
     var currentPitch: NotePitch? {
         didSet {
             guard let pitch = currentPitch, abs(pitch.cents) < 5, let string = pitch.closestGuitarString else { return }
+            // Only the first time a string crosses into tune — re-checking
+            // an already-locked string on every reading would replay the
+            // chime for as long as the note keeps ringing in tune.
+            guard !lockedStrings.contains(string) else { return }
             lockedStrings.insert(string)
+            playConfirmChime()
         }
     }
     var permissionState: PermissionState = .undetermined
@@ -34,6 +39,9 @@ final class TunerEngine {
     var failedToStart = false
 
     private let engine = AVAudioEngine()
+    
+    private let chimePlayer = AVAudioPlayerNode()
+    private var chimeBuffer: AVAudioPCMBuffer?
     private var isForeground = true
     /// Whether the tuner screen currently wants to be listening — separate
     /// from `isListening`, which also gets torn down while backgrounded.
@@ -91,6 +99,10 @@ final class TunerEngine {
     private var pitchlessFrames = 0
 
     init() {
+        let mixer = engine.mainMixerNode
+        engine.attach(chimePlayer)
+        engine.connect(chimePlayer, to: mixer, format: mixer.outputFormat(forBus: 0))
+
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleDidEnterBackground),
             name: UIApplication.didEnterBackgroundNotification, object: nil
@@ -256,5 +268,53 @@ final class TunerEngine {
 
     private func cents(between a: Double, and b: Double) -> Double {
         abs(1200 * log2(a / b))
+    }
+
+    private func playConfirmChime() {
+        guard isForeground else { return }
+        if !engine.isRunning { try? engine.start() }
+
+        let buffer = chimeBuffer ?? makeChimeBuffer()
+        chimeBuffer = buffer
+        guard let buffer else { return }
+
+        chimePlayer.stop()
+        chimePlayer.scheduleBuffer(buffer, at: nil, options: .interrupts)
+        chimePlayer.play()
+    }
+
+    private func makeChimeBuffer() -> AVAudioPCMBuffer? {
+        let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        let notes: [(freq: Double, start: Double)] = [(880, 0), (1318.5, 0.07)] // A5, then E6
+        let noteDuration = 0.14
+        let totalDuration = notes.last!.start + noteDuration
+        let frameCount = AVAudioFrameCount(sampleRate * totalDuration)
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
+        buffer.frameLength = frameCount
+
+        let channelCount = Int(format.channelCount)
+        // The two notes' time ranges overlap (second starts before the
+        // first decays out) and get summed below — zero the buffer first
+        // so that summation starts from silence, not uninitialized memory.
+        for channel in 0..<channelCount {
+            buffer.floatChannelData?[channel].update(repeating: 0, count: Int(frameCount))
+        }
+
+        let tau = noteDuration / 4.0
+        for (freq, start) in notes {
+            let startFrame = Int(start * sampleRate)
+            let noteFrameCount = Int(noteDuration * sampleRate)
+            for i in 0..<noteFrameCount {
+                let frame = startFrame + i
+                guard frame < Int(frameCount) else { break }
+                let t = Double(i) / sampleRate
+                let envelope = exp(-t / tau)
+                let sample = Float(sin(2.0 * .pi * freq * t) * envelope) * 0.2
+                for channel in 0..<channelCount {
+                    buffer.floatChannelData?[channel][frame] += sample
+                }
+            }
+        }
+        return buffer
     }
 }
