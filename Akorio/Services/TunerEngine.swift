@@ -20,7 +20,13 @@ final class TunerEngine {
     }
 
     var isListening = false
-    var currentPitch: NotePitch?
+    var lockedStrings: Set<GuitarString> = []
+    var currentPitch: NotePitch? {
+        didSet {
+            guard let pitch = currentPitch, abs(pitch.cents) < 5, let string = pitch.closestGuitarString else { return }
+            lockedStrings.insert(string)
+        }
+    }
     var permissionState: PermissionState = .undetermined
     /// Set when the audio session/engine fails to start despite having mic
     /// permission — distinct from `permissionState`, which only tracks
