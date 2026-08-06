@@ -26,17 +26,17 @@ struct TunerView: View {
         VStack(spacing: 0) {
             header
 
-            Spacer()
-
             if engine.permissionState == .denied {
+                Spacer()
                 permissionDeniedContent
+                Spacer()
             } else if engine.failedToStart {
+                Spacer()
                 startFailedContent
+                Spacer()
             } else {
                 tunerContent
             }
-
-            Spacer()
         }
         .padding(.horizontal, 20)
         .onAppear {
@@ -83,9 +83,15 @@ struct TunerView: View {
 
     // MARK: - Main content
     private var tunerContent: some View {
-        VStack(spacing: 24) {
-            noteBadge
-            ChromaticStripView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor)
+        VStack(spacing: 0) {
+            TunerGaugeView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor)
+                .padding(.top, 32)
+
+            noteReadout
+                .padding(.top, 20)
+
+            Spacer(minLength: 24)
+
             GuitarHeadstockView(
                 activeString: engine.currentPitch?.closestGuitarString,
                 statusColor: statusColor,
@@ -94,49 +100,27 @@ struct TunerView: View {
         }
     }
 
-    // MARK: - Note badge
-    private var noteBadge: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [statusColor.opacity(0.22), Color.clear],
-                        center: .center, startRadius: 10, endRadius: 110
-                    )
-                )
-                .frame(width: 200, height: 200)
-                .animation(.easeOut(duration: 0.25), value: isInTune)
+    // MARK: - Note readout
+    private var noteReadout: some View {
+        VStack(spacing: 2) {
+            HStack(alignment: .top, spacing: 2) {
+                Text(engine.currentPitch?.noteName ?? "–")
+                    .font(.system(size: 40, weight: .bold))
+                    .foregroundColor(.akorioText)
+                    .contentTransition(.numericText())
 
-            Circle()
-                .fill(Color.akorioSurface)
-                .frame(width: 150, height: 150)
-
-            Circle()
-                .stroke(statusColor, lineWidth: 3)
-                .frame(width: 150, height: 150)
-                .shadow(color: isInTune ? statusColor.opacity(0.7) : .clear, radius: 14)
-                .animation(.easeOut(duration: 0.25), value: statusColor)
-
-            VStack(spacing: 2) {
-                HStack(alignment: .top, spacing: 2) {
-                    Text(engine.currentPitch?.noteName ?? "–")
-                        .font(.system(size: 52, weight: .bold))
-                        .foregroundColor(.akorioText)
-                        .contentTransition(.numericText())
-
-                    if let octave = engine.currentPitch?.octave {
-                        Text("\(octave)")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.akorioNeutral400)
-                            .padding(.top, 8)
-                    }
+                if let octave = engine.currentPitch?.octave {
+                    Text("\(octave)")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.akorioNeutral400)
+                        .padding(.top, 6)
                 }
-                .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
-
-                Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
-                    .font(.system(size: 12))
-                    .foregroundColor(.akorioNeutral500)
             }
+            .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
+
+            Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
+                .font(.system(size: 12))
+                .foregroundColor(.akorioNeutral500)
         }
     }
 

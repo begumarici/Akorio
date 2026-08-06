@@ -18,10 +18,10 @@ struct GuitarHeadstockView: View {
     let statusColor: Color
     var lockedStrings: Set<GuitarString> = []
 
-    private let canvasSize = CGSize(width: 260, height: 280)
-    private let headstockRect = CGRect(x: 75, y: 10, width: 110, height: 160)
-    private let neckWidth: CGFloat = 64
-    private let pegRowYs: [CGFloat] = [38, 84, 130]
+    private let canvasSize = CGSize(width: 350, height: 378)
+    private let headstockRect = CGRect(x: 101, y: 14, width: 148, height: 215)
+    private let neckWidth: CGFloat = 86
+    private let pegRowYs: [CGFloat] = [52, 113, 176]
     private let fretboardOrder: [GuitarString] = [.e2, .a2, .d3, .g3, .b3, .e4]
 
     private var nutPoint: CGPoint { CGPoint(x: headstockRect.midX, y: headstockRect.maxY) }
@@ -47,7 +47,7 @@ struct GuitarHeadstockView: View {
     /// tuning peg is on.
     private func fretboardX(for string: GuitarString) -> CGFloat {
         let index = fretboardOrder.firstIndex(of: string) ?? 0
-        let spacing: CGFloat = 11
+        let spacing: CGFloat = 15
         let span = spacing * CGFloat(fretboardOrder.count - 1)
         return headstockRect.midX - span / 2 + CGFloat(index) * spacing
     }
@@ -72,12 +72,12 @@ struct GuitarHeadstockView: View {
     /// inside the headstock's real (tapered) edge, not floating beside it.
     private func pegAnchor(isLeft: Bool, row: Int) -> CGPoint {
         let edge = trueEdgeX(isLeft: isLeft, row: row)
-        return CGPoint(x: isLeft ? edge + 8 : edge - 8, y: pegRowYs[row])
+        return CGPoint(x: isLeft ? edge + 11 : edge - 11, y: pegRowYs[row])
     }
 
     private func pegButtonCenter(isLeft: Bool, row: Int) -> CGPoint {
         let edge = trueEdgeX(isLeft: isLeft, row: row)
-        return CGPoint(x: isLeft ? edge - 20 : edge + 20, y: pegRowYs[row])
+        return CGPoint(x: isLeft ? edge - 27 : edge + 27, y: pegRowYs[row])
     }
 
     var body: some View {
@@ -163,7 +163,7 @@ struct GuitarHeadstockView: View {
     private func pegPost(string: GuitarString) -> some View {
         Circle()
             .fill(isHighlighted(string) ? highlightColor(for: string) : Color.akorioNeutral400)
-            .frame(width: 12, height: 12)
+            .frame(width: 16, height: 16)
             .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
     }
 
@@ -173,7 +173,7 @@ struct GuitarHeadstockView: View {
         let knob = pegButtonCenter(isLeft: isLeft, row: row)
         return Rectangle()
             .fill(isHighlighted(string) ? highlightColor(for: string) : Color.akorioNeutral500)
-            .frame(width: abs(knob.x - anchor.x) - 10, height: 4)
+            .frame(width: abs(knob.x - anchor.x) - 12, height: 5)
             .position(x: (anchor.x + knob.x) / 2, y: anchor.y)
     }
 
@@ -183,8 +183,8 @@ struct GuitarHeadstockView: View {
     private func pegButton(for string: GuitarString, isLeft: Bool) -> some View {
         let isActive = isHighlighted(string)
         let color = highlightColor(for: string)
-        let width: CGFloat = 54
-        let height: CGFloat = 32
+        let width: CGFloat = 73
+        let height: CGFloat = 43
         // Left pegs point right (toward the headstock); right pegs point left.
         let pointsRight = isLeft
         let textOffset = pointsRight ? -(width / 2 - height / 2) : (width / 2 - height / 2)
@@ -197,9 +197,9 @@ struct GuitarHeadstockView: View {
 
             HStack(spacing: 2) {
                 Text(string.noteName)
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.system(size: 23, weight: .bold))
                 Text("\(string.octave)")
-                    .font(.system(size: 10, weight: .medium))
+                    .font(.system(size: 13, weight: .medium))
                     .opacity(0.7)
             }
             .foregroundColor(isActive ? .white : .akorioNeutral300)
@@ -248,8 +248,8 @@ private struct HeadstockShape: Shape {
 
     func path(in _: CGRect) -> Path {
         let topInset = rect.width * 0.24
-        let topRadius: CGFloat = 18
-        let bottomRadius: CGFloat = 10
+        let topRadius: CGFloat = 24
+        let bottomRadius: CGFloat = 13
 
         let tl = CGPoint(x: rect.minX + topInset, y: rect.minY)
         let tr = CGPoint(x: rect.maxX - topInset, y: rect.minY)
