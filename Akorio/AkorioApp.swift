@@ -26,8 +26,37 @@ struct AkorioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
         .modelContainer(sharedModelContainer)
+    }
+}
+
+private struct RootView: View {
+    @State private var showSplash = true
+
+    var body: some View {
+        ZStack {
+            ContentView()
+                // Prevent accidental taps during splash
+                .allowsHitTesting(!showSplash)
+                .opacity(showSplash ? 0.98 : 1.0)
+
+            if showSplash {
+                SplashView()
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 1.02)),
+                        removal: .opacity.combined(with: .scale(scale: 0.98))
+                    ))
+                    .zIndex(1)
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    showSplash = false
+                }
+            }
+        }
     }
 }
