@@ -73,7 +73,7 @@ struct TunerView: View {
             .disabled(engine.lockedStrings.isEmpty)
             .opacity(engine.lockedStrings.isEmpty ? 0.4 : 1)
         }
-        .padding(.top, 44)
+        .padding(.top, 60)
     }
 
     // MARK: - Main content

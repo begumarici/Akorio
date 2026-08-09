@@ -464,6 +464,22 @@
         }
       }
     },
+    "KALDIĞIN YERDEN DEVAM ET": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CONTINUE WHERE YOU LEFT OFF"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KALDIĞIN YERDEN DEVAM ET"
+          }
+        }
+      }
+    },
     "Kaydet": {
       "localizations": {
         "en": {
@@ -716,6 +732,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sil"
+          }
+        }
+      }
+    },
+    "Son Pratik Seansı": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last Practice Session"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son Pratik Seansı"
           }
         }
       }

@@ -19,6 +19,9 @@ struct SelectorView: View {
             VStack(alignment: .leading, spacing: 20) {
                 header
                 greetingSection
+                if viewModel.hasLastPracticeSession {
+                    continueSection
+                }
                 levelSection
             }
             .padding(20)
@@ -108,6 +111,49 @@ struct SelectorView: View {
                 .stroke(Color.akorioStroke, lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.3), radius: 16, y: 8)
+    }
+
+    // MARK: - Continue last practice
+    private var continueSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("KALDIĞIN YERDEN DEVAM ET")
+                .sectionHeaderStyle()
+
+            Button {
+                viewModel.continueLastPractice()
+            } label: {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.akorioAccent900)
+                        Circle()
+                            .fill(Color.akorioAccent500.opacity(0.5))
+                            .frame(width: 26, height: 26)
+                            .blur(radius: 12)
+                        Image(systemName: "play.fill")
+                            .font(.akorio(16, .medium))
+                            .foregroundColor(.akorioAccent200)
+                    }
+                    .frame(width: 44, height: 44)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Son Pratik Seansı")
+                            .font(.akorio(16, .medium))
+                            .foregroundColor(.akorioText)
+                        Text(viewModel.lastPracticeSubtitle)
+                            .font(.akorio(13))
+                            .foregroundColor(.akorioNeutral500)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.akorio(14))
+                        .foregroundColor(.akorioNeutral500)
+                }
+                .akorioCard()
+            }
+            .buttonStyle(AkorioPressableCardStyle())
+        }
     }
 
     // MARK: - Level picker

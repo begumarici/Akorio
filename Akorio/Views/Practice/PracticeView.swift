@@ -47,6 +47,7 @@ struct PracticeView: View {
         }
         .onDisappear {
             viewModel.metronome.stop()
+            viewModel.persistLastPracticeSession()
         }
     }
 
