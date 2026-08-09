@@ -9,7 +9,10 @@ import SwiftUI
 import UIKit
 
 struct TunerView: View {
+    let viewModel: AppViewModel
+
     @State private var engine = TunerEngine()
+    @State private var showAllTunedOverlay = false
 
     private var isInTune: Bool {
         guard let cents = engine.currentPitch?.cents else { return false }
@@ -22,29 +25,117 @@ struct TunerView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
+        ZStack {
+            VStack(spacing: 0) {
+                header
 
-            if engine.permissionState == .denied {
-                Spacer()
-                permissionDeniedContent
-                Spacer()
-            } else if engine.failedToStart {
-                Spacer()
-                startFailedContent
-                Spacer()
-            } else {
-                tunerContent
+                if engine.permissionState == .denied {
+                    Spacer()
+                    permissionDeniedContent
+                    Spacer()
+                } else if engine.failedToStart {
+                    Spacer()
+                    startFailedContent
+                    Spacer()
+                } else {
+                    tunerContent
+                }
+            }
+            .padding(.horizontal, 20)
+            .onAppear {
+                // Deferred a tick so starting the audio session (a real,
+                // synchronous AVFoundation cost) doesn't block the tab-switch
+                // transition's first frame and make it stutter.
+                DispatchQueue.main.async { engine.start() }
+            }
+            .onDisappear { engine.stop() }
+            .onChange(of: engine.lockedStrings) { _, newValue in
+                if newValue.count == GuitarString.allCases.count {
+                    showAllTunedOverlay = true
+                }
+            }
+
+            if showAllTunedOverlay {
+                allTunedOverlay
+                    .transition(.opacity)
             }
         }
-        .padding(.horizontal, 20)
-        .onAppear {
-            // Deferred a tick so starting the audio session (a real,
-            // synchronous AVFoundation cost) doesn't block the tab-switch
-            // transition's first frame and make it stutter.
-            DispatchQueue.main.async { engine.start() }
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: showAllTunedOverlay)
+    }
+
+    // MARK: - All strings tuned overlay
+    private var allTunedOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.55)
+                .ignoresSafeArea()
+                .onTapGesture { showAllTunedOverlay = false }
+
+            VStack(spacing: 20) {
+                ZStack {
+                    Circle()
+                        .fill(Color.green.opacity(0.35))
+                        .frame(width: 90, height: 90)
+                        .blur(radius: 30)
+                    Circle()
+                        .fill(Color.akorioAccent900)
+                        .frame(width: 64, height: 64)
+                    Image(systemName: "checkmark")
+                        .font(.akorio(24, .bold))
+                        .foregroundColor(.green)
+                }
+
+                VStack(spacing: 6) {
+                    Text("Harika! 🎉")
+                        .font(.akorioSerif(26, .semibold))
+                        .foregroundColor(.akorioText)
+                    Text("Gitarının akordu tamamlandı.")
+                        .font(.akorio(14))
+                        .foregroundColor(.akorioNeutral400)
+                        .multilineTextAlignment(.center)
+                }
+
+                VStack(spacing: 10) {
+                    if viewModel.hasLastPracticeSession {
+                        Button {
+                            showAllTunedOverlay = false
+                            viewModel.selectedTab = .home
+                            viewModel.continueLastPractice()
+                        } label: {
+                            Text("Son Pratik Seansına Devam Et")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(AkorioPrimaryButtonStyle())
+                    }
+
+                    Button {
+                        showAllTunedOverlay = false
+                        viewModel.selectedTab = .home
+                    } label: {
+                        Text("Akor Seç")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(AkorioSecondaryButtonStyle())
+
+                    Button("Kapat") { showAllTunedOverlay = false }
+                        .font(.akorio(13, .medium))
+                        .foregroundColor(.akorioNeutral500)
+                        .padding(.top, 2)
+                }
+            }
+            .padding(24)
+            .frame(maxWidth: 320)
+            .background(
+                RoundedRectangle(cornerRadius: AkorioRadius.lg)
+                    .fill(Color.akorioSurface)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AkorioRadius.lg)
+                            .stroke(Color.akorioStroke, lineWidth: 1)
+                    )
+                    .shadow(color: .black.opacity(0.4), radius: 30, y: 12)
+            )
+            .padding(.horizontal, 32)
+            .scaleEffect(showAllTunedOverlay ? 1 : 0.9)
         }
-        .onDisappear { engine.stop() }
     }
 
     // MARK: - Header
@@ -168,6 +259,6 @@ struct TunerView: View {
 #Preview {
     ZStack {
         AkorioBackground()
-        TunerView()
+        TunerView(viewModel: AppViewModel())
     }
 }

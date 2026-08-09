@@ -70,7 +70,7 @@ struct ContentView: View {
         NavigationStack {
             ZStack {
                 AkorioBackground()
-                TunerView()
+                TunerView(viewModel: viewModel)
             }
             .toolbar(.hidden, for: .navigationBar)
         }
