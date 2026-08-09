@@ -161,10 +161,23 @@ struct GuitarHeadstockView: View {
     /// The metal grommet where the string actually threads through, right at
     /// the headstock edge — separate from the tuning knob itself.
     private func pegPost(string: GuitarString) -> some View {
-        Circle()
-            .fill(isHighlighted(string) ? highlightColor(for: string) : Color.akorioNeutral400)
-            .frame(width: 16, height: 16)
-            .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
+        let isActive = isHighlighted(string)
+        let color = highlightColor(for: string)
+
+        return ZStack {
+            if isActive {
+                Circle()
+                    .fill(color.opacity(0.55))
+                    .frame(width: 30, height: 30)
+                    .blur(radius: 10)
+            }
+
+            Circle()
+                .fill(isActive ? color : Color.akorioNeutral400)
+                .frame(width: 16, height: 16)
+                .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
+        }
+        .animation(.easeOut(duration: 0.2), value: isActive)
     }
 
     /// The shaft connecting the post to the tuning knob.

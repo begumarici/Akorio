@@ -102,34 +102,6 @@ struct AkorioBackground: View {
     }
 }
 
-/// Slowly drifting liquid mesh — used as the hero card's background.
-/// Colors stay dark enough that light text always reads on top.
-struct AkorioLiquidGradient: View {
-    var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 20.0)) { timeline in
-            let t = timeline.date.timeIntervalSinceReferenceDate
-            let cx = Float(0.5 + 0.3 * sin(t * 0.35))
-            let cy = Float(0.5 + 0.25 * cos(t * 0.27))
-            let midTop = Float(0.5 + 0.2 * sin(t * 0.2 + 1.3))
-
-            MeshGradient(
-                width: 3,
-                height: 3,
-                points: [
-                    [0, 0], [midTop, 0], [1, 0],
-                    [0, 0.5], [cx, cy], [1, 0.5],
-                    [0, 1], [0.5, 1], [1, 1],
-                ],
-                colors: [
-                    Color(hex: 0x272346), Color(hex: 0x33306b), Color(hex: 0x263263),
-                    Color(hex: 0x3d3577), Color(hex: 0x5a4daf), Color(hex: 0x2f3f7d),
-                    Color(hex: 0x272346), Color(hex: 0x45305f), Color(hex: 0x272346),
-                ]
-            )
-        }
-    }
-}
-
 enum AkorioRadius {
     static let sm: CGFloat = 10
     static let md: CGFloat = 16

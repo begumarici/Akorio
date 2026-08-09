@@ -27,6 +27,9 @@ struct LevelDetailView: View {
                     Text("Pratiğe başlamak için akorlarını seç.")
                         .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
+                    Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
+                        .font(.akorio(13))
+                        .foregroundColor(.akorioNeutral500)
                 }
 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
@@ -39,11 +42,6 @@ struct LevelDetailView: View {
                         }
                     }
                 }
-
-                Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
-                    .font(.akorio(13))
-                    .foregroundColor(.akorioNeutral500)
-                    .frame(maxWidth: .infinity)
             }
             .padding(20)
         }

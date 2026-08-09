@@ -73,14 +73,14 @@ struct TunerView: View {
             .disabled(engine.lockedStrings.isEmpty)
             .opacity(engine.lockedStrings.isEmpty ? 0.4 : 1)
         }
-        .padding(.top, 8)
+        .padding(.top, 44)
     }
 
     // MARK: - Main content
     private var tunerContent: some View {
         VStack(spacing: 0) {
             TunerGaugeView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor)
-                .padding(.top, 32)
+                .padding(.top, 48)
 
             noteReadout
                 .padding(.top, 20)
@@ -97,26 +97,35 @@ struct TunerView: View {
 
     // MARK: - Note readout
     private var noteReadout: some View {
-        VStack(spacing: 2) {
-            HStack(alignment: .top, spacing: 2) {
-                Text(engine.currentPitch?.noteName ?? "–")
-                    .font(.akorio(40, .bold))
-                    .foregroundColor(.akorioText)
-                    .contentTransition(.numericText())
+        ZStack {
+            Circle()
+                .fill(statusColor.opacity(isInTune ? 0.4 : 0.15))
+                .frame(width: 120, height: 120)
+                .blur(radius: 36)
+                .opacity(engine.currentPitch == nil ? 0 : 1)
 
-                if let octave = engine.currentPitch?.octave {
-                    Text("\(octave)")
-                        .font(.akorio(15, .semibold))
-                        .foregroundColor(.akorioNeutral400)
-                        .padding(.top, 6)
+            VStack(spacing: 2) {
+                HStack(alignment: .top, spacing: 2) {
+                    Text(engine.currentPitch?.noteName ?? "–")
+                        .font(.akorio(40, .bold))
+                        .foregroundColor(.akorioText)
+                        .contentTransition(.numericText())
+
+                    if let octave = engine.currentPitch?.octave {
+                        Text("\(octave)")
+                            .font(.akorio(15, .semibold))
+                            .foregroundColor(.akorioNeutral400)
+                            .padding(.top, 6)
+                    }
                 }
-            }
-            .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
+                .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
 
-            Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
-                .font(.akorio(12))
-                .foregroundColor(.akorioNeutral500)
+                Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
+                    .font(.akorio(12))
+                    .foregroundColor(.akorioNeutral500)
+            }
         }
+        .animation(.easeOut(duration: 0.25), value: isInTune)
     }
 
     // MARK: - Start failed

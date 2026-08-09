@@ -31,6 +31,13 @@ struct TunerGaugeView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
+            Circle()
+                .fill(statusColor.opacity(isInTune ? 0.3 : 0.1))
+                .frame(width: radius * 1.5, height: radius * 1.5)
+                .blur(radius: 46)
+                .opacity(pitch == nil ? 0 : 1)
+                .position(x: pivot.x, y: pivot.y - radius * 0.35)
+
             Canvas { context, _ in
                 drawTrack(in: &context)
                 drawTicks(in: &context)
@@ -44,6 +51,7 @@ struct TunerGaugeView: View {
         }
         .frame(width: canvasSize.width, height: canvasSize.height)
         .animation(.spring(response: 0.25, dampingFraction: 0.75), value: clampedCents)
+        .animation(.easeOut(duration: 0.25), value: isInTune)
     }
 
     private func point(atAngleDegrees angle: Double, radius r: CGFloat) -> CGPoint {

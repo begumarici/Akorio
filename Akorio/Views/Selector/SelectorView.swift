@@ -64,7 +64,11 @@ struct SelectorView: View {
     // MARK: - Greeting
     private var greetingSection: some View {
         ZStack(alignment: .leading) {
-            AkorioLiquidGradient()
+            LinearGradient(
+                colors: [Color(hex: 0x3d3577), Color(hex: 0x272346)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
 
             Image("Guitar")
                 .resizable()
