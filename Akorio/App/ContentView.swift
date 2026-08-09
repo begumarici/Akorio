@@ -42,14 +42,14 @@ struct ContentView: View {
     private var homeTab: some View {
         NavigationStack(path: $viewModel.path) {
             ZStack {
-                Color.akorioBg.ignoresSafeArea()
+                AkorioBackground()
                 SelectorView(viewModel: viewModel)
             }
             .toolbar(.hidden, for: .navigationBar)
             .enableSwipeBack()
             .navigationDestination(for: AppScreen.self) { screen in
                 ZStack {
-                    Color.akorioBg.ignoresSafeArea()
+                    AkorioBackground()
                     switch screen {
                     case .saved:
                         SavedSetsView(viewModel: viewModel)
@@ -69,7 +69,7 @@ struct ContentView: View {
     private var tunerTab: some View {
         NavigationStack {
             ZStack {
-                Color.akorioBg.ignoresSafeArea()
+                AkorioBackground()
                 TunerView()
             }
             .toolbar(.hidden, for: .navigationBar)

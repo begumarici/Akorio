@@ -63,7 +63,7 @@ struct SavedSetsView: View {
             .buttonStyle(AkorioIconButtonStyle())
 
             Text("Kayıtlı Setler")
-                .font(.system(size: 20, weight: .semibold))
+                .font(.akorioSerif(24, .semibold))
                 .foregroundColor(.akorioText)
         }
     }
@@ -72,10 +72,10 @@ struct SavedSetsView: View {
     private var emptyState: some View {
         VStack(spacing: 10) {
             Image(systemName: "music.note.list")
-                .font(.system(size: 34))
+                .font(.akorio(34))
                 .foregroundColor(.akorioNeutral600)
             Text("Pratik ekranında akor seçip kaydettiğinde yeni setler burada listelenir.")
-                .font(.system(size: 13))
+                .font(.akorio(13))
                 .foregroundColor(.akorioNeutral500)
                 .multilineTextAlignment(.center)
         }
@@ -88,16 +88,16 @@ struct SavedSetsView: View {
         HStack(spacing: 10) {
             if editingSet === savedSet {
                 TextField("Set adı", text: $editingName)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.akorio(15, .medium))
                     .foregroundColor(.akorioText)
                     .textFieldStyle(.plain)
             } else {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(savedSet.name)
-                        .font(.system(size: 16, weight: .medium))
+                        .font(.akorio(16, .medium))
                         .foregroundColor(.akorioText)
                     Text(savedSet.subtitle)
-                        .font(.system(size: 13))
+                        .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
                 }
             }
@@ -149,7 +149,7 @@ struct SavedSetsView: View {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         SavedSetsView(viewModel: AppViewModel())
     }
     .modelContainer(for: [SavedChordSet.self, AppSettings.self], inMemory: true)

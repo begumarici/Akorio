@@ -10,6 +10,10 @@ import SwiftData
 
 @main
 struct AkorioApp: App {
+    init() {
+        AkorioFont.registerAll()
+    }
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             SavedChordSet.self,

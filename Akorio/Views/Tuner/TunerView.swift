@@ -52,10 +52,10 @@ struct TunerView: View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 1) {
                 Text("Akort Aleti")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.akorioSerif(24, .semibold))
                     .foregroundColor(.akorioText)
                 Text("Standart Akort · 440Hz")
-                    .font(.system(size: 12))
+                    .font(.akorio(12))
                     .foregroundColor(.akorioNeutral500)
             }
 
@@ -65,7 +65,7 @@ struct TunerView: View {
                 engine.lockedStrings.removeAll()
             } label: {
                 Image(systemName: "arrow.counterclockwise")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.akorio(16, .semibold))
                     .foregroundColor(.akorioNeutral400)
                     .frame(width: 36, height: 36)
                     .background(Circle().fill(Color.akorioSurface))
@@ -100,13 +100,13 @@ struct TunerView: View {
         VStack(spacing: 2) {
             HStack(alignment: .top, spacing: 2) {
                 Text(engine.currentPitch?.noteName ?? "–")
-                    .font(.system(size: 40, weight: .bold))
+                    .font(.akorio(40, .bold))
                     .foregroundColor(.akorioText)
                     .contentTransition(.numericText())
 
                 if let octave = engine.currentPitch?.octave {
                     Text("\(octave)")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.akorio(15, .semibold))
                         .foregroundColor(.akorioNeutral400)
                         .padding(.top, 6)
                 }
@@ -114,7 +114,7 @@ struct TunerView: View {
             .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
 
             Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
-                .font(.system(size: 12))
+                .font(.akorio(12))
                 .foregroundColor(.akorioNeutral500)
         }
     }
@@ -123,10 +123,10 @@ struct TunerView: View {
     private var startFailedContent: some View {
         VStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 32))
+                .font(.akorio(32))
                 .foregroundColor(.akorioNeutral500)
             Text("Mikrofon başlatılamadı.")
-                .font(.system(size: 14))
+                .font(.akorio(14))
                 .foregroundColor(.akorioNeutral400)
                 .multilineTextAlignment(.center)
             Button("Tekrar Dene") { engine.start() }
@@ -139,10 +139,10 @@ struct TunerView: View {
     private var permissionDeniedContent: some View {
         VStack(spacing: 12) {
             Image(systemName: "mic.slash")
-                .font(.system(size: 32))
+                .font(.akorio(32))
                 .foregroundColor(.akorioNeutral500)
             Text("Akort aleti mikrofon erişimi gerektiriyor.")
-                .font(.system(size: 14))
+                .font(.akorio(14))
                 .foregroundColor(.akorioNeutral400)
                 .multilineTextAlignment(.center)
             Button("Ayarlara Git") {
@@ -158,7 +158,7 @@ struct TunerView: View {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         TunerView()
     }
 }

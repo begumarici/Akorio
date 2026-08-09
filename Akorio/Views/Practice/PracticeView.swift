@@ -34,7 +34,7 @@ struct PracticeView: View {
             }
             .tint(.akorioNeutral500)
             .foregroundColor(.akorioNeutral500)
-            .font(.system(size: 13, weight: .medium))
+            .font(.akorio(13, .medium))
             .padding(.horizontal, 20)
 
             playButton
@@ -61,7 +61,7 @@ struct PracticeView: View {
             .buttonStyle(AkorioIconButtonStyle())
 
             Text("Pratik")
-                .font(.system(size: 20, weight: .semibold))
+                .font(.akorioSerif(24, .semibold))
                 .foregroundColor(.akorioText)
 
             Spacer()
@@ -79,19 +79,19 @@ struct PracticeView: View {
         VStack(spacing: 18) {
             if viewModel.isCountingIn {
                 Text("BAŞLIYOR")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.akorio(13, .medium))
                     .tracking(1)
                     .foregroundColor(.akorioAccent300)
                 Text("\(viewModel.countInBeatsLeft)")
-                    .font(.system(size: 104, weight: .medium))
+                    .font(.akorio(104, .medium))
                     .foregroundColor(.akorioNeutral300)
                 Text(String(format: String(localized: "Sıradaki: %@"), viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel))
-                    .font(.system(size: 14))
+                    .font(.akorio(14))
                     .foregroundColor(.akorioNeutral500)
             } else if viewModel.isPlaying {
                 if viewModel.showChordDiagram {
                     Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
-                        .font(.system(size: 32, weight: .bold))
+                        .font(.akorio(32, .bold))
                         .foregroundColor(.akorioText)
 
                     if !viewModel.currentChordLabel.isEmpty {
@@ -105,20 +105,33 @@ struct PracticeView: View {
                 } else {
                     ZStack {
                         Circle()
-                            .fill(Color.akorioAccent900)
-                            .frame(width: 180, height: 180)
+                            .fill(Color.akorioAccent500.opacity(0.35))
+                            .frame(width: 200, height: 200)
+                            .blur(radius: 50)
+
+                        ZStack {
+                            Color.akorioAccent900
+                            Circle()
+                                .fill(Color.akorioAccent600.opacity(0.5))
+                                .frame(width: 110, height: 110)
+                                .blur(radius: 40)
+                                .offset(x: -30, y: -35)
+                        }
+                        .frame(width: 190, height: 190)
+                        .clipShape(Circle())
+
                         Circle()
-                            .stroke(Color.akorioAccent700, lineWidth: 1)
-                            .frame(width: 180, height: 180)
+                            .stroke(Color.akorioStroke, lineWidth: 1)
+                            .frame(width: 190, height: 190)
+
                         Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
-                            .font(.system(size: 64, weight: .semibold))
+                            .font(.akorio(64, .semibold))
                             .foregroundColor(.akorioAccent100)
                     }
-                    .shadow(color: Color.akorioAccent500.opacity(0.25), radius: 30)
                 }
 
                 Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
-                    .font(.system(size: 14))
+                    .font(.akorio(14))
                     .foregroundColor(.akorioNeutral500)
 
                 HStack(spacing: 8) {
@@ -130,11 +143,11 @@ struct PracticeView: View {
                 }
             } else {
                 Text("—")
-                    .font(.system(size: 64, weight: .semibold))
+                    .font(.akorio(64, .semibold))
                     .foregroundColor(.akorioNeutral700)
 
                 Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
-                    .font(.system(size: 14))
+                    .font(.akorio(14))
                     .foregroundColor(.akorioNeutral500)
             }
         }
@@ -156,7 +169,7 @@ struct PracticeView: View {
                 Spacer()
                 AkorioToggle(isOn: viewModel.showChordDiagram) { viewModel.toggleShowChordDiagram() }
             }
-            .font(.system(size: 14))
+            .font(.akorio(14))
             .padding(14)
             .background(Color.akorioSurface)
 
@@ -165,7 +178,7 @@ struct PracticeView: View {
                 Spacer()
                 AkorioToggle(isOn: viewModel.preventBackToBackRepeat) { viewModel.toggleBackToBackRepeat() }
             }
-            .font(.system(size: 14))
+            .font(.akorio(14))
             .padding(14)
             .background(Color.akorioSurface)
 
@@ -174,7 +187,7 @@ struct PracticeView: View {
                 Spacer()
                 AkorioToggle(isOn: viewModel.countInEnabled) { viewModel.toggleCountIn() }
             }
-            .font(.system(size: 14))
+            .font(.akorio(14))
             .padding(14)
             .background(Color.akorioSurface)
 
@@ -183,7 +196,7 @@ struct PracticeView: View {
                 Spacer()
                 AkorioToggle(isOn: viewModel.metronomeSoundEnabled) { viewModel.toggleMetronomeSoundEnabled() }
             }
-            .font(.system(size: 14))
+            .font(.akorio(14))
             .padding(14)
             .background(Color.akorioSurface)
         }
@@ -192,8 +205,13 @@ struct PracticeView: View {
 
     // MARK: - Play button
     private var playButton: some View {
-        Button(viewModel.isPlaying ? "Durdur" : "Başlat") {
+        Button {
             viewModel.togglePlay()
+        } label: {
+            Label(
+                viewModel.isPlaying ? "Durdur" : "Başlat",
+                systemImage: viewModel.isPlaying ? "stop.fill" : "play.fill"
+            )
         }
         .buttonStyle(AkorioPrimaryButtonStyle())
     }
@@ -201,7 +219,7 @@ struct PracticeView: View {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         PracticeView(viewModel: AppViewModel())
     }
 }

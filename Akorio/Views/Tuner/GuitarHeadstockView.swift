@@ -197,9 +197,9 @@ struct GuitarHeadstockView: View {
 
             HStack(spacing: 2) {
                 Text(string.noteName)
-                    .font(.system(size: 23, weight: .bold))
+                    .font(.akorio(23, .bold))
                 Text("\(string.octave)")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.akorio(13, .medium))
                     .opacity(0.7)
             }
             .foregroundColor(isActive ? .white : .akorioNeutral300)
@@ -273,7 +273,7 @@ private struct HeadstockShape: Shape {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         GuitarHeadstockView(activeString: .a2, statusColor: .akorioAccent400)
     }
 }

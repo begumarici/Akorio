@@ -16,7 +16,7 @@ struct SplashView: View {
                 .frame(width: 240, height: 240)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.akorioBg.ignoresSafeArea())
+        .background(AkorioBackground())
     }
 }
 

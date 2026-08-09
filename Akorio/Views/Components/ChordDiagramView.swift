@@ -33,7 +33,7 @@ struct ChordDiagramView: View {
         HStack(alignment: .top, spacing: 4) {
             if shape.baseFret > 1 {
                 Text("\(shape.baseFret)")
-                    .font(.system(size: 10 * scale, weight: .semibold))
+                    .font(.akorio(10 * scale, .semibold))
                     .foregroundColor(.black.opacity(0.6))
                     .padding(.top, markerRowHeight + 6 * scale)
             }
@@ -53,7 +53,7 @@ struct ChordDiagramView: View {
         ZStack(alignment: .topLeading) {
             ForEach(0..<stringCount, id: \.self) { index in
                 Text(marker(for: index))
-                    .font(.system(size: 9 * scale, weight: .semibold))
+                    .font(.akorio(9 * scale, .semibold))
                     .foregroundColor(.black.opacity(0.55))
                     .position(x: stringX(index, in: gridSize.width), y: markerRowHeight / 2)
             }

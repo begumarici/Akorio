@@ -85,7 +85,7 @@ struct TunerGaugeView: View {
     private func edgeLabel(_ text: String?, atAngle angle: Double) -> some View {
         let position = point(atAngleDegrees: angle, radius: radius + 24)
         return Text(text ?? "–")
-            .font(.system(size: 14, weight: .medium))
+            .font(.akorio(14, .medium))
             .foregroundColor(.akorioNeutral500)
             .position(position)
     }
@@ -109,7 +109,7 @@ struct TunerGaugeView: View {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         TunerGaugeView(pitch: NotePitch(frequency: 87.0), isInTune: false, statusColor: .akorioAccent400)
             .padding(.top, 40)
     }
