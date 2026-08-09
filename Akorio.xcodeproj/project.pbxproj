@@ -86,7 +86,7 @@
 				};
 			};
 			buildConfigurationList = 5481E9E9301612EE004FE1A3 /* Build configuration list for PBXProject "Akorio" */;
-			developmentRegion = en;
+			developmentRegion = tr;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -257,6 +257,7 @@
 				DEVELOPMENT_TEAM = Y633T42J9Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleLocalizations = "en tr";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Akort aletini kullanmak için gitarının sesini dinlemesi gerekiyor.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -291,6 +292,7 @@
 				DEVELOPMENT_TEAM = Y633T42J9Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleLocalizations = "en tr";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Akort aletini kullanmak için gitarının sesini dinlemesi gerekiyor.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

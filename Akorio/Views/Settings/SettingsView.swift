@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct SettingsView: View {
     let viewModel: AppViewModel
@@ -136,6 +137,22 @@ struct SettingsView: View {
                 .padding(14)
                 .background(Color.akorioSurface)
 
+                Button {
+                    guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(url)
+                } label: {
+                    HStack {
+                        Text("Dil").foregroundColor(.akorioText)
+                        Spacer()
+                        Text(currentLanguageDisplayName).foregroundColor(.akorioNeutral500)
+                        Text("›").foregroundColor(.akorioNeutral500)
+                    }
+                    .font(.system(size: 14))
+                    .padding(14)
+                    .background(Color.akorioSurface)
+                }
+                .buttonStyle(.plain)
+
                 Link(destination: URL(string: "mailto:aricibegum@gmail.com?subject=Akorio%20Geri%20Bildirim")!) {
                     HStack {
                         Text("Geri bildirim gönder / Değerlendir")
@@ -159,6 +176,11 @@ struct SettingsView: View {
             }
             .cornerRadius(AkorioRadius.md)
         }
+    }
+
+    private var currentLanguageDisplayName: String {
+        guard let code = Locale.current.language.languageCode?.identifier else { return "" }
+        return Locale.current.localizedString(forLanguageCode: code)?.capitalized ?? ""
     }
 }
 
