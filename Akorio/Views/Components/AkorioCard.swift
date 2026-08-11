@@ -29,6 +29,15 @@ extension View {
     func akorioCard() -> some View {
         modifier(AkorioCardBackground())
     }
+
+    /// Caps a screen's content column at a comfortable reading width and
+    /// centers it — on iPhone this is a no-op (screens are narrower than
+    /// the cap), on iPad it stops cards and rows from stretching edge to
+    /// edge across the full screen.
+    func akorioContentWidth() -> some View {
+        frame(maxWidth: 760)
+            .frame(maxWidth: .infinity)
+    }
 }
 
 #Preview {

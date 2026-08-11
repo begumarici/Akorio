@@ -33,6 +33,7 @@ struct SavedSetsView: View {
                 }
             }
             .padding(20)
+            .akorioContentWidth()
         }
         .confirmationDialog(
             String(format: String(localized: "\"%@\" silinsin mi?"), pendingDelete?.name ?? ""),

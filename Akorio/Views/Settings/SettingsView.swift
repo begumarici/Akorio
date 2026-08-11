@@ -21,6 +21,7 @@ struct SettingsView: View {
                 aboutSection
             }
             .padding(20)
+            .akorioContentWidth()
         }
     }
 

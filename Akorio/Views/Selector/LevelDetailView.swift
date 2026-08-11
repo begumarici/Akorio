@@ -32,7 +32,7 @@ struct LevelDetailView: View {
                         .foregroundColor(.akorioNeutral500)
                 }
 
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 105, maximum: 180), spacing: 10)], spacing: 10) {
                     ForEach(level.chordLabels, id: \.self) { label in
                         ChordCard(
                             label: label,
@@ -44,6 +44,7 @@ struct LevelDetailView: View {
                 }
             }
             .padding(20)
+            .akorioContentWidth()
         }
         .safeAreaInset(edge: .bottom) {
             if !viewModel.chords.isEmpty {
@@ -51,6 +52,7 @@ struct LevelDetailView: View {
                     .buttonStyle(AkorioPrimaryButtonStyle())
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
+                    .akorioContentWidth()
                     .background(.ultraThinMaterial)
             }
         }

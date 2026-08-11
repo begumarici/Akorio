@@ -25,6 +25,7 @@ struct SelectorView: View {
                 levelSection
             }
             .padding(20)
+            .akorioContentWidth()
         }
     }
 

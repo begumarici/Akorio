@@ -22,8 +22,11 @@ struct PracticeView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
 
-            chordDisplay
-                .frame(maxHeight: .infinity)
+            GeometryReader { geo in
+                let scale = min(1.6, max(0.35, geo.size.height / 290))
+                chordDisplay(scale: scale)
+                    .frame(width: geo.size.width, height: geo.size.height)
+            }
 
             DisclosureGroup("Ayarlar", isExpanded: $isSettingsExpanded) {
                 VStack(spacing: 10) {
@@ -40,6 +43,7 @@ struct PracticeView: View {
             playButton
                 .padding(20)
         }
+        .akorioContentWidth()
         .alert("Akor Setini Kaydet", isPresented: $viewModel.saveDialogOpen) {
             TextField("Set adı", text: $viewModel.saveNameInput)
             Button("Kaydet") { viewModel.confirmSave() }
@@ -76,15 +80,15 @@ struct PracticeView: View {
 
     // MARK: - Chord display
     @ViewBuilder
-    private var chordDisplay: some View {
-        VStack(spacing: 18) {
+    private func chordDisplay(scale: CGFloat) -> some View {
+        VStack(spacing: 18 * scale) {
             if viewModel.isCountingIn {
                 Text("BAŞLIYOR")
                     .font(.akorio(13, .medium))
                     .tracking(1)
                     .foregroundColor(.akorioAccent300)
                 Text("\(viewModel.countInBeatsLeft)")
-                    .font(.akorio(104, .medium))
+                    .font(.akorio(104 * scale, .medium))
                     .foregroundColor(.akorioNeutral300)
                 Text(String(format: String(localized: "Sıradaki: %@"), viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel))
                     .font(.akorio(14))
@@ -92,12 +96,12 @@ struct PracticeView: View {
             } else if viewModel.isPlaying {
                 if viewModel.showChordDiagram {
                     Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
-                        .font(.akorio(32, .bold))
+                        .font(.akorio(32 * scale, .bold))
                         .foregroundColor(.akorioText)
 
                     if !viewModel.currentChordLabel.isEmpty {
-                        ChordDiagramView(shape: ChordShapeLibrary.shape(for: viewModel.currentChordLabel), scale: 1.4)
-                            .padding(10)
+                        ChordDiagramView(shape: ChordShapeLibrary.shape(for: viewModel.currentChordLabel), scale: 1.4 * scale)
+                            .padding(10 * scale)
                             .background(
                                 RoundedRectangle(cornerRadius: AkorioRadius.md)
                                     .fill(Color.white)
@@ -107,26 +111,26 @@ struct PracticeView: View {
                     ZStack {
                         Circle()
                             .fill(Color.akorioAccent500.opacity(0.35))
-                            .frame(width: 200, height: 200)
+                            .frame(width: 200 * scale, height: 200 * scale)
                             .blur(radius: 50)
 
                         ZStack {
                             Color.akorioAccent900
                             Circle()
                                 .fill(Color.akorioAccent600.opacity(0.5))
-                                .frame(width: 110, height: 110)
+                                .frame(width: 110 * scale, height: 110 * scale)
                                 .blur(radius: 40)
-                                .offset(x: -30, y: -35)
+                                .offset(x: -30 * scale, y: -35 * scale)
                         }
-                        .frame(width: 190, height: 190)
+                        .frame(width: 190 * scale, height: 190 * scale)
                         .clipShape(Circle())
 
                         Circle()
                             .stroke(Color.akorioStroke, lineWidth: 1)
-                            .frame(width: 190, height: 190)
+                            .frame(width: 190 * scale, height: 190 * scale)
 
                         Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
-                            .font(.akorio(64, .semibold))
+                            .font(.akorio(64 * scale, .semibold))
                             .foregroundColor(.akorioAccent100)
                     }
                 }
@@ -144,7 +148,7 @@ struct PracticeView: View {
                 }
             } else {
                 Text("—")
-                    .font(.akorio(64, .semibold))
+                    .font(.akorio(64 * scale, .semibold))
                     .foregroundColor(.akorioNeutral700)
 
                 Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
