@@ -38,7 +38,12 @@ struct TunerView: View {
                     startFailedContent
                     Spacer()
                 } else {
-                    tunerContent
+                    GeometryReader { geo in
+                        let rawScale = min(geo.size.width / contentNaturalSize.width, geo.size.height / contentNaturalSize.height)
+                        let scale = min(1, max(0.3, rawScale))
+                        tunerContent(scale: scale)
+                            .frame(width: geo.size.width, alignment: .top)
+                    }
                 }
             }
             .padding(.horizontal, 20)
@@ -164,55 +169,59 @@ struct TunerView: View {
             .disabled(engine.lockedStrings.isEmpty)
             .opacity(engine.lockedStrings.isEmpty ? 0.4 : 1)
         }
-        .padding(.top, 60)
+        .padding(.top, 20)
     }
 
     // MARK: - Main content
-    private var tunerContent: some View {
+    private let contentNaturalSize = CGSize(width: 350, height: 702)
+
+    private func tunerContent(scale: CGFloat) -> some View {
         VStack(spacing: 0) {
-            TunerGaugeView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor)
-                .padding(.top, 48)
+            TunerGaugeView(pitch: engine.currentPitch, isInTune: isInTune, statusColor: statusColor, scale: scale)
+                .padding(.top, 40 * scale)
 
-            noteReadout
-                .padding(.top, 20)
+            noteReadout(scale: scale)
+                .padding(.top, 16 * scale)
 
-            Spacer(minLength: 24)
+            Spacer(minLength: 20 * scale)
 
             GuitarHeadstockView(
                 activeString: engine.currentPitch?.closestGuitarString,
                 statusColor: statusColor,
-                lockedStrings: engine.lockedStrings
+                lockedStrings: engine.lockedStrings,
+                scale: scale
             )
         }
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: - Note readout
-    private var noteReadout: some View {
+    private func noteReadout(scale: CGFloat) -> some View {
         ZStack {
             Circle()
                 .fill(statusColor.opacity(isInTune ? 0.4 : 0.15))
-                .frame(width: 120, height: 120)
+                .frame(width: 120 * scale, height: 120 * scale)
                 .blur(radius: 36)
                 .opacity(engine.currentPitch == nil ? 0 : 1)
 
             VStack(spacing: 2) {
                 HStack(alignment: .top, spacing: 2) {
                     Text(engine.currentPitch?.noteName ?? "–")
-                        .font(.akorio(40, .bold))
+                        .font(.akorio(40 * scale, .bold))
                         .foregroundColor(.akorioText)
                         .contentTransition(.numericText())
 
                     if let octave = engine.currentPitch?.octave {
                         Text("\(octave)")
-                            .font(.akorio(15, .semibold))
+                            .font(.akorio(15 * scale, .semibold))
                             .foregroundColor(.akorioNeutral400)
-                            .padding(.top, 6)
+                            .padding(.top, 6 * scale)
                     }
                 }
                 .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
 
                 Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
-                    .font(.akorio(12))
+                    .font(.akorio(12 * scale))
                     .foregroundColor(.akorioNeutral500)
             }
         }

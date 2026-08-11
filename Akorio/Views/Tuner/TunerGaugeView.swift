@@ -15,10 +15,11 @@ struct TunerGaugeView: View {
     let pitch: NotePitch?
     let isInTune: Bool
     let statusColor: Color
+    var scale: CGFloat = 1
 
-    private let radius: CGFloat = 120
+    private var radius: CGFloat { 120 * scale }
     private let strokeWidth: CGFloat = 6
-    private var canvasSize: CGSize { CGSize(width: radius * 2 + 80, height: radius + 8) }
+    private var canvasSize: CGSize { CGSize(width: radius * 2 + 80 * scale, height: radius + 8 * scale) }
     /// Sits exactly at the frame's bottom-center — lets the needle pivot via
     /// plain `ZStack(alignment: .bottom)` + `rotationEffect(anchor: .bottom)`
     /// instead of juggling manual offsets to fake a rotation origin.
@@ -102,7 +103,7 @@ struct TunerGaugeView: View {
         ZStack(alignment: .bottom) {
             Capsule()
                 .fill(LinearGradient(colors: [statusColor.opacity(0.25), statusColor], startPoint: .bottom, endPoint: .top))
-                .frame(width: 5, height: radius - 34)
+                .frame(width: 5, height: max(0, radius - 34))
                 .shadow(color: isInTune ? statusColor.opacity(0.8) : .clear, radius: 8)
                 .opacity(pitch == nil ? 0.25 : 1)
                 .rotationEffect(.degrees(needleAngle + 90), anchor: .bottom)
