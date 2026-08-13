@@ -31,13 +31,13 @@ struct AkorioToggle: View {
         }
         .buttonStyle(.plain)
         .frame(width: width, height: height)
-        .animation(.easeInOut(duration: 0.15), value: isOn)
+        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: isOn)
     }
 }
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         VStack(spacing: 20) {
             AkorioToggle(isOn: true) {}
             AkorioToggle(isOn: false) {}

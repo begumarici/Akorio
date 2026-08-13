@@ -22,14 +22,17 @@ struct LevelDetailView: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(level.subtitle + ".")
-                        .font(.system(size: 13))
+                        .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
                     Text("Pratiğe başlamak için akorlarını seç.")
-                        .font(.system(size: 13))
+                        .font(.akorio(13))
+                        .foregroundColor(.akorioNeutral500)
+                    Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
+                        .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
                 }
 
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 105, maximum: 180), spacing: 10)], spacing: 10) {
                     ForEach(level.chordLabels, id: \.self) { label in
                         ChordCard(
                             label: label,
@@ -39,13 +42,9 @@ struct LevelDetailView: View {
                         }
                     }
                 }
-
-                Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
-                    .font(.system(size: 13))
-                    .foregroundColor(.akorioNeutral500)
-                    .frame(maxWidth: .infinity)
             }
             .padding(20)
+            .akorioContentWidth()
         }
         .safeAreaInset(edge: .bottom) {
             if !viewModel.chords.isEmpty {
@@ -53,6 +52,7 @@ struct LevelDetailView: View {
                     .buttonStyle(AkorioPrimaryButtonStyle())
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
+                    .akorioContentWidth()
                     .background(.ultraThinMaterial)
             }
         }
@@ -69,7 +69,7 @@ struct LevelDetailView: View {
             .buttonStyle(AkorioIconButtonStyle())
 
             Text(level.title)
-                .font(.system(size: 20, weight: .semibold))
+                .font(.akorioSerif(24, .semibold))
                 .foregroundColor(.akorioText)
         }
     }
@@ -85,7 +85,7 @@ private struct ChordCard: View {
         Button(action: action) {
             VStack(spacing: 10) {
                 Text(label)
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.akorio(18, .bold))
                     .foregroundColor(.black)
                 ChordDiagramView(shape: ChordShapeLibrary.shape(for: label))
             }
@@ -94,27 +94,33 @@ private struct ChordCard: View {
             .background(
                 RoundedRectangle(cornerRadius: AkorioRadius.md)
                     .fill(Color.white)
+                    .shadow(color: isSelected ? Color.akorioAccent500.opacity(0.35) : .black.opacity(0.2), radius: 10, y: 5)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: AkorioRadius.md)
+                    .stroke(isSelected ? Color.akorioAccent500 : .clear, lineWidth: 2)
             )
             .overlay(alignment: .topTrailing) {
                 if isSelected {
                     ZStack {
-                        Circle().fill(Color.green)
+                        Circle().fill(Color.akorioAccent500)
                         Image(systemName: "checkmark")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.akorio(10, .bold))
                             .foregroundColor(.white)
                     }
-                    .frame(width: 20, height: 20)
-                    .offset(x: 6, y: -6)
+                    .frame(width: 22, height: 22)
+                    .offset(x: 7, y: -7)
                 }
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(AkorioPressableCardStyle())
+        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: isSelected)
     }
 }
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         LevelDetailView(viewModel: AppViewModel(), level: .beginner)
     }
 }

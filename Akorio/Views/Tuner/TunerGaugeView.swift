@@ -15,10 +15,11 @@ struct TunerGaugeView: View {
     let pitch: NotePitch?
     let isInTune: Bool
     let statusColor: Color
+    var scale: CGFloat = 1
 
-    private let radius: CGFloat = 120
+    private var radius: CGFloat { 120 * scale }
     private let strokeWidth: CGFloat = 6
-    private var canvasSize: CGSize { CGSize(width: radius * 2 + 80, height: radius + 8) }
+    private var canvasSize: CGSize { CGSize(width: radius * 2 + 80 * scale, height: radius + 8 * scale) }
     /// Sits exactly at the frame's bottom-center — lets the needle pivot via
     /// plain `ZStack(alignment: .bottom)` + `rotationEffect(anchor: .bottom)`
     /// instead of juggling manual offsets to fake a rotation origin.
@@ -31,6 +32,13 @@ struct TunerGaugeView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
+            Circle()
+                .fill(statusColor.opacity(isInTune ? 0.3 : 0.1))
+                .frame(width: radius * 1.5, height: radius * 1.5)
+                .blur(radius: 46)
+                .opacity(pitch == nil ? 0 : 1)
+                .position(x: pivot.x, y: pivot.y - radius * 0.35)
+
             Canvas { context, _ in
                 drawTrack(in: &context)
                 drawTicks(in: &context)
@@ -44,6 +52,7 @@ struct TunerGaugeView: View {
         }
         .frame(width: canvasSize.width, height: canvasSize.height)
         .animation(.spring(response: 0.25, dampingFraction: 0.75), value: clampedCents)
+        .animation(.easeOut(duration: 0.25), value: isInTune)
     }
 
     private func point(atAngleDegrees angle: Double, radius r: CGFloat) -> CGPoint {
@@ -85,7 +94,7 @@ struct TunerGaugeView: View {
     private func edgeLabel(_ text: String?, atAngle angle: Double) -> some View {
         let position = point(atAngleDegrees: angle, radius: radius + 24)
         return Text(text ?? "–")
-            .font(.system(size: 14, weight: .medium))
+            .font(.akorio(14, .medium))
             .foregroundColor(.akorioNeutral500)
             .position(position)
     }
@@ -94,7 +103,7 @@ struct TunerGaugeView: View {
         ZStack(alignment: .bottom) {
             Capsule()
                 .fill(LinearGradient(colors: [statusColor.opacity(0.25), statusColor], startPoint: .bottom, endPoint: .top))
-                .frame(width: 5, height: radius - 34)
+                .frame(width: 5, height: max(0, radius - 34))
                 .shadow(color: isInTune ? statusColor.opacity(0.8) : .clear, radius: 8)
                 .opacity(pitch == nil ? 0.25 : 1)
                 .rotationEffect(.degrees(needleAngle + 90), anchor: .bottom)
@@ -109,7 +118,7 @@ struct TunerGaugeView: View {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         TunerGaugeView(pitch: NotePitch(frequency: 87.0), isInTune: false, statusColor: .akorioAccent400)
             .padding(.top, 40)
     }

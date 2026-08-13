@@ -18,6 +18,16 @@ final class AppSettings {
     // this attribute is added to the schema (see SavedChordSet for why).
     var showChordDiagram: Bool = false
 
+    // The most recently entered practice session — lets the home screen
+    // offer a one-tap "continue" without the user having to re-pick chords.
+    // All defaulted for the same lightweight-migration reason as above.
+    var lastPracticeChordLabels: [String] = []
+    var lastPracticeBpm: Int = 80
+    var lastPracticeBeatsPerChord: Int = 4
+    var lastPracticePreventBackToBackRepeat: Bool = true
+    var lastPracticeCountInEnabled: Bool = true
+    var lastPracticeMetronomeSoundEnabled: Bool = true
+
     init(
         metronomeSound: MetronomeSound = .click,
         hapticEnabled: Bool = false,

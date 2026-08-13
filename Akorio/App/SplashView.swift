@@ -9,14 +9,16 @@ import SwiftUI
 
 struct SplashView: View {
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: -30) {
             Image("LaunchIcon")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 240, height: 240)
+            Text("Akorio")
+                .font(.akorioSerif(36, .semibold))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.akorioBg.ignoresSafeArea())
+        .background(AkorioBackground())
     }
 }
 

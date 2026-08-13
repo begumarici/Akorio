@@ -19,9 +19,13 @@ struct SelectorView: View {
             VStack(alignment: .leading, spacing: 20) {
                 header
                 greetingSection
+                if viewModel.hasLastPracticeSession {
+                    continueSection
+                }
                 levelSection
             }
             .padding(20)
+            .akorioContentWidth()
         }
     }
 
@@ -29,7 +33,7 @@ struct SelectorView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Text("Akorio")
-                .font(.system(size: 32, weight: .semibold))
+                .font(.akorioSerif(36, .semibold))
                 .foregroundColor(.akorioText)
 
             Spacer()
@@ -43,7 +47,7 @@ struct SelectorView: View {
             .overlay(alignment: .topTrailing) {
                 if !savedSets.isEmpty {
                     Text("\(savedSets.count)")
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(.akorio(10, .semibold))
                         .foregroundColor(.white)
                         .padding(4)
                         .background(Circle().fill(Color.akorioAccent500))
@@ -64,51 +68,93 @@ struct SelectorView: View {
     // MARK: - Greeting
     private var greetingSection: some View {
         ZStack(alignment: .leading) {
+            LinearGradient(
+                colors: [Color(hex: 0x3d3577), Color(hex: 0x272346)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
             Image("Guitar")
                 .resizable()
                 .scaledToFill()
-                .frame(height: 130)
+                .frame(height: 140)
                 .clipped()
                 .allowsHitTesting(false)
-                .opacity(0.6)
+                .opacity(0.5)
                 .mask(
                     LinearGradient(
                         stops: [
                             .init(color: .clear, location: 0),
-                            .init(color: .clear, location: 0.35),
-                            .init(color: .black, location: 0.6),
-                            .init(color: .black, location: 0.85),
-                            .init(color: .clear, location: 1),
+                            .init(color: .clear, location: 0.3),
+                            .init(color: .black, location: 0.65),
+                            .init(color: .black, location: 1),
                         ],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
                 )
-                .mask(
-                    LinearGradient(
-                        stops: [
-                            .init(color: .clear, location: 0),
-                            .init(color: .black, location: 0.2),
-                            .init(color: .black, location: 0.8),
-                            .init(color: .clear, location: 1),
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("Merhaba! 👋")
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.akorioSerif(26, .semibold))
                     .foregroundColor(.akorioText)
                 Text("Düzenli pratik yap, gelişimini gör.")
-                    .font(.system(size: 14))
-                    .foregroundColor(.akorioNeutral400)
+                    .font(.akorio(14))
+                    .foregroundColor(.akorioAccent200.opacity(0.85))
             }
+            .padding(.horizontal, 20)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: 130)
-        .clipped()
+        .frame(height: 140)
+        .clipShape(RoundedRectangle(cornerRadius: AkorioRadius.lg))
+        .overlay(
+            RoundedRectangle(cornerRadius: AkorioRadius.lg)
+                .stroke(Color.akorioStroke, lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.3), radius: 16, y: 8)
+    }
+
+    // MARK: - Continue last practice
+    private var continueSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("KALDIĞIN YERDEN DEVAM ET")
+                .sectionHeaderStyle()
+
+            Button {
+                viewModel.continueLastPractice()
+            } label: {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.akorioAccent900)
+                        Circle()
+                            .fill(Color.akorioAccent500.opacity(0.5))
+                            .frame(width: 26, height: 26)
+                            .blur(radius: 12)
+                        Image(systemName: "play.fill")
+                            .font(.akorio(16, .medium))
+                            .foregroundColor(.akorioAccent200)
+                    }
+                    .frame(width: 44, height: 44)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Son Pratik Seansı")
+                            .font(.akorio(16, .medium))
+                            .foregroundColor(.akorioText)
+                        Text(viewModel.lastPracticeSubtitle)
+                            .font(.akorio(13))
+                            .foregroundColor(.akorioNeutral500)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.akorio(14))
+                        .foregroundColor(.akorioNeutral500)
+                }
+                .akorioCard()
+            }
+            .buttonStyle(AkorioPressableCardStyle())
+        }
     }
 
     // MARK: - Level picker
@@ -137,32 +183,37 @@ private struct LevelRow: View {
         Button(action: action) {
             HStack(spacing: 14) {
                 ZStack {
-                    Circle().fill(Color.akorioAccent800)
+                    Circle()
+                        .fill(Color.akorioAccent900)
+                    Circle()
+                        .fill(Color.akorioAccent500.opacity(0.5))
+                        .frame(width: 26, height: 26)
+                        .blur(radius: 12)
                     Image(systemName: level.icon)
-                        .font(.system(size: 18, weight: .medium))
+                        .font(.akorio(18, .medium))
                         .foregroundColor(.akorioAccent200)
                 }
                 .frame(width: 44, height: 44)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(level.title)
-                        .font(.system(size: 16, weight: .medium))
+                        .font(.akorio(16, .medium))
                         .foregroundColor(.akorioText)
                     Text(level.subtitle)
-                        .font(.system(size: 13))
+                        .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
                 }
                 Spacer()
                 Text(String(format: String(localized: "%@ akor"), "\(level.chordLabels.count)"))
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.akorio(12, .medium))
                     .foregroundColor(.akorioNeutral500)
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 14))
+                    .font(.akorio(14))
                     .foregroundColor(.akorioNeutral500)
             }
             .akorioCard()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(AkorioPressableCardStyle())
     }
 }
 
@@ -170,7 +221,7 @@ private struct LevelRow: View {
 private extension Text {
     func sectionHeaderStyle() -> some View {
         self
-            .font(.system(size: 11, weight: .medium))
+            .font(.akorio(11, .medium))
             .tracking(0.6)
             .foregroundColor(.akorioNeutral500)
     }
@@ -178,7 +229,7 @@ private extension Text {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         SelectorView(viewModel: AppViewModel())
     }
     .modelContainer(for: [SavedChordSet.self, AppSettings.self], inMemory: true)

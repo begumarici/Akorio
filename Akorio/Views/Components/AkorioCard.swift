@@ -16,6 +16,11 @@ private struct AkorioCardBackground: ViewModifier {
             .background(
                 RoundedRectangle(cornerRadius: AkorioRadius.md)
                     .fill(Color.akorioSurface)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AkorioRadius.md)
+                            .stroke(Color.akorioStroke, lineWidth: 1)
+                    )
+                    .shadow(color: .black.opacity(0.25), radius: 12, y: 6)
             )
     }
 }
@@ -24,17 +29,26 @@ extension View {
     func akorioCard() -> some View {
         modifier(AkorioCardBackground())
     }
+
+    /// Caps a screen's content column at a comfortable reading width and
+    /// centers it — on iPhone this is a no-op (screens are narrower than
+    /// the cap), on iPad it stops cards and rows from stretching edge to
+    /// edge across the full screen.
+    func akorioContentWidth() -> some View {
+        frame(maxWidth: 760)
+            .frame(maxWidth: .infinity)
+    }
 }
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         VStack(alignment: .leading, spacing: 4) {
             Text("Akor Seti 1")
-                .font(.system(size: 16, weight: .medium))
+                .font(.akorio(16, .medium))
                 .foregroundColor(.akorioText)
             Text("Am, G, F, E · 80 BPM")
-                .font(.system(size: 13))
+                .font(.akorio(13))
                 .foregroundColor(.akorioNeutral500)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

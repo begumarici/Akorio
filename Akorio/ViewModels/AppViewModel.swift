@@ -65,6 +65,10 @@ final class AppViewModel {
     var showChordDiagram = false
     var soundPickerOpen = false
 
+    // MARK: - Last practice session (for the "continue" card on Home)
+    var lastPracticeChordLabels: [String] = []
+    var lastPracticeBpm = 80
+
     /// The real-time practice session (timer, count-in, click sounds).
     /// Kept as its own `@Observable` engine — see MetronomeEngine.swift.
     let metronome = MetronomeEngine()
@@ -121,6 +125,8 @@ final class AppViewModel {
         showChordDiagram = settingsRecord.showChordDiagram
         bpm = settingsRecord.defaultBpm
         beatsPerChord = settingsRecord.defaultBeatsPerChord
+        lastPracticeChordLabels = settingsRecord.lastPracticeChordLabels
+        lastPracticeBpm = settingsRecord.lastPracticeBpm
     }
 
     private func persistSettings() {
@@ -132,6 +138,18 @@ final class AppViewModel {
         settingsRecord.defaultBeatsPerChord = defaultBeatsPerChord
     }
 
+    func persistLastPracticeSession() {
+        guard let settingsRecord, !chords.isEmpty else { return }
+        settingsRecord.lastPracticeChordLabels = chords.map { $0.label }
+        settingsRecord.lastPracticeBpm = bpm
+        settingsRecord.lastPracticeBeatsPerChord = beatsPerChord
+        settingsRecord.lastPracticePreventBackToBackRepeat = preventBackToBackRepeat
+        settingsRecord.lastPracticeCountInEnabled = countInEnabled
+        settingsRecord.lastPracticeMetronomeSoundEnabled = metronomeSoundEnabled
+        lastPracticeChordLabels = chords.map { $0.label }
+        lastPracticeBpm = bpm
+    }
+
     // MARK: - Navigation
     func goToSettings() { path.append(.settings) }
     func goToSaved() { path.append(.saved) }
@@ -139,6 +157,7 @@ final class AppViewModel {
 
     func goToPractice() {
         metronome.stop()
+        persistLastPracticeSession()
         path.append(.practice)
     }
 
@@ -162,14 +181,14 @@ final class AppViewModel {
     private func clampBpm(_ value: Int) -> Int { max(40, min(240, value)) }
     private func clampBeats(_ value: Int) -> Int { max(1, min(8, value)) }
 
-    func incBpm() { bpm = clampBpm(bpm + 1) }
-    func decBpm() { bpm = clampBpm(bpm - 1) }
-    func incBeats() { beatsPerChord = clampBeats(beatsPerChord + 1) }
-    func decBeats() { beatsPerChord = clampBeats(beatsPerChord - 1) }
+    func incBpm() { bpm = clampBpm(bpm + 1); persistLastPracticeSession() }
+    func decBpm() { bpm = clampBpm(bpm - 1); persistLastPracticeSession() }
+    func incBeats() { beatsPerChord = clampBeats(beatsPerChord + 1); persistLastPracticeSession() }
+    func decBeats() { beatsPerChord = clampBeats(beatsPerChord - 1); persistLastPracticeSession() }
 
-    func toggleBackToBackRepeat() { preventBackToBackRepeat.toggle() }
-    func toggleCountIn() { countInEnabled.toggle() }
-    func toggleMetronomeSoundEnabled() { metronomeSoundEnabled.toggle() }
+    func toggleBackToBackRepeat() { preventBackToBackRepeat.toggle(); persistLastPracticeSession() }
+    func toggleCountIn() { countInEnabled.toggle(); persistLastPracticeSession() }
+    func toggleMetronomeSoundEnabled() { metronomeSoundEnabled.toggle(); persistLastPracticeSession() }
     func toggleShowChordDiagram() {
         showChordDiagram.toggle()
         persistSettings()
@@ -231,6 +250,25 @@ final class AppViewModel {
         preventBackToBackRepeat = savedSet.preventBackToBackRepeat
         countInEnabled = savedSet.countInEnabled
         metronomeSoundEnabled = savedSet.metronomeSoundEnabled
+        metronome.stop()
+        persistLastPracticeSession()
+        path = [.practice]
+    }
+
+    var hasLastPracticeSession: Bool { !lastPracticeChordLabels.isEmpty }
+
+    var lastPracticeSubtitle: String {
+        "\(lastPracticeChordLabels.joined(separator: ", ")) · \(lastPracticeBpm) BPM"
+    }
+
+    func continueLastPractice() {
+        guard let settingsRecord else { return }
+        chords = settingsRecord.lastPracticeChordLabels.map { ChordItem(label: $0) }
+        bpm = settingsRecord.lastPracticeBpm
+        beatsPerChord = settingsRecord.lastPracticeBeatsPerChord
+        preventBackToBackRepeat = settingsRecord.lastPracticePreventBackToBackRepeat
+        countInEnabled = settingsRecord.lastPracticeCountInEnabled
+        metronomeSoundEnabled = settingsRecord.lastPracticeMetronomeSoundEnabled
         metronome.stop()
         path = [.practice]
     }

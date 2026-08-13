@@ -106,6 +106,22 @@
         }
       }
     },
+    "Akor Seç": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose Chords"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akor Seç"
+          }
+        }
+      }
+    },
     "Akor diyagramı göster": {
       "localizations": {
         "en": {
@@ -320,6 +336,23 @@
         }
       }
     },
+    "Devam Et": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devam Et"
+          }
+        }
+      }
+    },
     "Dil": {
       "localizations": {
         "en": {
@@ -416,6 +449,22 @@
         }
       }
     },
+    "Gitarının akordu tamamlandı.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guitar is fully tuned."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gitarının akordu tamamlandı."
+          }
+        }
+      }
+    },
     "Gizlilik Politikası": {
       "localizations": {
         "en": {
@@ -460,6 +509,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Haptik geri bildirim"
+          }
+        }
+      }
+    },
+    "Harika! 🎉": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Great! 🎉"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harika! 🎉"
+          }
+        }
+      }
+    },
+    "KALDIĞIN YERDEN DEVAM ET": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CONTINUE WHERE YOU LEFT OFF"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KALDIĞIN YERDEN DEVAM ET"
+          }
+        }
+      }
+    },
+    "Kapat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapat"
           }
         }
       }
@@ -716,6 +813,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sil"
+          }
+        }
+      }
+    },
+    "Son Pratik Seansı": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last Practice Session"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son Pratik Seansı"
+          }
+        }
+      }
+    },
+    "Son Pratik Seansına Devam Et": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue Last Practice Session"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son Pratik Seansına Devam Et"
           }
         }
       }

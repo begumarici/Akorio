@@ -18,37 +18,43 @@ struct AkorioStatBox: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
-                .font(.system(size: 10, weight: .medium))
+                .font(.akorio(10, .medium))
                 .tracking(0.6)
                 .foregroundColor(.akorioNeutral500)
             HStack {
                 Button(action: onDecrement) {
-                    Text("−").font(.system(size: 16, weight: .medium))
+                    Text("−").font(.akorio(16, .medium))
                 }
                 .buttonStyle(AkorioIconButtonStyle(size: 28))
 
                 Spacer()
                 Text("\(value)")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.akorio(20, .semibold))
                     .foregroundColor(.akorioText)
                 Spacer()
 
                 Button(action: onIncrement) {
-                    Text("+").font(.system(size: 16, weight: .medium))
+                    Text("+").font(.akorio(16, .medium))
                 }
                 .buttonStyle(AkorioIconButtonStyle(size: 28))
             }
         }
         .frame(maxWidth: .infinity)
         .padding(12)
-        .background(Color.akorioSurface)
-        .cornerRadius(AkorioRadius.md)
+        .background(
+            RoundedRectangle(cornerRadius: AkorioRadius.md)
+                .fill(Color.akorioSurface)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AkorioRadius.md)
+                        .stroke(Color.akorioStroke, lineWidth: 1)
+                )
+        )
     }
 }
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         HStack {
             AkorioStatBox(title: "BPM", value: 80, onDecrement: {}, onIncrement: {})
             AkorioStatBox(title: "Vuruş/Akor", value: 4, onDecrement: {}, onIncrement: {})

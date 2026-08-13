@@ -21,6 +21,7 @@ struct SettingsView: View {
                 aboutSection
             }
             .padding(20)
+            .akorioContentWidth()
         }
     }
 
@@ -35,7 +36,7 @@ struct SettingsView: View {
             .buttonStyle(AkorioIconButtonStyle())
 
             Text("Ayarlar")
-                .font(.system(size: 20, weight: .semibold))
+                .font(.akorioSerif(24, .semibold))
                 .foregroundColor(.akorioText)
         }
     }
@@ -52,7 +53,7 @@ struct SettingsView: View {
                 Spacer()
                 AkorioToggle(isOn: viewModel.hapticEnabled) { viewModel.toggleHaptic() }
             }
-            .font(.system(size: 14))
+            .font(.akorio(14))
             .padding(14)
             .background(Color.akorioSurface)
             .cornerRadius(AkorioRadius.md)
@@ -70,10 +71,10 @@ struct SettingsView: View {
                 Text(viewModel.metronomeSound.label)
                     .foregroundColor(.akorioAccent300)
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 10))
+                    .font(.akorio(10))
                     .foregroundColor(.akorioNeutral500)
             }
-            .font(.system(size: 14))
+            .font(.akorio(14))
             .padding(14)
         }
         .buttonStyle(.plain)
@@ -91,7 +92,7 @@ struct SettingsView: View {
                                     .foregroundColor(sound == viewModel.metronomeSound ? .akorioAccent100 : .akorioText)
                                 Spacer()
                             }
-                            .font(.system(size: 14))
+                            .font(.akorio(14))
                             .padding(14)
                             .background(sound == viewModel.metronomeSound ? Color.akorioAccent800 : Color.akorioSurface)
                         }
@@ -117,7 +118,7 @@ struct SettingsView: View {
             }
 
             Text("Yeni bir pratik oturumu bu değerlerle başlar.")
-                .font(.system(size: 12))
+                .font(.akorio(12))
                 .foregroundColor(.akorioNeutral500)
         }
     }
@@ -133,7 +134,7 @@ struct SettingsView: View {
                     Spacer()
                     Text("1.0.0").foregroundColor(.akorioNeutral500)
                 }
-                .font(.system(size: 14))
+                .font(.akorio(14))
                 .padding(14)
                 .background(Color.akorioSurface)
 
@@ -147,7 +148,7 @@ struct SettingsView: View {
                         Text(currentLanguageDisplayName).foregroundColor(.akorioNeutral500)
                         Text("›").foregroundColor(.akorioNeutral500)
                     }
-                    .font(.system(size: 14))
+                    .font(.akorio(14))
                     .padding(14)
                     .background(Color.akorioSurface)
                 }
@@ -160,7 +161,7 @@ struct SettingsView: View {
                         Spacer()
                         Text("›").foregroundColor(.akorioNeutral500)
                     }
-                    .font(.system(size: 14))
+                    .font(.akorio(14))
                     .padding(14)
                     .background(Color.akorioSurface)
                 }
@@ -170,7 +171,7 @@ struct SettingsView: View {
                     Spacer()
                     Text("›").foregroundColor(.akorioNeutral500)
                 }
-                .font(.system(size: 14))
+                .font(.akorio(14))
                 .padding(14)
                 .background(Color.akorioSurface)
             }
@@ -187,7 +188,7 @@ struct SettingsView: View {
 private extension Text {
     func sectionHeaderStyle() -> some View {
         self
-            .font(.system(size: 11, weight: .medium))
+            .font(.akorio(11, .medium))
             .tracking(0.6)
             .foregroundColor(.akorioNeutral500)
     }
@@ -195,7 +196,7 @@ private extension Text {
 
 #Preview {
     ZStack {
-        Color.akorioBg.ignoresSafeArea()
+        AkorioBackground()
         SettingsView(viewModel: AppViewModel())
     }
 }
