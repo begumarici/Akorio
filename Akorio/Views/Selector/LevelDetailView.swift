@@ -15,6 +15,10 @@ struct LevelDetailView: View {
         viewModel.chords.filter { level.chordLabels.contains($0.label) }.count
     }
 
+    private var allSelected: Bool {
+        selectedCount == level.chordLabels.count
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -27,9 +31,25 @@ struct LevelDetailView: View {
                     Text("Pratiğe başlamak için akorlarını seç.")
                         .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
-                    Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
-                        .font(.akorio(13))
-                        .foregroundColor(.akorioNeutral500)
+
+                    HStack {
+                        Text(String(format: String(localized: "%@ / %@ akor seçildi"), "\(selectedCount)", "\(level.chordLabels.count)"))
+                            .font(.akorio(13))
+                            .foregroundColor(.akorioNeutral500)
+
+                        Spacer()
+
+                        Button {
+                            if allSelected {
+                                viewModel.deselectAllChordLabels(level.chordLabels)
+                            } else {
+                                viewModel.selectAllChordLabels(level.chordLabels)
+                            }
+                        } label: {
+                            Label(allSelected ? "Seçimi Kaldır" : "Hepsini Seç", systemImage: allSelected ? "checkmark.circle.fill" : "checkmark.circle")
+                        }
+                        .buttonStyle(AkorioSecondaryButtonStyle())
+                    }
                 }
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 105, maximum: 180), spacing: 10)], spacing: 10) {

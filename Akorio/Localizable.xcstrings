@@ -1,1103 +1,1132 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "\"%@\" silinsin mi?": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete \"%@\"?"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "—" : {
+      "shouldTranslate" : false
+    },
+    "›" : {
+      "shouldTranslate" : false
+    },
+    "\"%@\" silinsin mi?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete \"%@\"?"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "\"%@\" silinsin mi?"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\" silinsin mi?"
           }
         }
       }
     },
-    "%@ / %@ akor seçildi": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ / %@ chords selected"
+    "%@ / %@ akor seçildi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / %@ chords selected"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ / %@ akor seçildi"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / %@ akor seçildi"
           }
         }
       }
     },
-    "%@ akor": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ chords"
+    "%@ akor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ chords"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ akor"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ akor"
           }
         }
       }
     },
-    "%lld": {
-      "shouldTranslate": false
+    "%lld" : {
+      "shouldTranslate" : false
     },
-    "+": {
-      "shouldTranslate": false
+    "+" : {
+      "shouldTranslate" : false
     },
-    "1.0.0": {
-      "shouldTranslate": false
+    "−" : {
+      "shouldTranslate" : false
     },
-    "Akor Seti": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chord Set"
+    "Akor diyagramı göster" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show chord diagram"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akor Seti"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor diyagramı göster"
           }
         }
       }
     },
-    "Akor Seti %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chord Set %@"
+    "Akor Seç" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Chords"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akor Seti %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor Seç"
           }
         }
       }
     },
-    "Akor Setini Kaydet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save Chord Set"
+    "Akor Seti" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chord Set"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akor Setini Kaydet"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor Seti"
           }
         }
       }
     },
-    "Akor Seç": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose Chords"
+    "Akor Seti %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chord Set %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akor Seç"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor Seti %@"
           }
         }
       }
     },
-    "Akor diyagramı göster": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show chord diagram"
+    "Akor Setini Kaydet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Chord Set"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akor diyagramı göster"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor Setini Kaydet"
           }
         }
       }
     },
-    "Akorio": {
-      "shouldTranslate": false
+    "Akorio" : {
+      "shouldTranslate" : false
     },
-    "Akort Aleti": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tuner"
+    "Akort Aleti" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuner"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akort Aleti"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akort Aleti"
           }
         }
       }
     },
-    "Akort aleti mikrofon erişimi gerektiriyor.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The tuner needs microphone access."
+    "Akort aleti mikrofon erişimi gerektiriyor." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The tuner needs microphone access."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akort aleti mikrofon erişimi gerektiriyor."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akort aleti mikrofon erişimi gerektiriyor."
           }
         }
       }
     },
-    "Ana Sayfa": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Home"
+    "Ana Sayfa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ana Sayfa"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana Sayfa"
           }
         }
       }
     },
-    "Ayarlar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings"
+    "Ayarlar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ayarlar"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
           }
         }
       }
     },
-    "Ayarlara Git": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Go to Settings"
+    "Ayarlara Git" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Settings"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ayarlara Git"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlara Git"
           }
         }
       }
     },
-    "BAŞLIYOR": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "STARTING"
+    "Başlangıç için en temel akorlar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The most basic chords to get started"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "BAŞLIYOR"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlangıç için en temel akorlar"
           }
         }
       }
-    },
-    "BPM": {
-      "shouldTranslate": false
     },
-    "Başlangıç için en temel akorlar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The most basic chords to get started"
+    "Başlangıç sayımı" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Count-in"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Başlangıç için en temel akorlar"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlangıç sayımı"
           }
         }
       }
     },
-    "Başlangıç sayımı": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Count-in"
+    "Başlat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Başlangıç sayımı"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlat"
           }
         }
       }
     },
-    "Başlat": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start"
+    "BAŞLIYOR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "STARTING"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Başlat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BAŞLIYOR"
           }
         }
       }
     },
-    "Bilgini genişlet, yeni akorlar ekle": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Expand your knowledge, add new chords"
+    "Bilgini genişlet, yeni akorlar ekle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expand your knowledge, add new chords"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bilgini genişlet, yeni akorlar ekle"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilgini genişlet, yeni akorlar ekle"
           }
         }
       }
     },
-    "Bip": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beep"
+    "Bip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beep"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bip"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bip"
           }
         }
       }
     },
-    "Daha zorlu akorlar ve geçişler": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tougher chords and transitions"
+    "BPM" : {
+      "shouldTranslate" : false
+    },
+    "Daha zorlu akorlar ve geçişler" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tougher chords and transitions"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daha zorlu akorlar ve geçişler"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha zorlu akorlar ve geçişler"
           }
         }
       }
     },
-    "Devam Et": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue"
+    "Devam Et" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Devam Et"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devam Et"
           }
         }
       }
     },
-    "Dil": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Language"
+    "Dil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dil"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil"
           }
         }
       }
     },
-    "Durdur": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop"
+    "Durdur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Durdur"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durdur"
           }
         }
       }
     },
-    "Düzenli pratik yap, gelişimini gör.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Practice regularly, track your progress."
+    "Düzenli pratik yap, gelişimini gör." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice regularly, track your progress."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Düzenli pratik yap, gelişimini gör."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzenli pratik yap, gelişimini gör."
           }
         }
       }
     },
-    "Geri bildirim gönder / Değerlendir": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Send Feedback / Rate"
+    "Geri bildirim gönder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geri bildirim gönder / Değerlendir"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri bildirim gönder"
           }
         }
       }
     },
-    "Giriş": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beginner"
+    "Giriş" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginner"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giriş"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş"
           }
         }
       }
     },
-    "Giriş Seviyesi": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beginner Level"
+    "Giriş Seviyesi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginner Level"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giriş Seviyesi"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş Seviyesi"
           }
         }
       }
     },
-    "Gitarının akordu tamamlandı.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your guitar is fully tuned."
+    "Gitarının akordu tamamlandı." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your guitar is fully tuned."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gitarının akordu tamamlandı."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gitarının akordu tamamlandı."
           }
         }
       }
     },
-    "Gizlilik Politikası": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Privacy Policy"
+    "Gizlilik Politikası" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gizlilik Politikası"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik Politikası"
           }
         }
       }
     },
-    "HAKKINDA": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ABOUT"
+    "HAKKINDA" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ABOUT"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "HAKKINDA"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HAKKINDA"
           }
         }
       }
     },
-    "Haptik geri bildirim": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Haptic feedback"
+    "Haptik geri bildirim" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haptic feedback"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Haptik geri bildirim"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haptik geri bildirim"
           }
         }
       }
     },
-    "Harika! 🎉": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Great! 🎉"
+    "Harika! 🎉" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Great! 🎉"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Harika! 🎉"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Harika! 🎉"
           }
         }
       }
     },
-    "KALDIĞIN YERDEN DEVAM ET": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CONTINUE WHERE YOU LEFT OFF"
+    "Hepsini Seç" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select All"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "KALDIĞIN YERDEN DEVAM ET"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hepsini Seç"
           }
         }
       }
     },
-    "Kapat": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close"
+    "İleri" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kapat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İleri"
           }
         }
       }
     },
-    "Kaydet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
+    "İleri Seviye" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced Level"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaydet"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İleri Seviye"
           }
         }
       }
     },
-    "Kayıtlı Setler": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saved Sets"
+    "KALDIĞIN YERDEN DEVAM ET" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CONTINUE WHERE YOU LEFT OFF"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kayıtlı Setler"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KALDIĞIN YERDEN DEVAM ET"
           }
         }
       }
     },
-    "Klasik Klik": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Classic Click"
+    "Kapat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klasik Klik"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
           }
         }
       }
     },
-    "METRONOM": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "METRONOME"
+    "Kaydet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "METRONOM"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydet"
           }
         }
       }
     },
-    "Merhaba! 👋": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hello! 👋"
+    "Kayıtlı Setler" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved Sets"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Merhaba! 👋"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlı Setler"
           }
         }
       }
     },
-    "Metronom sesi": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Metronome sound"
+    "Klasik Klik" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classic Click"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Metronom sesi"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasik Klik"
           }
         }
       }
     },
-    "Mikrofon başlatılamadı.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Couldn't start the microphone."
+    "Merhaba! 👋" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hello! 👋"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofon başlatılamadı."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merhaba! 👋"
           }
         }
       }
     },
-    "Orta": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Intermediate"
+    "METRONOM" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "METRONOME"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orta"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "METRONOM"
           }
         }
       }
     },
-    "Orta Seviye": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Intermediate Level"
+    "Metronom sesi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metronome sound"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orta Seviye"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metronom sesi"
           }
         }
       }
     },
-    "Pratik": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Practice"
+    "Mikrofon başlatılamadı." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't start the microphone."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pratik"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon başlatılamadı."
           }
         }
       }
     },
-    "Pratik ekranında akor seçip kaydettiğinde yeni setler burada listelenir.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New sets appear here once you select chords and save them from the Practice screen."
+    "Orta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intermediate"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pratik ekranında akor seçip kaydettiğinde yeni setler burada listelenir."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orta"
           }
         }
       }
     },
-    "Pratiğe Başla": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start Practicing"
+    "Orta Seviye" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intermediate Level"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pratiğe Başla"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orta Seviye"
           }
         }
       }
     },
-    "Pratiğe başlamak için akorlarını seç.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Select your chords to start practicing."
+    "Pratiğe Başla" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Practicing"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pratiğe başlamak için akorlarını seç."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratiğe Başla"
           }
         }
       }
     },
-    "SEVİYE SEÇ": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SELECT LEVEL"
+    "Pratiğe başlamak için akorlarını seç." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select your chords to start practicing."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SEVİYE SEÇ"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratiğe başlamak için akorlarını seç."
           }
         }
       }
     },
-    "Set adı": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set name"
+    "Pratik" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set adı"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik"
           }
         }
       }
     },
-    "Sil": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete"
+    "Pratik ekranında akor seçip kaydettiğinde yeni setler burada listelenir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New sets appear here once you select chords and save them from the Practice screen."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sil"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik ekranında akor seçip kaydettiğinde yeni setler burada listelenir."
           }
         }
       }
     },
-    "Son Pratik Seansı": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last Practice Session"
+    "Seçimi Kaldır" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect All"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Son Pratik Seansı"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçimi Kaldır"
           }
         }
       }
     },
-    "Son Pratik Seansına Devam Et": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue Last Practice Session"
+    "Set adı" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set name"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Son Pratik Seansına Devam Et"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set adı"
           }
         }
       }
     },
-    "Standart Akort · 440Hz": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Standard Tuning · 440Hz"
+    "SEVİYE SEÇ" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SELECT LEVEL"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Standart Akort · 440Hz"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEVİYE SEÇ"
           }
         }
       }
     },
-    "Sıradaki: %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next: %@"
+    "Sil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sıradaki: %@"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sil"
           }
         }
       }
     },
-    "Tahta Blok": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wood Block"
+    "Sıradaki: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next: %@"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tahta Blok"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıradaki: %@"
           }
         }
       }
     },
-    "Tekrar Dene": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Try Again"
+    "Son Pratik Seansı" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Practice Session"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tekrar Dene"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son Pratik Seansı"
           }
         }
       }
     },
-    "Tüm akorlar, sınırlarını zorla": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All chords, push your limits"
+    "Son Pratik Seansına Devam Et" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue Last Practice Session"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tüm akorlar, sınırlarını zorla"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son Pratik Seansına Devam Et"
           }
         }
       }
     },
-    "VARSAYILAN PRATİK AYARLARI": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "DEFAULT PRACTICE SETTINGS"
+    "Standart Akort · 440Hz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard Tuning · 440Hz"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "VARSAYILAN PRATİK AYARLARI"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standart Akort · 440Hz"
           }
         }
       }
     },
-    "Vazgeç": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "Tahta Blok" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wood Block"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vazgeç"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tahta Blok"
           }
         }
       }
     },
-    "Versiyon": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Version"
+    "Tekrar Dene" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Versiyon"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekrar Dene"
           }
         }
       }
     },
-    "Vuruş/Akor": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beats/Chord"
+    "Tüm akorlar, sınırlarını zorla" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All chords, push your limits"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vuruş/Akor"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm akorlar, sınırlarını zorla"
           }
         }
       }
     },
-    "Yeni bir pratik oturumu bu değerlerle başlar.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A new practice session starts with these values."
+    "Üst üste gösterme" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prevent back-to-back repeats"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yeni bir pratik oturumu bu değerlerle başlar."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üst üste gösterme"
           }
         }
       }
     },
-    "Zor": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hard"
+    "VARSAYILAN PRATİK AYARLARI" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DEFAULT PRACTICE SETTINGS"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zor"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VARSAYILAN PRATİK AYARLARI"
           }
         }
       }
     },
-    "Zor Seviye": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hard Level"
+    "Vazgeç" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zor Seviye"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
           }
         }
       }
     },
-    "Üst üste gösterme": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prevent back-to-back repeats"
+    "Versiyon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Üst üste gösterme"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versiyon"
           }
         }
       }
     },
-    "İleri": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Advanced"
+    "Vuruş/Akor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beats/Chord"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İleri"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuruş/Akor"
           }
         }
       }
     },
-    "İleri Seviye": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Advanced Level"
+    "Yeni bir pratik oturumu bu değerlerle başlar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new practice session starts with these values."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İleri Seviye"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni bir pratik oturumu bu değerlerle başlar."
           }
         }
       }
-    },
-    "—": {
-      "shouldTranslate": false
     },
-    "›": {
-      "shouldTranslate": false
+    "Zor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hard"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zor"
+          }
+        }
+      }
     },
-    "−": {
-      "shouldTranslate": false
+    "Zor Seviye" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hard Level"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zor Seviye"
+          }
+        }
+      }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

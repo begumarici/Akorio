@@ -177,6 +177,16 @@ final class AppViewModel {
         }
     }
 
+    func selectAllChordLabels(_ labels: [String]) {
+        for label in labels where !chords.contains(where: { $0.label == label }) {
+            chords.append(ChordItem(label: label))
+        }
+    }
+
+    func deselectAllChordLabels(_ labels: [String]) {
+        chords.removeAll { labels.contains($0.label) }
+    }
+
     // MARK: - Practice setting adjustments
     private func clampBpm(_ value: Int) -> Int { max(40, min(240, value)) }
     private func clampBeats(_ value: Int) -> Int { max(1, min(8, value)) }

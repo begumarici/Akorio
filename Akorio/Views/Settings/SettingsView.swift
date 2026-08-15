@@ -132,7 +132,7 @@ struct SettingsView: View {
                 HStack {
                     Text("Versiyon").foregroundColor(.akorioText)
                     Spacer()
-                    Text("1.0.0").foregroundColor(.akorioNeutral500)
+                    Text(appVersionDisplayString).foregroundColor(.akorioNeutral500)
                 }
                 .font(.akorio(14))
                 .padding(14)
@@ -156,7 +156,7 @@ struct SettingsView: View {
 
                 Link(destination: URL(string: "mailto:aricibegum@gmail.com?subject=Akorio%20Geri%20Bildirim")!) {
                     HStack {
-                        Text("Geri bildirim gönder / Değerlendir")
+                        Text("Geri bildirim gönder")
                             .foregroundColor(.akorioText)
                         Spacer()
                         Text("›").foregroundColor(.akorioNeutral500)
@@ -182,6 +182,10 @@ struct SettingsView: View {
     private var currentLanguageDisplayName: String {
         guard let code = Locale.current.language.languageCode?.identifier else { return "" }
         return Locale.current.localizedString(forLanguageCode: code)?.capitalized ?? ""
+    }
+
+    private var appVersionDisplayString: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
     }
 }
 
