@@ -24,6 +24,13 @@ final class TunerEngine {
     var currentPitch: NotePitch? {
         didSet {
             guard let pitch = currentPitch, abs(pitch.cents) < 5, let string = pitch.closestGuitarString else { return }
+            // `cents` measures distance to the nearest CHROMATIC note, so an
+            // in-tune F4 reads as 0 cents while `closestGuitarString` still
+            // maps it to the nearest string (E4) — without this check, playing
+            // any in-tune note would falsely lock whatever string is closest.
+            // The note must actually BE the string's note; then `cents` and
+            // cents-from-string are the same number.
+            guard pitch.noteName == string.noteName, pitch.octave == string.octave else { return }
             // Only the first time a string crosses into tune — re-checking
             // an already-locked string on every reading would replay the
             // chime for as long as the note keeps ringing in tune.
@@ -59,9 +66,20 @@ final class TunerEngine {
 
     /// YIN is too heavy to run on the audio tap's real-time thread — do it
     /// here instead. Guarded by `isProcessing` so a slow analysis never lets
-    /// buffers queue up behind it; we always work on the freshest audio.
+    /// buffers queue up behind it (that queue would only grow, and the
+    /// display would drift further and further behind real time) — we
+    /// always work on the freshest audio instead.
     private let analysisQueue = DispatchQueue(label: "com.akorio.tuner.analysis")
     private var isProcessing = false
+
+    /// Analysis runs over a sliding window 1.5x the tap size: a bigger
+    /// window means more string periods per YIN pass, which cuts cents
+    /// jitter and sharpens low-string (E2) resolution — but every extra
+    /// sample also lengthens the O(window × maxLag) YIN pass, so this stays
+    /// well short of a full doubling to keep each pass safely faster than
+    /// the ~46ms cadence buffers arrive at. Accessed on `analysisQueue`.
+    private let analysisWindowSize = 3072
+    private var sampleWindow: [Float] = []
 
     // MARK: Note tracking
     //
@@ -96,6 +114,14 @@ final class TunerEngine {
     /// Last frame's reading that didn't match the displayed note — the
     /// candidate awaiting its confirming second frame. Main thread only.
     private var pendingFrequency: Double?
+    /// Recent same-note readings feeding the display. A median over these
+    /// discards the occasional outlier frame outright (an average would let
+    /// it drag the needle), then an EMA over the median irons out the
+    /// residual ±cents wobble. Main thread only.
+    private var recentFrequencies: [Double] = []
+    private let medianWindow = 5
+    /// EMA state — the frequency actually shown on the gauge.
+    private var smoothedFrequency: Double?
     /// Consecutive near-silent frames; a short run clears the display so a
     /// single dropout between buffers doesn't blank a ringing note.
     private var quietFrames = 0
@@ -174,6 +200,10 @@ final class TunerEngine {
         pendingFrequency = nil
         quietFrames = 0
         pitchlessFrames = 0
+        resetSmoothing()
+        analysisQueue.async { [weak self] in
+            self?.sampleWindow.removeAll()
+        }
     }
 
     private func beginListening() {
@@ -218,12 +248,22 @@ final class TunerEngine {
 
         analysisQueue.async { [weak self] in
             guard let self else { return }
+            self.sampleWindow.append(contentsOf: samples)
+            if self.sampleWindow.count > self.analysisWindowSize {
+                self.sampleWindow.removeFirst(self.sampleWindow.count - self.analysisWindowSize)
+            }
+
+            // RMS over just the fresh buffer (not the whole window) so pluck
+            // detection reacts to what's happening *now*.
             let sumOfSquares = samples.reduce(Float(0)) { $0 + $1 * $1 }
             let rms = (sumOfSquares / Float(samples.count)).squareRoot()
+
             // Skip YIN entirely below the hold floor — it's the expensive
-            // part, and a buffer that quiet is silence either way.
-            let frequency = rms >= self.holdRMS
-                ? PitchDetector.detectPitch(buffer: samples, sampleRate: sampleRate)
+            // part, and a buffer that quiet is silence either way. Also wait
+            // for the window to fill; a partial window would just produce a
+            // low-quality reading for one frame.
+            let frequency = rms >= self.holdRMS && self.sampleWindow.count >= self.analysisWindowSize
+                ? PitchDetector.detectPitch(buffer: self.sampleWindow, sampleRate: sampleRate)
                 : nil
             DispatchQueue.main.async {
                 self.ingest(frequency: frequency, rms: rms)
@@ -236,7 +276,10 @@ final class TunerEngine {
         guard rms >= holdRMS else {
             pendingFrequency = nil
             quietFrames += 1
-            if quietFrames >= 3 { currentPitch = nil }
+            if quietFrames >= 3 {
+                currentPitch = nil
+                resetSmoothing()
+            }
             return
         }
         quietFrames = 0
@@ -244,31 +287,63 @@ final class TunerEngine {
         guard let frequency else {
             pendingFrequency = nil
             pitchlessFrames += 1
-            if pitchlessFrames >= 6 { currentPitch = nil }
+            if pitchlessFrames >= 6 {
+                currentPitch = nil
+                resetSmoothing()
+            }
             return
         }
         pitchlessFrames = 0
 
         // Same note as displayed (or a slow tuning drift into a neighbor):
-        // track it instantly, even at ring-out volume.
+        // keep tracking it, even at ring-out volume, through the smoother.
         if let shown = currentPitch?.frequency, cents(between: frequency, and: shown) <= sameNoteCents {
-            currentPitch = NotePitch(frequency: frequency)
+            currentPitch = NotePitch(frequency: smoothed(frequency))
             pendingFrequency = nil
             return
         }
 
         // A different note (or the first note from a blank display): only
         // accept once two consecutive frames agree AND it arrived with
-        // pluck-level loudness.
+        // pluck-level loudness. Smoothing restarts from scratch — carrying
+        // the old note's EMA over would make the needle glide between notes.
         if let pending = pendingFrequency,
            cents(between: frequency, and: pending) <= agreementCents,
            rms >= acquireRMS {
-            currentPitch = NotePitch(frequency: frequency)
+            resetSmoothing()
+            currentPitch = NotePitch(frequency: smoothed(frequency))
             pendingFrequency = nil
             return
         }
 
         pendingFrequency = frequency
+    }
+
+    /// Median-of-recent then EMA. The EMA weight adapts to how far the
+    /// median sits from the shown value: near-stationary readings get heavy
+    /// smoothing (a still needle on a held note), while a genuine drift —
+    /// the user actually turning a peg — gets tracked with little lag.
+    private func smoothed(_ frequency: Double) -> Double {
+        recentFrequencies.append(frequency)
+        if recentFrequencies.count > medianWindow {
+            recentFrequencies.removeFirst()
+        }
+        let median = recentFrequencies.sorted()[recentFrequencies.count / 2]
+
+        guard let previous = smoothedFrequency else {
+            smoothedFrequency = median
+            return median
+        }
+        let deviation = cents(between: median, and: previous)
+        let alpha = deviation > 6 ? 0.5 : 0.2
+        let next = previous + alpha * (median - previous)
+        smoothedFrequency = next
+        return next
+    }
+
+    private func resetSmoothing() {
+        recentFrequencies.removeAll()
+        smoothedFrequency = nil
     }
 
     private func cents(between a: Double, and b: Double) -> Double {

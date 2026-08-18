@@ -24,6 +24,16 @@ struct TunerView: View {
         return isInTune ? .green : .akorioAccent400
     }
 
+    private var pitchMatchesActiveString: Bool {
+        guard let pitch = engine.currentPitch, let string = pitch.closestGuitarString else { return false }
+        return pitch.noteName == string.noteName && pitch.octave == string.octave
+    }
+
+    private var headstockStatusColor: Color {
+        guard engine.currentPitch != nil else { return .akorioNeutral700 }
+        return isInTune && pitchMatchesActiveString ? .green : .akorioAccent400
+    }
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -191,7 +201,7 @@ struct TunerView: View {
 
             GuitarHeadstockView(
                 activeString: engine.currentPitch?.closestGuitarString,
-                statusColor: statusColor,
+                statusColor: headstockStatusColor,
                 lockedStrings: engine.lockedStrings,
                 scale: scale
             )

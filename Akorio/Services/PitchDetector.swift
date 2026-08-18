@@ -75,8 +75,12 @@ enum PitchDetector {
         }
         guard bestLag > 0 else { return nil }
 
-        // Step 4: parabolic interpolation around bestLag for sub-sample precision.
-        let refinedLag = parabolicInterpolation(around: bestLag, in: normalized)
+        // Step 4: parabolic interpolation around bestLag for sub-sample
+        // precision — on the RAW difference function, per the YIN paper:
+        // the cumulative-mean normalization multiplies each lag by a
+        // different factor, which skews the parabola's vertex and biases
+        // the refined period by a few cents.
+        let refinedLag = parabolicInterpolation(around: bestLag, in: difference)
         guard refinedLag > 0 else { return nil }
 
         let frequency = sampleRate / refinedLag
