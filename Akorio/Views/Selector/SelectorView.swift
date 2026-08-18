@@ -27,6 +27,10 @@ struct SelectorView: View {
             .padding(20)
             .akorioContentWidth()
         }
+        // On-device iOS 26.x lets a fitting page rubber-band in every
+        // direction; only bounce when the content actually overflows.
+        .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
+        .akorioIntegralWidth()
     }
 
     // MARK: - Header
@@ -74,10 +78,12 @@ struct SelectorView: View {
                 endPoint: .bottomTrailing
             )
 
-            Image("Guitar")
-                .resizable()
-                .scaledToFill()
-                .frame(height: 140)
+            Color.clear
+                .overlay(
+                    Image("Guitar")
+                        .resizable()
+                        .scaledToFill()
+                )
                 .clipped()
                 .allowsHitTesting(false)
                 .opacity(0.5)

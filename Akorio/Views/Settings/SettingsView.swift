@@ -23,6 +23,8 @@ struct SettingsView: View {
             .padding(20)
             .akorioContentWidth()
         }
+        .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
+        .akorioIntegralWidth()
     }
 
     // MARK: - Header

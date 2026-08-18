@@ -66,6 +66,8 @@ struct LevelDetailView: View {
             .padding(20)
             .akorioContentWidth()
         }
+        .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
+        .akorioIntegralWidth()
         .safeAreaInset(edge: .bottom) {
             if !viewModel.chords.isEmpty {
                 Button("Pratiğe Başla") { viewModel.goToPractice() }

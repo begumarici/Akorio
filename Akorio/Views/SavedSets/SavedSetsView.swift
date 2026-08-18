@@ -35,6 +35,8 @@ struct SavedSetsView: View {
             .padding(20)
             .akorioContentWidth()
         }
+        .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
+        .akorioIntegralWidth()
         .confirmationDialog(
             String(format: String(localized: "\"%@\" silinsin mi?"), pendingDelete?.name ?? ""),
             isPresented: Binding(

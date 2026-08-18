@@ -38,6 +38,24 @@ extension View {
         frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
     }
+
+    func akorioIntegralWidth() -> some View {
+        modifier(AkorioIntegralWidthModifier())
+    }
+}
+
+private struct AkorioIntegralWidthModifier: ViewModifier {
+    @State private var width: CGFloat?
+
+    func body(content: Content) -> some View {
+        content
+            .frame(width: width)
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                floor(proxy.size.width)
+            } action: { newValue in
+                if width != newValue { width = newValue }
+            }
+    }
 }
 
 #Preview {
