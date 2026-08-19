@@ -48,11 +48,13 @@ struct TunerView: View {
                     startFailedContent
                     Spacer()
                 } else {
+                    Text("En doğru sonuç için telleri tek tek çal")
+                        .font(.akorio(12))
+                        .foregroundColor(.akorioNeutral500)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, 8)
+
                     GeometryReader { geo in
-                        // Upper bound above 1 so big screens (iPad) actually
-                        // get a proportionally bigger tuner instead of a
-                        // phone-sized one floating in empty space; lower
-                        // bound guards transient near-zero layout passes.
                         let rawScale = min(geo.size.width / contentNaturalSize.width, geo.size.height / contentNaturalSize.height)
                         let scale = min(1.5, max(0.3, rawScale))
                         tunerContent(scale: scale)

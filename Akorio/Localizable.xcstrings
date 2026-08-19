@@ -407,6 +407,22 @@
         }
       }
     },
+    "En doğru sonuç için telleri tek tek çal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For the most accurate result, play strings one at a time"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En doğru sonuç için telleri tek tek çal"
+          }
+        }
+      }
+    },
     "Geri bildirim gönder" : {
       "localizations" : {
         "en" : {
