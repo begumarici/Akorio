@@ -81,6 +81,13 @@ final class TunerEngine {
     private let analysisWindowSize = 3072
     private var sampleWindow: [Float] = []
 
+    /// Minimum share of harmonic-ladder energy (1st+2nd / total of 1st-4th)
+    /// a candidate frequency must show to be trusted — see the explanation
+    /// where this is used in `process(buffer:sampleRate:)`. Set generously
+    /// low so it only rejects the near-silent-low-end phantom case, not a
+    /// real note whose fundamental happens to be weak.
+    private let lowHarmonicRatioThreshold = 0.12
+
     // MARK: Note tracking
     //
     // Raw per-buffer YIN output is too jumpy to display directly: silence
@@ -262,9 +269,37 @@ final class TunerEngine {
             // part, and a buffer that quiet is silence either way. Also wait
             // for the window to fill; a partial window would just produce a
             // low-quality reading for one frame.
-            let frequency = rms >= self.holdRMS && self.sampleWindow.count >= self.analysisWindowSize
+            var frequency = rms >= self.holdRMS && self.sampleWindow.count >= self.analysisWindowSize
                 ? PitchDetector.detectPitch(buffer: self.sampleWindow, sampleRate: sampleRate)
                 : nil
+
+            // Two strings ringing together can trick YIN into reporting a
+            // note that isn't really sounding: their harmonics can coincide
+            // with a lower note's period (the "missing fundamental"
+            // illusion — the same thing that fools human hearing; e.g. B3+E4
+            // together read almost exactly as E2's own 3rd/4th harmonics).
+            // Real polyphonic tuners guard against this by band-limiting
+            // around each candidate's own nominal frequency before trusting
+            // it. We approximate that here without a real filter: measure
+            // how much energy actually sits at the candidate's own 1st/2nd
+            // harmonic (which any genuinely vibrating string has) versus its
+            // 3rd/4th (where a phantom candidate's *actual* — unrelated —
+            // notes would live instead). A real note keeps a meaningful
+            // share of energy in the low rungs; a phantom's low rungs are
+            // silent because nothing is actually generating them.
+            if let f = frequency {
+                let window = self.sampleWindow
+                let h1 = Self.goertzelMagnitude(window, sampleRate: sampleRate, targetFreq: f)
+                let h2 = Self.goertzelMagnitude(window, sampleRate: sampleRate, targetFreq: f * 2)
+                let h3 = Self.goertzelMagnitude(window, sampleRate: sampleRate, targetFreq: f * 3)
+                let h4 = Self.goertzelMagnitude(window, sampleRate: sampleRate, targetFreq: f * 4)
+                let total = h1 + h2 + h3 + h4
+                let lowRatio = total > 0 ? (h1 + h2) / total : 0
+                if lowRatio < self.lowHarmonicRatioThreshold {
+                    frequency = nil
+                }
+            }
+
             DispatchQueue.main.async {
                 self.ingest(frequency: frequency, rms: rms)
                 self.isProcessing = false
@@ -348,6 +383,25 @@ final class TunerEngine {
 
     private func cents(between a: Double, and b: Double) -> Double {
         abs(1200 * log2(a / b))
+    }
+
+    /// Goertzel algorithm: the magnitude of a single frequency component in
+    /// `buffer`, without a full FFT. O(n) per call.
+    private static func goertzelMagnitude(_ buffer: [Float], sampleRate: Double, targetFreq: Double) -> Double {
+        let n = buffer.count
+        let k = Double(n) * targetFreq / sampleRate
+        let omega = 2.0 * Double.pi * k / Double(n)
+        let cosine = cos(omega)
+        let coeff = 2.0 * cosine
+        var q0 = 0.0, q1 = 0.0, q2 = 0.0
+        for sample in buffer {
+            q0 = coeff * q1 - q2 + Double(sample)
+            q2 = q1
+            q1 = q0
+        }
+        let real = q1 - q2 * cosine
+        let imaginary = q2 * sin(omega)
+        return (real * real + imaginary * imaginary).squareRoot() / Double(n)
     }
 
     private func playConfirmChime() {
