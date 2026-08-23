@@ -181,7 +181,7 @@ struct GuitarHeadstockView: View {
                 .frame(width: 16 * scale, height: 16 * scale)
                 .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
         }
-        .animation(.easeOut(duration: 0.2), value: isActive)
+        .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isActive)
     }
 
     /// The shaft connecting the post to the tuning knob.
@@ -214,9 +214,9 @@ struct GuitarHeadstockView: View {
 
             HStack(spacing: 2 * scale) {
                 Text(string.noteName)
-                    .font(.akorio(23 * scale, .bold))
+                    .font(.akorioFixed(23 * scale, .bold))
                 Text("\(string.octave)")
-                    .font(.akorio(13 * scale, .medium))
+                    .font(.akorioFixed(13 * scale, .medium))
                     .opacity(0.7)
             }
             .foregroundColor(isActive ? .white : .akorioNeutral300)
@@ -224,7 +224,7 @@ struct GuitarHeadstockView: View {
         }
         .frame(width: width, height: height)
         .shadow(color: isActive ? color.opacity(0.6) : .clear, radius: 8)
-        .animation(.easeOut(duration: 0.2), value: isActive)
+        .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isActive)
     }
 }
 

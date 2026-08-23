@@ -70,9 +70,13 @@ struct TunerView: View {
                 DispatchQueue.main.async { engine.start() }
             }
             .onDisappear { engine.stop() }
-            .onChange(of: engine.lockedStrings) { _, newValue in
+            .onChange(of: engine.lockedStrings) { oldValue, newValue in
+                guard newValue.count > oldValue.count else { return }
                 if newValue.count == GuitarString.allCases.count {
+                    AkorioHaptics.success(enabled: viewModel.hapticEnabled)
                     showAllTunedOverlay = true
+                } else {
+                    AkorioHaptics.impact(enabled: viewModel.hapticEnabled)
                 }
             }
 
@@ -81,7 +85,7 @@ struct TunerView: View {
                     .transition(.opacity)
             }
         }
-        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: showAllTunedOverlay)
+        .akorioAnimation(.spring(response: 0.35, dampingFraction: 0.8), value: showAllTunedOverlay)
     }
 
     // MARK: - All strings tuned overlay
@@ -223,25 +227,25 @@ struct TunerView: View {
             VStack(spacing: 2) {
                 HStack(alignment: .top, spacing: 2) {
                     Text(engine.currentPitch?.noteName ?? "–")
-                        .font(.akorio(40 * scale, .bold))
+                        .font(.akorioFixed(40 * scale, .bold))
                         .foregroundColor(.akorioText)
                         .contentTransition(.numericText())
 
                     if let octave = engine.currentPitch?.octave {
                         Text("\(octave)")
-                            .font(.akorio(15 * scale, .semibold))
+                            .font(.akorioFixed(15 * scale, .semibold))
                             .foregroundColor(.akorioNeutral400)
                             .padding(.top, 6 * scale)
                     }
                 }
-                .animation(.easeOut(duration: 0.15), value: engine.currentPitch?.noteName)
+                .akorioAnimation(.spring(response: 0.2, dampingFraction: 1.0), value: engine.currentPitch?.noteName)
 
                 Text(engine.currentPitch.map { String(format: "%.1f Hz", $0.frequency) } ?? "—")
-                    .font(.akorio(12 * scale))
+                    .font(.akorioFixed(12 * scale))
                     .foregroundColor(.akorioNeutral500)
             }
         }
-        .animation(.easeOut(duration: 0.25), value: isInTune)
+        .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isInTune)
     }
 
     // MARK: - Start failed

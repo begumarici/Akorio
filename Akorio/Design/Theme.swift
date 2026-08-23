@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreText
+import UIKit
 
 enum AkorioFont {
 
@@ -22,14 +23,45 @@ enum AkorioFont {
 }
 
 extension Font {
-    /// Body/UI text — Apple's system font (San Francisco).
+    /// Body/UI text — Apple's system font (San Francisco), scaling with the
+    /// user's Dynamic Type setting. 
     static func akorio(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        let base = UIFont.systemFont(ofSize: size, weight: weight.uiKitWeight)
+        return Font(UIFontMetrics.default.scaledFont(for: base, maximumPointSize: size * 1.3))
+    }
+
+    /// Display/heading text — Instrument Serif, same Dynamic Type scaling
+    /// as `akorio`.
+    static func akorioSerif(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        guard let base = UIFont(name: "InstrumentSerif-Regular", size: size) else {
+            return .custom("InstrumentSerif-Regular", size: size)
+        }
+        return Font(UIFontMetrics.default.scaledFont(for: base, maximumPointSize: size * 1.3))
+    }
+
+    static func akorioFixed(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         .system(size: size, weight: weight)
     }
 
-    /// Display/heading text — Instrument Serif.
-    static func akorioSerif(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+    /// `akorioSerif`, fixed at its literal point size — see `akorioFixed`.
+    static func akorioSerifFixed(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         .custom("InstrumentSerif-Regular", size: size)
+    }
+}
+
+private extension Font.Weight {
+    var uiKitWeight: UIFont.Weight {
+        switch self {
+        case .black: .black
+        case .heavy: .heavy
+        case .bold: .bold
+        case .semibold: .semibold
+        case .medium: .medium
+        case .light: .light
+        case .thin: .thin
+        case .ultraLight: .ultraLight
+        default: .regular
+        }
     }
 }
 

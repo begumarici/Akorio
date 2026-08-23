@@ -40,6 +40,7 @@ struct LevelDetailView: View {
                         Spacer()
 
                         Button {
+                            AkorioHaptics.impact(enabled: viewModel.hapticEnabled)
                             if allSelected {
                                 viewModel.deselectAllChordLabels(level.chordLabels)
                             } else {
@@ -58,6 +59,7 @@ struct LevelDetailView: View {
                             label: label,
                             isSelected: viewModel.chords.contains { $0.label == label }
                         ) {
+                            AkorioHaptics.selection(enabled: viewModel.hapticEnabled)
                             viewModel.toggleChordLabel(label)
                         }
                     }
@@ -136,7 +138,7 @@ private struct ChordCard: View {
             }
         }
         .buttonStyle(AkorioPressableCardStyle())
-        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: isSelected)
+        .akorioAnimation(.spring(response: 0.3, dampingFraction: 0.75), value: isSelected)
     }
 }
 

@@ -38,6 +38,7 @@ struct AkorioApp: App {
 
 private struct RootView: View {
     @State private var showSplash = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
@@ -48,7 +49,7 @@ private struct RootView: View {
 
             if showSplash {
                 SplashView()
-                    .transition(.asymmetric(
+                    .transition(reduceMotion ? .opacity : .asymmetric(
                         insertion: .opacity.combined(with: .scale(scale: 1.02)),
                         removal: .opacity.combined(with: .scale(scale: 0.98))
                     ))
@@ -57,7 +58,7 @@ private struct RootView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                withAnimation(.easeInOut(duration: 0.5)) {
+                withAnimation(.easeInOut(duration: reduceMotion ? 0.2 : 0.5)) {
                     showSplash = false
                 }
             }
