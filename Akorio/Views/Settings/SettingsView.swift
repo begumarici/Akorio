@@ -101,12 +101,15 @@ struct SettingsView: View {
                         .buttonStyle(.plain)
                     }
                 }
+                .background(.ultraThinMaterial)
                 .cornerRadius(AkorioRadius.md)
                 .shadow(color: .black.opacity(0.35), radius: 12, y: 4)
                 .offset(y: 48)
+                .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
             }
         }
         .zIndex(1)
+        .akorioAnimation(.spring(response: 0.3, dampingFraction: 1.0), value: viewModel.soundPickerOpen)
     }
 
     // MARK: - Default practice settings

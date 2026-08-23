@@ -51,8 +51,8 @@ struct TunerGaugeView: View {
             needle
         }
         .frame(width: canvasSize.width, height: canvasSize.height)
-        .animation(.spring(response: 0.25, dampingFraction: 0.75), value: clampedCents)
-        .animation(.easeOut(duration: 0.25), value: isInTune)
+        .akorioAnimation(.spring(response: 0.25, dampingFraction: 0.75), value: clampedCents)
+        .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isInTune)
     }
 
     private func point(atAngleDegrees angle: Double, radius r: CGFloat) -> CGPoint {
@@ -94,7 +94,7 @@ struct TunerGaugeView: View {
     private func edgeLabel(_ text: String?, atAngle angle: Double) -> some View {
         let position = point(atAngleDegrees: angle, radius: radius + 24)
         return Text(text ?? "–")
-            .font(.akorio(14, .medium))
+            .font(.akorioFixed(14, .medium))
             .foregroundColor(.akorioNeutral500)
             .position(position)
     }

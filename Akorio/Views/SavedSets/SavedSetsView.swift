@@ -28,8 +28,10 @@ struct SavedSetsView: View {
                     VStack(spacing: 10) {
                         ForEach(savedSets) { savedSet in
                             row(for: savedSet)
+                                .transition(.opacity.combined(with: .scale(scale: 0.95)))
                         }
                     }
+                    .akorioAnimation(.spring(response: 0.3, dampingFraction: 0.8), value: savedSets.map(\.id))
                 }
             }
             .padding(20)
@@ -94,6 +96,7 @@ struct SavedSetsView: View {
                     .font(.akorio(15, .medium))
                     .foregroundColor(.akorioText)
                     .textFieldStyle(.plain)
+                    .transition(.opacity)
             } else {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(savedSet.name)
@@ -103,6 +106,7 @@ struct SavedSetsView: View {
                         .font(.akorio(13))
                         .foregroundColor(.akorioNeutral500)
                 }
+                .transition(.opacity)
             }
 
             Spacer()
@@ -147,6 +151,7 @@ struct SavedSetsView: View {
             guard editingSet == nil else { return }
             viewModel.loadSavedSet(savedSet)
         }
+        .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: editingSet === savedSet)
     }
 }
 
