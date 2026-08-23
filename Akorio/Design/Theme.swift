@@ -74,32 +74,32 @@ extension Color {
         )
     }
 
-    static let akorioBg = Color(hex: 0x0f1120)
-    static let akorioSurface = Color(hex: 0x1c1f33)
-    static let akorioSurfaceHigh = Color(hex: 0x252941)
+    static let akorioBg = Color(hex: 0x14120e)
+    static let akorioSurface = Color(hex: 0x1f1b15)
+    static let akorioSurfaceHigh = Color(hex: 0x2a2419)
 
-    static let akorioNeutral100 = Color(hex: 0xf3f5fe)
-    static let akorioNeutral300 = Color(hex: 0xcfd3e5)
-    static let akorioNeutral400 = Color(hex: 0xb2b6ca)
-    static let akorioNeutral500 = Color(hex: 0x9397ab)
-    static let akorioNeutral600 = Color(hex: 0x75798c)
-    static let akorioNeutral700 = Color(hex: 0x4c5065)
-    static let akorioNeutral800 = Color(hex: 0x3f424d)
-    static let akorioNeutral900 = Color(hex: 0x292b31)
+    static let akorioNeutral100 = Color(hex: 0xf5f1e9)
+    static let akorioNeutral300 = Color(hex: 0xd8d0c2)
+    static let akorioNeutral400 = Color(hex: 0xb9af9e)
+    static let akorioNeutral500 = Color(hex: 0x968c7b)
+    static let akorioNeutral600 = Color(hex: 0x776d5d)
+    static let akorioNeutral700 = Color(hex: 0x50493d)
+    static let akorioNeutral800 = Color(hex: 0x3f392f)
+    static let akorioNeutral900 = Color(hex: 0x2a251e)
 
-    static let akorioText = Color(hex: 0xeceef6)
+    static let akorioText = Color(hex: 0xf3eee3)
     static let akorioDivider = Color.white.opacity(0.08)
     static let akorioStroke = Color.white.opacity(0.07)
 
-    static let akorioAccent100 = Color(hex: 0xf5f4ff)
-    static let akorioAccent200 = Color(hex: 0xe7e5fe)
-    static let akorioAccent300 = Color(hex: 0xd2cefd)
-    static let akorioAccent400 = Color(hex: 0xaea0fb)
-    static let akorioAccent500 = Color(hex: 0x8b7af3)
-    static let akorioAccent600 = Color(hex: 0x6f5fd8)
-    static let akorioAccent700 = Color(hex: 0x5a4daf)
-    static let akorioAccent800 = Color(hex: 0x3d3577)
-    static let akorioAccent900 = Color(hex: 0x272346)
+    static let akorioAccent100 = Color(hex: 0xfbefdc)
+    static let akorioAccent200 = Color(hex: 0xf6ddb0)
+    static let akorioAccent300 = Color(hex: 0xeec17a)
+    static let akorioAccent400 = Color(hex: 0xe4a24b)
+    static let akorioAccent500 = Color(hex: 0xd6862b)
+    static let akorioAccent600 = Color(hex: 0xb06b1e)
+    static let akorioAccent700 = Color(hex: 0x855018)
+    static let akorioAccent800 = Color(hex: 0x543310)
+    static let akorioAccent900 = Color(hex: 0x2e1c09)
 }
 
 
@@ -109,25 +109,18 @@ struct AkorioBackground: View {
             Color.akorioBg
 
             GeometryReader { proxy in
-                ZStack {
-                    Circle()
-                        .fill(Color.akorioAccent600.opacity(0.4))
-                        .frame(width: 320, height: 320)
-                        .blur(radius: 110)
-                        .position(x: proxy.size.width * 0.15, y: -60)
+                RadialGradient(
+                    colors: [Color.black.opacity(0.35), .clear],
+                    center: .center,
+                    startRadius: proxy.size.width * 0.3,
+                    endRadius: proxy.size.width * 0.9
+                )
 
-                    Circle()
-                        .fill(Color(hex: 0x4a5fd0).opacity(0.3))
-                        .frame(width: 280, height: 280)
-                        .blur(radius: 110)
-                        .position(x: proxy.size.width * 0.9, y: 40)
-
-                    Circle()
-                        .fill(Color(hex: 0x7b3f8f).opacity(0.16))
-                        .frame(width: 300, height: 300)
-                        .blur(radius: 120)
-                        .position(x: proxy.size.width * 0.7, y: proxy.size.height * 0.95)
-                }
+                Circle()
+                    .fill(Color.akorioAccent700.opacity(0.28))
+                    .frame(width: 260, height: 260)
+                    .blur(radius: 130)
+                    .position(x: proxy.size.width * 0.12, y: -40)
             }
         }
         .ignoresSafeArea()

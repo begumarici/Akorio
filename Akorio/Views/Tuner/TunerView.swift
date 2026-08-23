@@ -96,19 +96,6 @@ struct TunerView: View {
                 .onTapGesture { showAllTunedOverlay = false }
 
             VStack(spacing: 20) {
-                ZStack {
-                    Circle()
-                        .fill(Color.green.opacity(0.35))
-                        .frame(width: 90, height: 90)
-                        .blur(radius: 30)
-                    Circle()
-                        .fill(Color.akorioAccent900)
-                        .frame(width: 64, height: 64)
-                    Image(systemName: "checkmark")
-                        .font(.akorio(24, .bold))
-                        .foregroundColor(.green)
-                }
-
                 VStack(spacing: 6) {
                     Text("Harika! 🎉")
                         .font(.akorioSerif(26, .semibold))

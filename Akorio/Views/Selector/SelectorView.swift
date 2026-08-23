@@ -73,7 +73,7 @@ struct SelectorView: View {
     private var greetingSection: some View {
         ZStack(alignment: .leading) {
             LinearGradient(
-                colors: [Color(hex: 0x3d3577), Color(hex: 0x272346)],
+                colors: [Color.akorioAccent800, Color.akorioNeutral900],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -191,10 +191,6 @@ private struct LevelRow: View {
                 ZStack {
                     Circle()
                         .fill(Color.akorioAccent900)
-                    Circle()
-                        .fill(Color.akorioAccent500.opacity(0.5))
-                        .frame(width: 26, height: 26)
-                        .blur(radius: 12)
                     Image(systemName: level.icon)
                         .font(.akorio(18, .medium))
                         .foregroundColor(.akorioAccent200)
