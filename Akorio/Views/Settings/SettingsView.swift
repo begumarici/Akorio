@@ -11,6 +11,8 @@ import UIKit
 struct SettingsView: View {
     let viewModel: AppViewModel
 
+    @State private var showMailCompose = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -25,6 +27,13 @@ struct SettingsView: View {
         }
         .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
         .akorioIntegralWidth()
+        .sheet(isPresented: $showMailCompose) {
+            MailComposeView(
+                recipient: "aricibegum@gmail.com",
+                subject: String(localized: "Akorio Geri Bildirim")
+            )
+            .ignoresSafeArea()
+        }
     }
 
     // MARK: - Header
@@ -159,10 +168,11 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
 
-                Link(destination: URL(string: "mailto:aricibegum@gmail.com?subject=Akorio%20Geri%20Bildirim")!) {
+                feedbackRow
+
+                Link(destination: URL(string: "https://begumarici.github.io/akorio-privacy-policy")!) {
                     HStack {
-                        Text("Geri bildirim gönder")
-                            .foregroundColor(.akorioText)
+                        Text("Gizlilik Politikası").foregroundColor(.akorioText)
                         Spacer()
                         Text("›").foregroundColor(.akorioNeutral500)
                     }
@@ -170,18 +180,40 @@ struct SettingsView: View {
                     .padding(14)
                     .background(Color.akorioSurface)
                 }
-
-                HStack {
-                    Text("Gizlilik Politikası").foregroundColor(.akorioText)
-                    Spacer()
-                    Text("›").foregroundColor(.akorioNeutral500)
-                }
-                .font(.akorio(14))
-                .padding(14)
-                .background(Color.akorioSurface)
             }
             .cornerRadius(AkorioRadius.md)
         }
+    }
+
+    private var feedbackRow: some View {
+        Group {
+            if MailComposeView.canSend {
+                Button {
+                    showMailCompose = true
+                } label: {
+                    feedbackRowLabel
+                }
+                .buttonStyle(.plain)
+            } else {
+                let subject = String(localized: "Akorio Geri Bildirim")
+                    .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "Akorio"
+                Link(destination: URL(string: "mailto:aricibegum@gmail.com?subject=\(subject)")!) {
+                    feedbackRowLabel
+                }
+            }
+        }
+    }
+
+    private var feedbackRowLabel: some View {
+        HStack {
+            Text("Geri bildirim gönder")
+                .foregroundColor(.akorioText)
+            Spacer()
+            Text("›").foregroundColor(.akorioNeutral500)
+        }
+        .font(.akorio(14))
+        .padding(14)
+        .background(Color.akorioSurface)
     }
 
     private var currentLanguageDisplayName: String {

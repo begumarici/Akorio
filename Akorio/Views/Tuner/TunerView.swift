@@ -97,7 +97,12 @@ struct TunerView: View {
 
             VStack(spacing: 20) {
                 VStack(spacing: 6) {
-                    Text("Harika! 🎉")
+                    Image(systemName: "tuningfork")
+                        .font(.akorio(40, .medium))
+                        .foregroundColor(.akorioAccent300)
+                        .padding(.bottom, 4)
+
+                    Text("Harika!")
                         .font(.akorioSerif(26, .semibold))
                         .foregroundColor(.akorioText)
                     Text("Gitarının akordu tamamlandı.")
@@ -206,10 +211,10 @@ struct TunerView: View {
     private func noteReadout(scale: CGFloat) -> some View {
         ZStack {
             Circle()
-                .fill(statusColor.opacity(isInTune ? 0.4 : 0.15))
+                .fill(statusColor.opacity(0.4))
                 .frame(width: 120 * scale, height: 120 * scale)
                 .blur(radius: 36)
-                .opacity(engine.currentPitch == nil ? 0 : 1)
+                .opacity(isInTune ? 1 : 0)
 
             VStack(spacing: 2) {
                 HStack(alignment: .top, spacing: 2) {

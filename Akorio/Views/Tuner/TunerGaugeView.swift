@@ -32,13 +32,6 @@ struct TunerGaugeView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Circle()
-                .fill(statusColor.opacity(isInTune ? 0.3 : 0.1))
-                .frame(width: radius * 1.5, height: radius * 1.5)
-                .blur(radius: 46)
-                .opacity(pitch == nil ? 0 : 1)
-                .position(x: pivot.x, y: pivot.y - radius * 0.35)
-
             Canvas { context, _ in
                 drawTrack(in: &context)
                 drawTicks(in: &context)
@@ -104,7 +97,6 @@ struct TunerGaugeView: View {
             Capsule()
                 .fill(LinearGradient(colors: [statusColor.opacity(0.25), statusColor], startPoint: .bottom, endPoint: .top))
                 .frame(width: 5, height: max(0, radius - 34))
-                .shadow(color: isInTune ? statusColor.opacity(0.8) : .clear, radius: 8)
                 .opacity(pitch == nil ? 0.25 : 1)
                 .rotationEffect(.degrees(needleAngle + 90), anchor: .bottom)
 
@@ -119,7 +111,11 @@ struct TunerGaugeView: View {
 #Preview {
     ZStack {
         AkorioBackground()
-        TunerGaugeView(pitch: NotePitch(frequency: 87.0), isInTune: false, statusColor: .akorioAccent400)
-            .padding(.top, 40)
+        VStack(spacing: 30) {
+            TunerGaugeView(pitch: nil, isInTune: false, statusColor: .akorioNeutral700)
+            TunerGaugeView(pitch: NotePitch(frequency: 87.0), isInTune: false, statusColor: .akorioAccent400)
+            TunerGaugeView(pitch: NotePitch(frequency: 82.41), isInTune: true, statusColor: .green)
+        }
+        .padding(.top, 40)
     }
 }

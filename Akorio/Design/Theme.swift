@@ -115,12 +115,6 @@ struct AkorioBackground: View {
                     startRadius: proxy.size.width * 0.3,
                     endRadius: proxy.size.width * 0.9
                 )
-
-                Circle()
-                    .fill(Color.akorioAccent700.opacity(0.28))
-                    .frame(width: 260, height: 260)
-                    .blur(radius: 130)
-                    .position(x: proxy.size.width * 0.12, y: -40)
             }
         }
         .ignoresSafeArea()

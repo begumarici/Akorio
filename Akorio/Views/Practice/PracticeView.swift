@@ -110,20 +110,14 @@ struct PracticeView: View {
                 } else {
                     ZStack {
                         Circle()
-                            .fill(Color.akorioAccent500.opacity(0.35))
-                            .frame(width: 200 * scale, height: 200 * scale)
-                            .blur(radius: 50)
-
-                        ZStack {
-                            Color.akorioAccent900
-                            Circle()
-                                .fill(Color.akorioAccent600.opacity(0.5))
-                                .frame(width: 110 * scale, height: 110 * scale)
-                                .blur(radius: 40)
-                                .offset(x: -30 * scale, y: -35 * scale)
-                        }
-                        .frame(width: 190 * scale, height: 190 * scale)
-                        .clipShape(Circle())
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.akorioAccent900, Color.akorioSurface],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 190 * scale, height: 190 * scale)
 
                         Circle()
                             .stroke(Color.akorioStroke, lineWidth: 1)

@@ -44,7 +44,7 @@ enum ChordLevel: String, CaseIterable, Hashable {
     var icon: String {
         switch self {
         case .beginner: return "target"
-        case .intermediate: return "moon.stars.fill"
+        case .intermediate: return "chart.line.uptrend.xyaxis"
         case .advanced: return "flame.fill"
         case .expert: return "flag.checkered"
         }
