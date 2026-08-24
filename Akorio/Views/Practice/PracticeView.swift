@@ -91,7 +91,7 @@ struct PracticeView: View {
                     .font(.akorio(104 * scale, .medium))
                     .foregroundColor(.akorioNeutral300)
                 Text(String(format: String(localized: "Sıradaki: %@"), viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel))
-                    .font(.akorio(14))
+                    .font(.akorio(14 * scale))
                     .foregroundColor(.akorioNeutral500)
             } else if viewModel.isPlaying {
                 if viewModel.showChordDiagram {
@@ -130,14 +130,14 @@ struct PracticeView: View {
                 }
 
                 Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
-                    .font(.akorio(14))
+                    .font(.akorio(14 * scale))
                     .foregroundColor(.akorioNeutral500)
 
-                HStack(spacing: 8) {
+                HStack(spacing: 8 * scale) {
                     ForEach(0..<max(viewModel.beatsPerChord, 1), id: \.self) { index in
                         Circle()
                             .fill(index == viewModel.beatInCurrentChord ? Color.akorioAccent500 : Color.akorioNeutral700)
-                            .frame(width: 9, height: 9)
+                            .frame(width: 9 * scale, height: 9 * scale)
                     }
                 }
             } else {
@@ -146,7 +146,7 @@ struct PracticeView: View {
                     .foregroundColor(.akorioNeutral700)
 
                 Text(String(format: String(localized: "Sıradaki: %@"), upcomingChordLabel))
-                    .font(.akorio(14))
+                    .font(.akorio(14 * scale))
                     .foregroundColor(.akorioNeutral500)
             }
         }
@@ -205,6 +205,11 @@ struct PracticeView: View {
     // MARK: - Play button
     private var playButton: some View {
         Button {
+            if !viewModel.isPlaying {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                    isSettingsExpanded = false
+                }
+            }
             viewModel.togglePlay()
         } label: {
             Label(

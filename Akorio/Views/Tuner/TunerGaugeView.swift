@@ -87,7 +87,7 @@ struct TunerGaugeView: View {
     private func edgeLabel(_ text: String?, atAngle angle: Double) -> some View {
         let position = point(atAngleDegrees: angle, radius: radius + 24)
         return Text(text ?? "–")
-            .font(.akorioFixed(14, .medium))
+            .font(.akorioFixed(14 * scale, .medium))
             .foregroundColor(.akorioNeutral500)
             .position(position)
     }
@@ -96,13 +96,13 @@ struct TunerGaugeView: View {
         ZStack(alignment: .bottom) {
             Capsule()
                 .fill(LinearGradient(colors: [statusColor.opacity(0.25), statusColor], startPoint: .bottom, endPoint: .top))
-                .frame(width: 5, height: max(0, radius - 34))
+                .frame(width: 5 * scale, height: max(0, radius - 34))
                 .opacity(pitch == nil ? 0.25 : 1)
                 .rotationEffect(.degrees(needleAngle + 90), anchor: .bottom)
 
             Circle()
                 .fill(statusColor)
-                .frame(width: 10, height: 10)
+                .frame(width: 10 * scale, height: 10 * scale)
         }
     }
 
