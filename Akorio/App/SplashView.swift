@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SplashView: View {
     var body: some View {
-        VStack(spacing: -30) {
+        VStack(spacing: 0) {
             Image("LaunchIcon")
                 .resizable()
                 .aspectRatio(contentMode: .fit)

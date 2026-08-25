@@ -168,20 +168,11 @@ struct GuitarHeadstockView: View {
         let isActive = isHighlighted(string)
         let color = highlightColor(for: string)
 
-        return ZStack {
-            if isActive {
-                Circle()
-                    .fill(color.opacity(0.55))
-                    .frame(width: 30 * scale, height: 30 * scale)
-                    .blur(radius: 10)
-            }
-
-            Circle()
-                .fill(isActive ? color : Color.akorioNeutral400)
-                .frame(width: 16 * scale, height: 16 * scale)
-                .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
-        }
-        .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isActive)
+        return Circle()
+            .fill(isActive ? color : Color.akorioNeutral400)
+            .frame(width: 16 * scale, height: 16 * scale)
+            .overlay(Circle().stroke(Color.akorioBg, lineWidth: 1.5))
+            .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isActive)
     }
 
     /// The shaft connecting the post to the tuning knob.
@@ -223,7 +214,6 @@ struct GuitarHeadstockView: View {
             .offset(x: textOffset)
         }
         .frame(width: width, height: height)
-        .shadow(color: isActive ? color.opacity(0.6) : .clear, radius: 8)
         .akorioAnimation(.spring(response: 0.25, dampingFraction: 1.0), value: isActive)
     }
 }
@@ -292,6 +282,10 @@ private struct HeadstockShape: Shape {
 #Preview {
     ZStack {
         AkorioBackground()
-        GuitarHeadstockView(activeString: .a2, statusColor: .akorioAccent400)
+        GuitarHeadstockView(
+            activeString: .a2,
+            statusColor: .akorioAccent400,
+            lockedStrings: [.e2, .d3]
+        )
     }
 }

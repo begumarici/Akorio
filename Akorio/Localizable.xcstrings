@@ -147,6 +147,22 @@
     "Akorio" : {
       "shouldTranslate" : false
     },
+    "Akorio Geri Bildirim" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorio Feedback"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorio Geri Bildirim"
+          }
+        }
+      }
+    },
     "Akort Aleti" : {
       "localizations" : {
         "en" : {
@@ -535,18 +551,18 @@
         }
       }
     },
-    "Harika! 🎉" : {
+    "Harika!" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Great! 🎉"
+            "value" : "Great!"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Harika! 🎉"
+            "value" : "Harika!"
           }
         }
       }
@@ -679,18 +695,18 @@
         }
       }
     },
-    "Merhaba! 👋" : {
+    "Merhaba!" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hello! 👋"
+            "value" : "Hello!"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Merhaba! 👋"
+            "value" : "Merhaba!"
           }
         }
       }

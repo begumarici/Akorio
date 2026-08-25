@@ -39,13 +39,12 @@ struct SavedSetsView: View {
         }
         .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
         .akorioIntegralWidth()
-        .confirmationDialog(
+        .alert(
             String(format: String(localized: "\"%@\" silinsin mi?"), pendingDelete?.name ?? ""),
             isPresented: Binding(
                 get: { pendingDelete != nil },
                 set: { isPresented in if !isPresented { pendingDelete = nil } }
-            ),
-            titleVisibility: .visible
+            )
         ) {
             Button("Sil", role: .destructive) {
                 if let pendingDelete {

@@ -73,7 +73,7 @@ struct SelectorView: View {
     private var greetingSection: some View {
         ZStack(alignment: .leading) {
             LinearGradient(
-                colors: [Color(hex: 0x3d3577), Color(hex: 0x272346)],
+                colors: [Color.akorioAccent800, Color.akorioNeutral900],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -101,7 +101,7 @@ struct SelectorView: View {
                 )
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Merhaba! 👋")
+                Text("Merhaba!")
                     .font(.akorioSerif(26, .semibold))
                     .foregroundColor(.akorioText)
                 Text("Düzenli pratik yap, gelişimini gör.")
@@ -130,18 +130,10 @@ struct SelectorView: View {
                 viewModel.continueLastPractice()
             } label: {
                 HStack(spacing: 14) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.akorioAccent900)
-                        Circle()
-                            .fill(Color.akorioAccent500.opacity(0.5))
-                            .frame(width: 26, height: 26)
-                            .blur(radius: 12)
-                        Image(systemName: "play.fill")
-                            .font(.akorio(16, .medium))
-                            .foregroundColor(.akorioAccent200)
-                    }
-                    .frame(width: 44, height: 44)
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.akorio(22, .medium))
+                        .foregroundColor(.akorioAccent400)
+                        .frame(width: 44, height: 44)
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Son Pratik Seansı")
@@ -188,18 +180,10 @@ private struct LevelRow: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                ZStack {
-                    Circle()
-                        .fill(Color.akorioAccent900)
-                    Circle()
-                        .fill(Color.akorioAccent500.opacity(0.5))
-                        .frame(width: 26, height: 26)
-                        .blur(radius: 12)
-                    Image(systemName: level.icon)
-                        .font(.akorio(18, .medium))
-                        .foregroundColor(.akorioAccent200)
-                }
-                .frame(width: 44, height: 44)
+                Image(systemName: level.icon)
+                    .font(.akorio(22, .medium))
+                    .foregroundColor(.akorioAccent400)
+                    .frame(width: 44, height: 44)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(level.title)
@@ -234,9 +218,13 @@ private extension Text {
 }
 
 #Preview {
-    ZStack {
+    let viewModel = AppViewModel()
+    viewModel.lastPracticeChordLabels = ["Am", "Em", "G"]
+    viewModel.lastPracticeBpm = 90
+
+    return ZStack {
         AkorioBackground()
-        SelectorView(viewModel: AppViewModel())
+        SelectorView(viewModel: viewModel)
     }
     .modelContainer(for: [SavedChordSet.self, AppSettings.self], inMemory: true)
 }

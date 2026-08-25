@@ -19,7 +19,6 @@ struct AkorioPrimaryButtonStyle: ButtonStyle {
             .background(
                 RoundedRectangle(cornerRadius: AkorioRadius.md)
                     .fill(configuration.isPressed ? Color.akorioAccent600 : Color.akorioAccent500)
-                    .shadow(color: Color.akorioAccent500.opacity(configuration.isPressed ? 0.15 : 0.35), radius: 14, y: 6)
             )
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
