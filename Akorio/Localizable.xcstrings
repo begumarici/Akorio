@@ -64,6 +64,15 @@
     "−" : {
       "shouldTranslate" : false
     },
+    "5" : {
+
+    },
+    "7" : {
+
+    },
+    "7sus4" : {
+
+    },
     "Akor diyagramı göster" : {
       "localizations" : {
         "en" : {
@@ -76,6 +85,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Akor diyagramı göster"
+          }
+        }
+      }
+    },
+    "Akor Kütüphanesi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chord Library"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor Kütüphanesi"
+          }
+        }
+      }
+    },
+    "AKOR POZİSYONU" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CHORD POSITION"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AKOR POZİSYONU"
           }
         }
       }
@@ -144,6 +185,39 @@
         }
       }
     },
+    "Akor Tipi" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chord Type"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor Tipi"
+          }
+        }
+      }
+    },
+    "AKOR TİPİ" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CHORD TYPE"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AKOR TİPİ"
+          }
+        }
+      }
+    },
     "Akorio" : {
       "shouldTranslate" : false
     },
@@ -159,6 +233,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Akorio Geri Bildirim"
+          }
+        }
+      }
+    },
+    "Akorlara göz at, pozisyonlarını incele" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Browse chords, view their positions"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorlara göz at, pozisyonlarını incele"
+          }
+        }
+      }
+    },
+    "Akorları keşfet, pozisyonlarını gör." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explore chords, view their positions."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorları keşfet, pozisyonlarını gör."
           }
         }
       }
@@ -195,6 +302,25 @@
         }
       }
     },
+    "Akoru çal" : {
+
+    },
+    "AKORU SEÇ" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CHOOSE A CHORD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AKORU SEÇ"
+          }
+        }
+      }
+    },
     "Ana Sayfa" : {
       "localizations" : {
         "en" : {
@@ -207,6 +333,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ana Sayfa"
+          }
+        }
+      }
+    },
+    "Aug" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aug"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aug"
           }
         }
       }
@@ -342,6 +484,22 @@
     "BPM" : {
       "shouldTranslate" : false
     },
+    "Bu akor tipi için pozisyon henüz eklenmedi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A position for this chord type hasn't been added yet."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu akor tipi için pozisyon henüz eklenmedi"
+          }
+        }
+      }
+    },
     "Daha zorlu akorlar ve geçişler" : {
       "localizations" : {
         "en" : {
@@ -390,6 +548,25 @@
           }
         }
       }
+    },
+    "Dim" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dim"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dim"
+          }
+        }
+      }
+    },
+    "Dim7" : {
+
     },
     "Durdur" : {
       "localizations" : {
@@ -695,6 +872,103 @@
         }
       }
     },
+    "Kök Nota" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Root Note"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kök Nota"
+          }
+        }
+      }
+    },
+    "KÖK NOTA" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ROOT NOTE"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KÖK NOTA"
+          }
+        }
+      }
+    },
+    "Kütüphane" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Library"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kütüphane"
+          }
+        }
+      }
+    },
+    "m7" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "m7"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "m7"
+          }
+        }
+      }
+    },
+    "Maj7" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maj7"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maj7"
+          }
+        }
+      }
+    },
+    "Majör" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Major"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Majör"
+          }
+        }
+      }
+    },
     "Merhaba!" : {
       "localizations" : {
         "en" : {
@@ -755,6 +1029,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mikrofon başlatılamadı."
+          }
+        }
+      }
+    },
+    "Minör" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minor"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minör"
           }
         }
       }
@@ -979,6 +1269,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standart Akort · 440Hz"
+          }
+        }
+      }
+    },
+    "Sus2" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus2"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus2"
+          }
+        }
+      }
+    },
+    "Sus4" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus4"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus4"
           }
         }
       }

@@ -19,6 +19,10 @@ struct ContentView: View {
                 .tabItem { Label("Ana Sayfa", systemImage: "house.fill") }
                 .tag(AppTab.home)
 
+            libraryTab
+                .tabItem { Label("Kütüphane", systemImage: "books.vertical.fill") }
+                .tag(AppTab.library)
+
             tunerTab
                 .tabItem { Label("Akort Aleti", systemImage: "tuningfork") }
                 .tag(AppTab.tuner)
@@ -63,6 +67,16 @@ struct ContentView: View {
                 }
                 .toolbar(.hidden, for: .navigationBar)
             }
+        }
+    }
+
+    private var libraryTab: some View {
+        NavigationStack {
+            ZStack {
+                AkorioBackground()
+                LibraryView()
+            }
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
