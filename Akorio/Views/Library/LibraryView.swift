@@ -10,8 +10,6 @@ import SwiftUI
 struct LibraryView: View {
     @State private var selectedRoot: String = "C"
     @State private var selectedQuality: ChordQuality = .major
-    @State private var isPlaying = false
-    @State private var playbackEngine = ChordPlaybackEngine()
 
     private var identity: ChordIdentity {
         ChordIdentity(root: selectedRoot, quality: selectedQuality)
@@ -32,9 +30,6 @@ struct LibraryView: View {
         .padding(.top, 20)
         .akorioContentWidth()
         .frame(maxHeight: .infinity, alignment: .top)
-        .onChange(of: selectedRoot) { _, _ in resetSelection() }
-        .onChange(of: selectedQuality) { _, _ in resetSelection() }
-        .onDisappear { playbackEngine.stop() }
     }
 
     private var rootColumns: [GridItem] {
@@ -125,19 +120,6 @@ struct LibraryView: View {
                         Text(identity.label)
                             .font(.akorio(28, .bold))
                             .foregroundColor(.black)
-
-                        Spacer()
-
-                        Button {
-                            togglePlayback()
-                        } label: {
-                            Image(systemName: isPlaying ? "stop.fill" : "play.fill")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundColor(.white)
-                                .frame(width: 40, height: 40)
-                                .background(Color.akorioAccent500, in: Circle())
-                        }
-                        .accessibilityLabel(isPlaying ? "Durdur" : "Akoru çal")
                     }
                     .padding(.horizontal, 18)
 
@@ -169,22 +151,6 @@ struct LibraryView: View {
             }
         }
         .frame(maxWidth: .infinity)
-    }
-
-    private func resetSelection() {
-        playbackEngine.stop()
-        isPlaying = false
-    }
-
-    private func togglePlayback() {
-        guard let shape else { return }
-        if isPlaying {
-            playbackEngine.stop()
-            isPlaying = false
-        } else {
-            playbackEngine.play(shape: shape)
-            isPlaying = true
-        }
     }
 }
 
