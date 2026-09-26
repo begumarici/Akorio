@@ -51,16 +51,20 @@ enum ChordLevel: String, CaseIterable, Hashable {
     }
 
     var chordLabels: [String] {
-        let beginner = ["Am", "Em", "Dm"]
-        let intermediate = beginner + ["C", "G", "D", "A"]
-        let advanced = intermediate + ["E", "F", "B", "Bm", "F#m"]
-        let expert = akorioRootNotes.flatMap { [$0, $0 + "m"] }
+        // Each level contains the previous level's chords. The four levels
+        // intentionally progress from common open chords to the full library.
+        let beginner = ["Am", "Em", "Dm", "C", "G", "D", "A"]
+        let intermediate = beginner + ["E", "F", "B", "Bm", "F#m"]
+        let hard = akorioRootNotes.flatMap { [$0, $0 + "m"] }
+        let advanced = akorioRootNotes.flatMap { root in
+            ChordQuality.allCases.map { ChordIdentity(root: root, quality: $0).label }
+        }
 
         switch self {
         case .beginner: return beginner
         case .intermediate: return intermediate
-        case .advanced: return advanced
-        case .expert: return expert
+        case .advanced: return hard
+        case .expert: return advanced
         }
     }
 }

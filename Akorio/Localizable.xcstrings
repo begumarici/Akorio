@@ -58,6 +58,16 @@
     "%lld" : {
       "shouldTranslate" : false
     },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
     "+" : {
       "shouldTranslate" : false
     },
@@ -65,13 +75,52 @@
       "shouldTranslate" : false
     },
     "5" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5"
+          }
+        }
+      }
     },
     "7" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7"
+          }
+        }
+      }
     },
     "7sus4" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7sus4"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7sus4"
+          }
+        }
+      }
     },
     "Akor diyagramı göster" : {
       "localizations" : {
@@ -214,6 +263,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AKOR TİPİ"
+          }
+        }
+      }
+    },
+    "AKOR TÜRLERİ" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CHORD TYPES"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AKOR TÜRLERİ"
           }
         }
       }
@@ -497,6 +562,22 @@
         }
       }
     },
+    "Bu türün tamamını seç" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select all chords of this type"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu türün tamamını seç"
+          }
+        }
+      }
+    },
     "Daha zorlu akorlar ve geçişler" : {
       "localizations" : {
         "en" : {
@@ -563,7 +644,20 @@
       }
     },
     "Dim7" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dim7"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dim7"
+          }
+        }
+      }
     },
     "Durdur" : {
       "localizations" : {
@@ -1346,6 +1440,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tüm akorlar, sınırlarını zorla"
+          }
+        }
+      }
+    },
+    "Tür seçimini kaldır" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect this chord type"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tür seçimini kaldır"
           }
         }
       }

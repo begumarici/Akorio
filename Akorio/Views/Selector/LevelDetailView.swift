@@ -10,6 +10,7 @@ import SwiftUI
 struct LevelDetailView: View {
     let viewModel: AppViewModel
     let level: ChordLevel
+    @State private var expandedQualities: Set<ChordQuality> = []
 
     private var selectedCount: Int {
         viewModel.chords.filter { level.chordLabels.contains($0.label) }.count
@@ -53,16 +54,10 @@ struct LevelDetailView: View {
                     }
                 }
 
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 105, maximum: 180), spacing: 10)], spacing: 10) {
-                    ForEach(level.chordLabels, id: \.self) { label in
-                        ChordCard(
-                            label: label,
-                            isSelected: viewModel.chords.contains { $0.label == label }
-                        ) {
-                            AkorioHaptics.selection(enabled: viewModel.hapticEnabled)
-                            viewModel.toggleChordLabel(label)
-                        }
-                    }
+                if level == .expert {
+                    advancedChordGroups
+                } else {
+                    chordGrid(labels: level.chordLabels)
                 }
             }
             .padding(20)
@@ -78,6 +73,106 @@ struct LevelDetailView: View {
                     .padding(.vertical, 12)
                     .akorioContentWidth()
                     .background(.ultraThinMaterial)
+            }
+        }
+    }
+
+    // MARK: - Advanced chord library
+    private var advancedChordGroups: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(String(localized: "AKOR TÜRLERİ"))
+                .font(.akorio(12, .bold))
+                .foregroundColor(.akorioText)
+
+            ForEach(ChordQuality.allCases) { quality in
+                let labels = labels(for: quality)
+                qualitySection(quality: quality, labels: labels, allLabels: labels)
+            }
+        }
+    }
+
+    private func qualitySection(
+        quality: ChordQuality,
+        labels: [String],
+        allLabels: [String]
+    ) -> some View {
+        let selectedCount = allLabels.filter { label in
+            viewModel.chords.contains { $0.label == label }
+        }.count
+        let isExpanded = expandedQualities.contains(quality)
+        let allSelected = selectedCount == allLabels.count
+        let selectionAccessibilityLabel = allSelected
+            ? String(localized: "Tür seçimini kaldır")
+            : String(localized: "Bu türün tamamını seç")
+
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Button {
+                    withAnimation {
+                        if expandedQualities.contains(quality) {
+                            expandedQualities.remove(quality)
+                        } else {
+                            expandedQualities.insert(quality)
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                            .font(.akorio(11, .bold))
+                            .frame(width: 14)
+
+                        Text(quality.displayName)
+                            .font(.akorio(15, .semibold))
+
+                        Spacer()
+
+                        Text("\(selectedCount) / \(allLabels.count)")
+                            .font(.akorio(12))
+                            .foregroundColor(.akorioNeutral500)
+                    }
+                    .foregroundColor(.akorioText)
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    AkorioHaptics.impact(enabled: viewModel.hapticEnabled)
+                    if allSelected {
+                        viewModel.deselectAllChordLabels(allLabels)
+                    } else {
+                        viewModel.selectAllChordLabels(allLabels)
+                    }
+                } label: {
+                    Image(systemName: allSelected ? "checkmark.circle.fill" : "checkmark.circle")
+                        .foregroundColor(allSelected ? .akorioAccent500 : .akorioNeutral500)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(selectionAccessibilityLabel)
+            }
+
+            if isExpanded {
+                chordGrid(labels: labels)
+            }
+        }
+        .padding(12)
+        .overlay(alignment: .bottom) {
+            Divider()
+        }
+    }
+
+    private func labels(for quality: ChordQuality) -> [String] {
+        akorioRootNotes.map { ChordIdentity(root: $0, quality: quality).label }
+    }
+
+    private func chordGrid(labels: [String]) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 105, maximum: 180), spacing: 10)], spacing: 10) {
+            ForEach(labels, id: \.self) { label in
+                ChordCard(
+                    label: label,
+                    isSelected: viewModel.chords.contains { $0.label == label }
+                ) {
+                    AkorioHaptics.selection(enabled: viewModel.hapticEnabled)
+                    viewModel.toggleChordLabel(label)
+                }
             }
         }
     }
