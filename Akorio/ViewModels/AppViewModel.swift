@@ -17,6 +17,7 @@ enum AppScreen: Hashable {
 
 enum AppTab: Hashable {
     case home
+    case library
     case tuner
 }
 
