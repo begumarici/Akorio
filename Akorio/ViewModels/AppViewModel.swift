@@ -332,7 +332,7 @@ final class AppViewModel {
     }
 
     func pausePracticeSession() {
-        if metronome.isCountingIn {
+        if metronome.isCountingIn && !metronome.hasStartedPractice {
             metronome.stop()
             isPracticePaused = false
             return

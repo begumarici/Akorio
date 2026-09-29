@@ -56,7 +56,10 @@ final class MetronomeEngine {
     private(set) var chordTransitionCount = 0
 
     private var accumulatedPracticeDuration: TimeInterval = 0
-    private var pausedDuringCountIn = false
+
+    var hasStartedPractice: Bool {
+        practiceStartedAt != nil || accumulatedPracticeDuration > 0
+    }
 
     var elapsedPracticeSeconds: Int {
         let activeDuration: TimeInterval
@@ -81,7 +84,6 @@ final class MetronomeEngine {
         practiceStartedAt = nil
         chordTransitionCount = 0
         accumulatedPracticeDuration = 0
-        pausedDuringCountIn = false
 
         let beatSeconds = 60.0 / Double(config.bpm)
         // The first chord is always the first one the user selected — not
@@ -120,8 +122,6 @@ final class MetronomeEngine {
             self.practiceStartedAt = nil
         }
 
-        pausedDuringCountIn = false
-
         stopTimer()
         isPlaying = false
         isCountingIn = false
@@ -135,7 +135,6 @@ final class MetronomeEngine {
 
     func pause() {
         guard isPlaying else { return }
-        pausedDuringCountIn = isCountingIn
 
         if let practiceStartedAt {
             accumulatedPracticeDuration += Date().timeIntervalSince(practiceStartedAt)
@@ -165,7 +164,6 @@ final class MetronomeEngine {
             countInLeft = config.beatsPerChord
             countInBeatsLeft = countInLeft
             isCountingIn = true
-            pausedDuringCountIn = false
 
             playClick(accent: true, config: config)
 
@@ -174,7 +172,6 @@ final class MetronomeEngine {
             }
         } else {
             isCountingIn = false
-            pausedDuringCountIn = false
             practiceStartedAt = Date()
 
             scheduleTimer(interval: currentBeatInterval) { [weak self] in
