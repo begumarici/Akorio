@@ -52,6 +52,22 @@ final class MetronomeEngine {
     private var loopCurrent = ""
     private var loopNext = ""
     private var countInLeft = 0
+    private(set) var practiceStartedAt: Date?
+    private(set) var chordTransitionCount = 0
+
+    private var accumulatedPracticeDuration: TimeInterval = 0
+    private var pausedDuringCountIn = false
+
+    var elapsedPracticeSeconds: Int {
+        let activeDuration: TimeInterval
+
+        if let practiceStartedAt {
+            activeDuration = Date().timeIntervalSince(practiceStartedAt)
+        } else {
+            activeDuration = 0
+        }
+        return max(0, Int(accumulatedPracticeDuration + activeDuration))
+    }
 
     func toggle() {
         if isPlaying {
@@ -61,6 +77,11 @@ final class MetronomeEngine {
 
         let config = configurationProvider()
         guard !config.chordLabels.isEmpty else { return }
+
+        practiceStartedAt = nil
+        chordTransitionCount = 0
+        accumulatedPracticeDuration = 0
+        pausedDuringCountIn = false
 
         let beatSeconds = 60.0 / Double(config.bpm)
         // The first chord is always the first one the user selected — not
@@ -94,6 +115,13 @@ final class MetronomeEngine {
     }
 
     func stop() {
+        if let practiceStartedAt {
+            accumulatedPracticeDuration += Date().timeIntervalSince(practiceStartedAt)
+            self.practiceStartedAt = nil
+        }
+
+        pausedDuringCountIn = false
+
         stopTimer()
         isPlaying = false
         isCountingIn = false
@@ -105,11 +133,61 @@ final class MetronomeEngine {
         beatInCurrentChord = -1
     }
 
+    func pause() {
+        guard isPlaying else { return }
+        pausedDuringCountIn = isCountingIn
+
+        if let practiceStartedAt {
+            accumulatedPracticeDuration += Date().timeIntervalSince(practiceStartedAt)
+            self.practiceStartedAt = nil
+        }
+
+        stopTimer()
+        isPlaying = false
+        isCountingIn = false
+    }
+
+    func resume() {
+        guard !isPlaying else { return }
+
+        let config = configurationProvider()
+        guard !config.chordLabels.isEmpty else { return }
+
+        currentBeatInterval = 60.0 / Double(config.bpm)
+        isPlaying = true
+
+        currentChordLabel = loopCurrent
+        nextChordLabel = loopNext
+        loopBeat = 0
+        beatInCurrentChord = 0
+
+        if config.countInEnabled {
+            countInLeft = config.beatsPerChord
+            countInBeatsLeft = countInLeft
+            isCountingIn = true
+            pausedDuringCountIn = false
+
+            playClick(accent: true, config: config)
+
+            scheduleTimer(interval: currentBeatInterval) { [weak self] in
+                self?.countInTick()
+            }
+        } else {
+            isCountingIn = false
+            pausedDuringCountIn = false
+            practiceStartedAt = Date()
+
+            scheduleTimer(interval: currentBeatInterval) { [weak self] in
+                self?.chordLoopTick()
+            }
+        }
+    }
+
     private func pickNextChord(from config: Configuration, excluding: String?) -> String {
         let labels = config.chordLabels
         guard !labels.isEmpty else { return "" }
         if labels.count == 1 { return labels[0] }
- 
+
         guard config.preventBackToBackRepeat else {
             return labels.randomElement() ?? ""
         }
@@ -141,8 +219,15 @@ final class MetronomeEngine {
         loopBeat += 1
         if loopBeat >= config.beatsPerChord {
             loopBeat = 0
+
+            let previousChord = loopCurrent
             loopCurrent = loopNext
             loopNext = pickNextChord(from: config, excluding: loopCurrent)
+
+            if loopCurrent != previousChord {
+                chordTransitionCount += 1
+            }
+
             currentChordLabel = loopCurrent
             nextChordLabel = loopNext
             beatInCurrentChord = loopBeat
@@ -155,6 +240,9 @@ final class MetronomeEngine {
     }
 
     private func startChordLoop(first: String, second: String, config: Configuration) {
+        if practiceStartedAt == nil {
+            practiceStartedAt = Date()
+        }
         loopBeat = 0
         loopCurrent = first
         loopNext = second

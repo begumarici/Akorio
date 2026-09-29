@@ -40,7 +40,7 @@ struct PracticeView: View {
             .font(.akorio(13, .medium))
             .padding(.horizontal, 20)
 
-            playButton
+            practiceControls
                 .padding(20)
         }
         .akorioContentWidth()
@@ -93,7 +93,7 @@ struct PracticeView: View {
                 Text(String(format: String(localized: "Sıradaki: %@"), viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel))
                     .font(.akorio(14 * scale))
                     .foregroundColor(.akorioNeutral500)
-            } else if viewModel.isPlaying {
+            } else if viewModel.isPlaying || viewModel.isPracticePaused {
                 if viewModel.showChordDiagram {
                     Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
                         .font(.akorio(32 * scale, .bold))
@@ -203,6 +203,29 @@ struct PracticeView: View {
     }
 
     // MARK: - Play button
+    @ViewBuilder
+    private var practiceControls: some View {
+        if viewModel.isPracticePaused {
+            HStack(spacing: 12) {
+                Button {
+                    viewModel.resumePracticeSession()
+                } label: {
+                    Label("Devam Et", systemImage: "play.fill")
+                }
+                .buttonStyle(AkorioPrimaryButtonStyle())
+
+                Button {
+                    viewModel.finishPracticeSession()
+                } label: {
+                    Label("Bitir", systemImage: "checkmark")
+                }
+                .buttonStyle(AkorioPrimaryButtonStyle())
+            }
+        } else {
+            playButton
+        }
+    }
+
     private var playButton: some View {
         Button {
             if !viewModel.isPlaying {

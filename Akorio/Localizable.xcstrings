@@ -138,6 +138,22 @@
         }
       }
     },
+    "Akor geçişi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chord transitions"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akor geçişi"
+          }
+        }
+      }
+    },
     "Akor Kütüphanesi" : {
       "localizations" : {
         "en" : {
@@ -399,6 +415,22 @@
         }
       }
     },
+    "Ana Sayfaya Dön" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return Home"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana Sayfaya Dön"
+          }
+        }
+      }
+    },
     "Aug" : {
       "localizations" : {
         "en" : {
@@ -543,6 +575,22 @@
         }
       }
     },
+    "Bitir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitir"
+          }
+        }
+      }
+    },
     "BPM" : {
       "shouldTranslate" : false
     },
@@ -578,6 +626,22 @@
         }
       }
     },
+    "ÇALIŞILAN AKORLAR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PRACTICED CHORDS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ÇALIŞILAN AKORLAR"
+          }
+        }
+      }
+    },
     "Daha zorlu akorlar ve geçişler" : {
       "localizations" : {
         "en" : {
@@ -595,7 +659,6 @@
       }
     },
     "Devam Et" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -815,6 +878,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haptik geri bildirim"
+          }
+        }
+      }
+    },
+    "Harika bir çalışma seansı!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Great practice session!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Harika bir çalışma seansı!"
           }
         }
       }
@@ -1236,6 +1315,38 @@
         }
       }
     },
+    "Pratik süresi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice time"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik süresi"
+          }
+        }
+      }
+    },
+    "Pratik tamamlandı" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice complete"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik tamamlandı"
+          }
+        }
+      }
+    },
     "Seçimi Kaldır" : {
       "localizations" : {
         "en" : {
@@ -1424,6 +1535,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tekrar Dene"
+          }
+        }
+      }
+    },
+    "Tekrar Pratik Yap" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice Again"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekrar Pratik Yap"
           }
         }
       }

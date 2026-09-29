@@ -10,6 +10,7 @@ import SwiftData
 
 enum AppScreen: Hashable {
     case practice
+    case practiceSummary
     case saved
     case settings
     case levelDetail(ChordLevel)
@@ -19,6 +20,14 @@ enum AppTab: Hashable {
     case home
     case library
     case tuner
+}
+
+struct PracticeSessionSummary: Hashable {
+    let durationSeconds: Int
+    let chordTransitionCount: Int
+    let bpm: Int
+    let beatsPerChord: Int
+    let chordLabels: [String]
 }
 
 @Observable
@@ -40,6 +49,8 @@ final class AppViewModel {
                 chords = []
                 bpm = defaultBpm
                 beatsPerChord = defaultBeatsPerChord
+                isPracticePaused = false
+                currentPracticeSummary = nil
             }
         }
     }
@@ -53,6 +64,8 @@ final class AppViewModel {
     var preventBackToBackRepeat = true
     var countInEnabled = true
     var metronomeSoundEnabled = true
+    var currentPracticeSummary: PracticeSessionSummary?
+    var isPracticePaused = false
 
     // MARK: - Save dialog
     var saveDialogOpen = false
@@ -158,6 +171,8 @@ final class AppViewModel {
 
     func goToPractice() {
         metronome.stop()
+        isPracticePaused = false
+        currentPracticeSummary = nil
         persistLastPracticeSession()
         path.append(.practice)
     }
@@ -264,6 +279,8 @@ final class AppViewModel {
         metronome.stop()
         persistLastPracticeSession()
         path = [.practice]
+        isPracticePaused = false
+        currentPracticeSummary = nil
     }
 
     var hasLastPracticeSession: Bool { !lastPracticeChordLabels.isEmpty }
@@ -282,6 +299,8 @@ final class AppViewModel {
         metronomeSoundEnabled = settingsRecord.lastPracticeMetronomeSoundEnabled
         metronome.stop()
         path = [.practice]
+        isPracticePaused = false
+        currentPracticeSummary = nil
     }
 
     func deleteSavedSet(_ savedSet: SavedChordSet) {
@@ -303,6 +322,61 @@ final class AppViewModel {
     var beatInCurrentChord: Int { metronome.beatInCurrentChord }
 
     func togglePlay() {
-        metronome.toggle()
+        if metronome.isPlaying {
+            pausePracticeSession()
+        } else {
+            currentPracticeSummary = nil
+            isPracticePaused = false
+            metronome.toggle()
+        }
+    }
+
+    func pausePracticeSession() {
+        if metronome.isCountingIn {
+            metronome.stop()
+            isPracticePaused = false
+            return
+        }
+        metronome.pause()
+        isPracticePaused = true
+    }
+
+    func resumePracticeSession() {
+        metronome.resume()
+        isPracticePaused = false
+    }
+
+    func finishPracticeSession() {
+        let durationSeconds = metronome.elapsedPracticeSeconds
+        let transitionCount = metronome.chordTransitionCount
+
+        metronome.stop()
+        isPracticePaused = false
+
+        guard durationSeconds > 0 else { return }
+
+        currentPracticeSummary = PracticeSessionSummary(
+            durationSeconds: durationSeconds,
+            chordTransitionCount: transitionCount,
+            bpm: bpm,
+            beatsPerChord: beatsPerChord,
+            chordLabels: chords.map(\.label)
+        )
+
+        path.append(.practiceSummary)
+    }
+
+    func repeatPracticeSession() {
+        currentPracticeSummary = nil
+        isPracticePaused = false
+
+        if path.last == .practiceSummary {
+            path.removeLast()
+        }
+    }
+
+    func returnHomeFromPracticeSummary() {
+        currentPracticeSummary = nil
+        path = []
     }
 }

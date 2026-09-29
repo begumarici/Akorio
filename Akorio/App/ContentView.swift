@@ -59,6 +59,14 @@ struct ContentView: View {
                         SavedSetsView(viewModel: viewModel)
                     case .practice:
                         PracticeView(viewModel: viewModel)
+                    case .practiceSummary:
+                        if let summary = viewModel.currentPracticeSummary {
+                            PracticeSummaryView(
+                                summary: summary,
+                                onRepeat: viewModel.repeatPracticeSession,
+                                onReturnHome: viewModel.returnHomeFromPracticeSummary
+                            )
+                        }
                     case .settings:
                         SettingsView(viewModel: viewModel)
                     case .levelDetail(let level):
