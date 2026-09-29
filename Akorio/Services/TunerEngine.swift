@@ -50,7 +50,7 @@ final class TunerEngine {
     var failedToStart = false
 
     private let engine = AVAudioEngine()
-    
+
     private let chimePlayer = AVAudioPlayerNode()
     private var chimeBuffer: AVAudioPCMBuffer?
     private var allTunedChimeBuffer: AVAudioPCMBuffer?

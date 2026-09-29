@@ -41,7 +41,7 @@ struct SelectorView: View {
                 .foregroundColor(.akorioText)
 
             Spacer()
-            
+
             Button {
                 viewModel.goToSaved()
             } label: {

@@ -24,7 +24,7 @@ enum AkorioFont {
 
 extension Font {
     /// Body/UI text — Apple's system font (San Francisco), scaling with the
-    /// user's Dynamic Type setting. 
+    /// user's Dynamic Type setting.
     static func akorio(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         let base = UIFont.systemFont(ofSize: size, weight: weight.uiKitWeight)
         return Font(UIFontMetrics.default.scaledFont(for: base, maximumPointSize: size * 1.3))
