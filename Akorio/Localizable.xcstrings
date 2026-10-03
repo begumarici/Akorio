@@ -1187,6 +1187,22 @@
         }
       }
     },
+    "Mevcut pratik seansı sona erecek." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The current practice session will end."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mevcut pratik seansı sona erecek."
+          }
+        }
+      }
+    },
     "Mikrofon başlatılamadı." : {
       "localizations" : {
         "en" : {
@@ -1343,6 +1359,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pratik tamamlandı"
+          }
+        }
+      }
+    },
+    "Pratikten Çık" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exit Practice"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratikten Çık"
+          }
+        }
+      }
+    },
+    "Pratikten çıkmak istiyor musun?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to exit practice?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratikten çıkmak istiyor musun?"
           }
         }
       }

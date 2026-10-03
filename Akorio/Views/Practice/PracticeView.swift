@@ -59,11 +59,24 @@ struct PracticeView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Button {
-                viewModel.goBack()
+                viewModel.requestPracticeExit()
             } label: {
                 Image(systemName: "chevron.left")
             }
             .buttonStyle(AkorioIconButtonStyle())
+            .alert(
+                "Pratikten çıkmak istiyor musun?",
+                isPresented: $viewModel.showPracticeExitAlert
+            ) {
+                Button("Vazgeç", role: .cancel) {
+                    viewModel.cancelPracticeExit()
+                }
+                Button("Pratikten Çık", role: .destructive) {
+                    viewModel.confirmPracticeExit()
+                }
+            } message: {
+                Text("Mevcut pratik seansı sona erecek.")
+            }
 
             Text("Pratik")
                 .font(.akorioSerif(24, .semibold))

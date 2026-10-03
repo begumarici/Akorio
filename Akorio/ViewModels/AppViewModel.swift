@@ -9,8 +9,6 @@ import SwiftUI
 import SwiftData
 
 enum AppScreen: Hashable {
-    case practice
-    case practiceSummary
     case saved
     case settings
     case levelDetail(ChordLevel)
@@ -66,6 +64,8 @@ final class AppViewModel {
     var metronomeSoundEnabled = true
     var currentPracticeSummary: PracticeSessionSummary?
     var isPracticePaused = false
+    var isPracticePresented = false
+    var showPracticeExitAlert = false
 
     // MARK: - Save dialog
     var saveDialogOpen = false
@@ -173,8 +173,9 @@ final class AppViewModel {
         metronome.stop()
         isPracticePaused = false
         currentPracticeSummary = nil
+        showPracticeExitAlert = false
         persistLastPracticeSession()
-        path.append(.practice)
+        isPracticePresented = true
     }
 
     /// Pops one screen — used by every back button. Mirrors the swipe-back
@@ -182,6 +183,43 @@ final class AppViewModel {
     func goBack() {
         guard !path.isEmpty else { return }
         path.removeLast()
+    }
+
+    func requestPracticeExit() {
+        let shouldConfirmExit =
+            metronome.isPlaying ||
+            isPracticePaused ||
+            metronome.hasStartedPractice
+
+        guard shouldConfirmExit else {
+            closePracticeFlow()
+            return
+        }
+
+        if metronome.isPlaying {
+            metronome.pause()
+        }
+
+        isPracticePaused = metronome.hasStartedPractice
+        showPracticeExitAlert = true
+    }
+
+    func cancelPracticeExit() {
+        showPracticeExitAlert = false
+    }
+
+    func confirmPracticeExit() {
+        closePracticeFlow()
+    }
+
+    private func closePracticeFlow() {
+        metronome.stop()
+        persistLastPracticeSession()
+
+        isPracticePaused = false
+        currentPracticeSummary = nil
+        showPracticeExitAlert = false
+        isPracticePresented = false
     }
 
     // MARK: - Chord selection
@@ -278,9 +316,11 @@ final class AppViewModel {
         metronomeSoundEnabled = savedSet.metronomeSoundEnabled
         metronome.stop()
         persistLastPracticeSession()
-        path = [.practice]
+
         isPracticePaused = false
         currentPracticeSummary = nil
+        showPracticeExitAlert = false
+        isPracticePresented = true
     }
 
     var hasLastPracticeSession: Bool { !lastPracticeChordLabels.isEmpty }
@@ -298,9 +338,11 @@ final class AppViewModel {
         countInEnabled = settingsRecord.lastPracticeCountInEnabled
         metronomeSoundEnabled = settingsRecord.lastPracticeMetronomeSoundEnabled
         metronome.stop()
-        path = [.practice]
+
         isPracticePaused = false
         currentPracticeSummary = nil
+        showPracticeExitAlert = false
+        isPracticePresented = true
     }
 
     func deleteSavedSet(_ savedSet: SavedChordSet) {
@@ -362,21 +404,25 @@ final class AppViewModel {
             beatsPerChord: beatsPerChord,
             chordLabels: chords.map(\.label)
         )
-
-        path.append(.practiceSummary)
     }
 
     func repeatPracticeSession() {
         currentPracticeSummary = nil
         isPracticePaused = false
-
-        if path.last == .practiceSummary {
-            path.removeLast()
-        }
     }
 
     func returnHomeFromPracticeSummary() {
+        metronome.stop()
         currentPracticeSummary = nil
+        isPracticePaused = false
+        showPracticeExitAlert = false
+        isPracticePresented = false
+
+        selectedTab = .home
         path = []
+
+        chords = []
+        bpm = defaultBpm
+        beatsPerChord = defaultBeatsPerChord
     }
 }

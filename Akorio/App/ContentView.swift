@@ -14,29 +14,42 @@ struct ContentView: View {
     @State private var viewModel = AppViewModel()
 
     var body: some View {
-        TabView(selection: $viewModel.selectedTab) {
-            homeTab
-                .tabItem { Label("Ana Sayfa", systemImage: "house.fill") }
-                .tag(AppTab.home)
+        ZStack {
+            TabView(selection: $viewModel.selectedTab) {
+                homeTab
+                    .tabItem { Label("Ana Sayfa", systemImage: "house.fill") }
+                    .tag(AppTab.home)
 
-            libraryTab
-                .tabItem { Label("Kütüphane", systemImage: "books.vertical.fill") }
-                .tag(AppTab.library)
+                libraryTab
+                    .tabItem { Label("Kütüphane", systemImage: "books.vertical.fill") }
+                    .tag(AppTab.library)
 
-            tunerTab
-                .tabItem { Label("Akort Aleti", systemImage: "tuningfork") }
-                .tag(AppTab.tuner)
+                tunerTab
+                    .tabItem { Label("Akort Aleti", systemImage: "tuningfork") }
+                    .tag(AppTab.tuner)
+            }
+            .tint(.akorioAccent400)
+
+            if viewModel.isPracticePresented {
+                PracticeFlowView(viewModel: viewModel)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background {
+                        AkorioBackground()
+                            .ignoresSafeArea()
+                    }
+                    .transition(.move(edge: .trailing))
+                    .zIndex(1)
+            }
         }
-        .tint(.akorioAccent400)
+        .animation(
+            .easeInOut(duration: 0.28),
+            value: viewModel.isPracticePresented
+        )
         .preferredColorScheme(.dark)
         .onAppear {
             viewModel.configure(context: modelContext)
         }
         .onChange(of: scenePhase) { _, newPhase in
-            // Backgrounding tears down the audio session's IO cycle; if the
-            // metronome timer fires after that, AVAudioPlayerNode.play()
-            // throws an uncaught NSException and crashes the app. Stop the
-            // session the moment we leave the foreground.
             if newPhase != .active {
                 viewModel.metronome.stop()
             }
@@ -57,16 +70,6 @@ struct ContentView: View {
                     switch screen {
                     case .saved:
                         SavedSetsView(viewModel: viewModel)
-                    case .practice:
-                        PracticeView(viewModel: viewModel)
-                    case .practiceSummary:
-                        if let summary = viewModel.currentPracticeSummary {
-                            PracticeSummaryView(
-                                summary: summary,
-                                onRepeat: viewModel.repeatPracticeSession,
-                                onReturnHome: viewModel.returnHomeFromPracticeSummary
-                            )
-                        }
                     case .settings:
                         SettingsView(viewModel: viewModel)
                     case .levelDetail(let level):
