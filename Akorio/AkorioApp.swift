@@ -18,6 +18,7 @@ struct AkorioApp: App {
         let schema = Schema([
             SavedChordSet.self,
             AppSettings.self,
+            PracticeSession.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

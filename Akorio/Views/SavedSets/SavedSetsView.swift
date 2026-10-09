@@ -159,5 +159,5 @@ struct SavedSetsView: View {
         AkorioBackground()
         SavedSetsView(viewModel: AppViewModel())
     }
-    .modelContainer(for: [SavedChordSet.self, AppSettings.self], inMemory: true)
+    .modelContainer(for: [SavedChordSet.self, AppSettings.self, PracticeSession.self], inMemory: true)
 }

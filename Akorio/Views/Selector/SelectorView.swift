@@ -14,11 +14,19 @@ struct SelectorView: View {
     @Query(sort: \SavedChordSet.createdAt, order: .reverse)
     private var savedSets: [SavedChordSet]
 
+    @Query(sort: \PracticeSession.completedAt, order: .reverse)
+    private var practiceSessions: [PracticeSession]
+
+    private var practiceStatistics: PracticeStatistics {
+        PracticeStatisticsCalculator.calculate(from: practiceSessions)
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 header
                 greetingSection
+                progressSection
                 if viewModel.hasLastPracticeSession {
                     continueSection
                 }
@@ -31,6 +39,62 @@ struct SelectorView: View {
         // direction; only bounce when the content actually overflows.
         .scrollBounceBehavior(.basedOnSize, axes: [.vertical, .horizontal])
         .akorioIntegralWidth()
+    }
+
+    // MARK: - Progress
+    private var progressSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("İLERLEME")
+                    .sectionHeaderStyle()
+
+                Spacer()
+
+                Button("Geçmişi Gör") {
+                    viewModel.goToPracticeHistory()
+                }
+                .font(.akorio(12, .medium))
+                .foregroundColor(.akorioAccent300)
+            }
+
+            Button {
+                viewModel.goToPracticeHistory()
+            } label: {
+                HStack(spacing: 8) {
+                    ProgressMetric(
+                        icon: "flame.fill",
+                        value: "\(practiceStatistics.currentStreak)",
+                        title: String(localized: "Günlük seri")
+                    )
+
+                    ProgressMetric(
+                        icon: "clock.fill",
+                        value: formattedTotalDuration,
+                        title: String(localized: "Toplam süre")
+                    )
+
+                    ProgressMetric(
+                        icon: "checkmark.circle.fill",
+                        value: "\(practiceStatistics.completedSessionCount)",
+                        title: String(localized: "Seans")
+                    )
+                }
+                .akorioCard()
+            }
+            .buttonStyle(AkorioPressableCardStyle())
+        }
+    }
+
+    private var formattedTotalDuration: String {
+        let totalMinutes = practiceStatistics.totalDurationSeconds / 60
+        let hours = totalMinutes / 60
+        let minutes = totalMinutes % 60
+
+        if hours > 0 {
+            return String(format: String(localized: "%lld sa %lld dk"), hours, minutes)
+        }
+
+        return String(format: String(localized: "%lld dk"), totalMinutes)
     }
 
     // MARK: - Header
@@ -207,6 +271,32 @@ private struct LevelRow: View {
     }
 }
 
+private struct ProgressMetric: View {
+    let icon: String
+    let value: String
+    let title: String
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.akorio(15, .semibold))
+                .foregroundColor(.akorioAccent400)
+
+            Text(value)
+                .font(.akorio(17, .semibold))
+                .foregroundColor(.akorioText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+
+            Text(title)
+                .font(.akorio(10))
+                .foregroundColor(.akorioNeutral500)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
 // MARK: - Section header text style
 private extension Text {
     func sectionHeaderStyle() -> some View {
@@ -226,5 +316,5 @@ private extension Text {
         AkorioBackground()
         SelectorView(viewModel: viewModel)
     }
-    .modelContainer(for: [SavedChordSet.self, AppSettings.self], inMemory: true)
+    .modelContainer(for: [SavedChordSet.self, AppSettings.self, PracticeSession.self], inMemory: true)
 }

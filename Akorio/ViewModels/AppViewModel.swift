@@ -10,6 +10,7 @@ import SwiftData
 
 enum AppScreen: Hashable {
     case saved
+    case practiceHistory
     case settings
     case levelDetail(ChordLevel)
 }
@@ -167,6 +168,7 @@ final class AppViewModel {
     // MARK: - Navigation
     func goToSettings() { path.append(.settings) }
     func goToSaved() { path.append(.saved) }
+    func goToPracticeHistory() { path.append(.practiceHistory) }
     func goToLevelDetail(_ level: ChordLevel) { path.append(.levelDetail(level)) }
 
     func goToPractice() {
@@ -397,13 +399,31 @@ final class AppViewModel {
 
         guard durationSeconds > 0 else { return }
 
-        currentPracticeSummary = PracticeSessionSummary(
+        let summary = PracticeSessionSummary(
             durationSeconds: durationSeconds,
             chordTransitionCount: transitionCount,
             bpm: bpm,
             beatsPerChord: beatsPerChord,
             chordLabels: chords.map(\.label)
         )
+
+        saveCompletedPracticeSession(summary)
+        currentPracticeSummary = summary
+    }
+
+    private func saveCompletedPracticeSession(_ summary: PracticeSessionSummary) {
+        guard let modelContext else { return }
+
+        let session = PracticeSession(
+            durationSeconds: summary.durationSeconds,
+            chordTransitionCount: summary.chordTransitionCount,
+            bpm: summary.bpm,
+            beatsPerChord: summary.beatsPerChord,
+            chordLabels: summary.chordLabels
+        )
+
+        modelContext.insert(session)
+        try? modelContext.save()
     }
 
     func repeatPracticeSession() {

@@ -70,6 +70,8 @@ struct ContentView: View {
                     switch screen {
                     case .saved:
                         SavedSetsView(viewModel: viewModel)
+                    case .practiceHistory:
+                        PracticeHistoryView(viewModel: viewModel)
                     case .settings:
                         SettingsView(viewModel: viewModel)
                     case .levelDetail(let level):
@@ -104,5 +106,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [SavedChordSet.self, AppSettings.self], inMemory: true)
+        .modelContainer(for: [SavedChordSet.self, AppSettings.self, PracticeSession.self], inMemory: true)
 }
