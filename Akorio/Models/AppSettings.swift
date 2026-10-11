@@ -27,6 +27,7 @@ final class AppSettings {
     var lastPracticePreventBackToBackRepeat: Bool = true
     var lastPracticeCountInEnabled: Bool = true
     var lastPracticeMetronomeSoundEnabled: Bool = true
+    var hasRequestedAppStoreReview: Bool = false
 
     init(
         metronomeSound: MetronomeSound = .click,

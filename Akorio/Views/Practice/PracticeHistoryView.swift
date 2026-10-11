@@ -16,6 +16,7 @@ struct PracticeHistoryView: View {
     private var sessions: [PracticeSession]
 
     @State private var pendingDelete: PracticeSession?
+    @State private var isClearHistoryConfirmationPresented = false
 
     private var statistics: PracticeStatistics {
         PracticeStatisticsCalculator.calculate(from: sessions)
@@ -60,6 +61,17 @@ struct PracticeHistoryView: View {
                 pendingDelete = nil
             }
         }
+        .alert(
+            "Tüm pratik geçmişi silinsin mi?",
+            isPresented: $isClearHistoryConfirmationPresented
+        ) {
+            Button("Tümünü Sil", role: .destructive) {
+                deleteAllSessions()
+            }
+            Button("Vazgeç", role: .cancel) {}
+        } message: {
+            Text("Bu işlem geri alınamaz.")
+        }
     }
 
     private var header: some View {
@@ -100,11 +112,21 @@ struct PracticeHistoryView: View {
     }
 
     private var sessionList: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("TAMAMLANAN SEANSLAR")
-                .font(.akorio(11, .medium))
-                .tracking(0.6)
-                .foregroundColor(.akorioNeutral500)
+        LazyVStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("TAMAMLANAN SEANSLAR")
+                    .font(.akorio(11, .medium))
+                    .tracking(0.6)
+                    .foregroundColor(.akorioNeutral500)
+
+                Spacer()
+
+                Button("Tümünü Sil", role: .destructive) {
+                    isClearHistoryConfirmationPresented = true
+                }
+                .font(.akorio(12, .medium))
+                .foregroundColor(.red)
+            }
 
             ForEach(sessions) { session in
                 sessionRow(session)
@@ -146,6 +168,13 @@ struct PracticeHistoryView: View {
             .buttonStyle(AkorioIconButtonStyle(size: 32))
         }
         .akorioCard()
+    }
+
+    private func deleteAllSessions() {
+        for session in sessions {
+            modelContext.delete(session)
+        }
+        try? modelContext.save()
     }
 
     private var emptyState: some View {

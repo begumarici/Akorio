@@ -42,6 +42,17 @@ struct PracticeStatistics {
     let completedSessionCount: Int
 }
 
+enum ReviewRequestPolicy {
+    static let minimumCompletedSessionCount = 5
+
+    static func isEligible(
+        completedSessionCount: Int,
+        hasRequestedReview: Bool
+    ) -> Bool {
+        completedSessionCount >= minimumCompletedSessionCount && !hasRequestedReview
+    }
+}
+
 enum PracticeStatisticsCalculator {
     static func calculate(
         from sessions: [PracticeSession],

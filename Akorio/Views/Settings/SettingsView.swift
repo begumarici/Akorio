@@ -170,6 +170,24 @@ struct SettingsView: View {
 
                 feedbackRow
 
+                Button {
+                    viewModel.appStoreReviewRequestWasHandled()
+                    guard let url = URL(
+                        string: "https://apps.apple.com/app/id6794922746?action=write-review"
+                    ) else { return }
+                    UIApplication.shared.open(url)
+                } label: {
+                    HStack {
+                        Text("Akorio'yu Değerlendir").foregroundColor(.akorioText)
+                        Spacer()
+                        Text("›").foregroundColor(.akorioNeutral500)
+                    }
+                    .font(.akorio(14))
+                    .padding(14)
+                    .background(Color.akorioSurface)
+                }
+                .buttonStyle(.plain)
+
                 Link(destination: URL(string: "https://begumarici.github.io/akorio-privacy-policy")!) {
                     HStack {
                         Text("Gizlilik Politikası").foregroundColor(.akorioText)

@@ -86,6 +86,28 @@ struct PracticeStatisticsCalculatorTests {
         #expect(statistics.currentStreak == 0)
     }
 
+    @Test("Review request becomes eligible after five completed sessions")
+    func reviewRequestEligibility() {
+        #expect(
+            ReviewRequestPolicy.isEligible(
+                completedSessionCount: 5,
+                hasRequestedReview: false
+            )
+        )
+        #expect(
+            !ReviewRequestPolicy.isEligible(
+                completedSessionCount: 4,
+                hasRequestedReview: false
+            )
+        )
+        #expect(
+            !ReviewRequestPolicy.isEligible(
+                completedSessionCount: 5,
+                hasRequestedReview: true
+            )
+        )
+    }
+
     private func calculate(sessions: [PracticeSession], now: Date) -> PracticeStatistics {
         PracticeStatisticsCalculator.calculate(
             from: sessions,

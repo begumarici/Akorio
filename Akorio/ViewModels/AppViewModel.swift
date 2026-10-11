@@ -67,6 +67,7 @@ final class AppViewModel {
     var isPracticePaused = false
     var isPracticePresented = false
     var showPracticeExitAlert = false
+    var shouldRequestReview = false
 
     // MARK: - Save dialog
     var saveDialogOpen = false
@@ -444,5 +445,28 @@ final class AppViewModel {
         chords = []
         bpm = defaultBpm
         beatsPerChord = defaultBeatsPerChord
+
+        scheduleReviewRequestIfEligible()
+    }
+
+    private func scheduleReviewRequestIfEligible() {
+        guard let modelContext, let settingsRecord else { return }
+        guard let completedSessionCount = try? modelContext.fetchCount(FetchDescriptor<PracticeSession>()) else {
+            return
+        }
+        guard ReviewRequestPolicy.isEligible(
+            completedSessionCount: completedSessionCount,
+            hasRequestedReview: settingsRecord.hasRequestedAppStoreReview
+        ) else {
+            return
+        }
+
+        shouldRequestReview = true
+    }
+
+    func appStoreReviewRequestWasHandled() {
+        shouldRequestReview = false
+        settingsRecord?.hasRequestedAppStoreReview = true
+        try? modelContext?.save()
     }
 }

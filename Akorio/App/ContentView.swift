@@ -7,10 +7,12 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.requestReview) private var requestReview
     @State private var viewModel = AppViewModel()
 
     var body: some View {
@@ -52,6 +54,16 @@ struct ContentView: View {
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase != .active {
                 viewModel.metronome.stop()
+            }
+        }
+        .onChange(of: viewModel.shouldRequestReview) { _, shouldRequestReview in
+            guard shouldRequestReview else { return }
+
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(800))
+                guard viewModel.shouldRequestReview else { return }
+                requestReview()
+                viewModel.appStoreReviewRequestWasHandled()
             }
         }
     }

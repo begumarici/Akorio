@@ -227,6 +227,22 @@
         }
       }
     },
+    "Bu işlem geri alınamaz." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action cannot be undone."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu işlem geri alınamaz."
+          }
+        }
+      }
+    },
     "Geçmişi Gör" : {
       "localizations" : {
         "en" : {
@@ -351,6 +367,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toplam süre"
+          }
+        }
+      }
+    },
+    "Tüm pratik geçmişi silinsin mi?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all practice history?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm pratik geçmişi silinsin mi?"
+          }
+        }
+      }
+    },
+    "Tümünü Sil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete All"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü Sil"
+          }
+        }
+      }
+    },
+    "Akorio'yu Değerlendir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate Akorio"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorio'yu Değerlendir"
           }
         }
       }
