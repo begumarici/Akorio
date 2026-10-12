@@ -22,6 +22,8 @@ final class SavedChordSet {
     var preventBackToBackRepeat: Bool = true
     var countInEnabled: Bool
     var metronomeSoundEnabled: Bool
+    var targetDurationMinutes: Int? = nil
+    var accentFirstBeat: Bool = true
     var createdAt: Date
 
     init(
@@ -31,7 +33,9 @@ final class SavedChordSet {
         beatsPerChord: Int,
         preventBackToBackRepeat: Bool,
         countInEnabled: Bool,
-        metronomeSoundEnabled: Bool
+        metronomeSoundEnabled: Bool,
+        targetDurationMinutes: Int? = nil,
+        accentFirstBeat: Bool = true
     ) {
         self.id = UUID()
         self.name = name
@@ -41,6 +45,8 @@ final class SavedChordSet {
         self.preventBackToBackRepeat = preventBackToBackRepeat
         self.countInEnabled = countInEnabled
         self.metronomeSoundEnabled = metronomeSoundEnabled
+        self.targetDurationMinutes = targetDurationMinutes
+        self.accentFirstBeat = accentFirstBeat
         self.createdAt = Date()
     }
 

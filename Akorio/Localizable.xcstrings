@@ -23,6 +23,22 @@
         }
       }
     },
+    "%@ · %lld geçiş · %lld BPM" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$lld transitions · %3$lld BPM"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$lld geçiş · %3$lld BPM"
+          }
+        }
+      }
+    },
     "%@ / %@ akor seçildi" : {
       "localizations" : {
         "en" : {
@@ -61,22 +77,6 @@
     "%lld / %lld" : {
       "shouldTranslate" : false
     },
-    "%@ · %lld geçiş · %lld BPM" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$lld transitions · %3$lld BPM"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$lld geçiş · %3$lld BPM"
-          }
-        }
-      }
-    },
     "%lld dk" : {
       "localizations" : {
         "en" : {
@@ -89,6 +89,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld dk"
+          }
+        }
+      }
+    },
+    "%lld dk ✓" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min ✓"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dk ✓"
+          }
+        }
+      }
+    },
+    "%lld dk hedef tamamlandı" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min goal completed"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dk hedef tamamlandı"
           }
         }
       }
@@ -207,214 +239,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Akor Kütüphanesi"
-          }
-        }
-      }
-    },
-    "Bu pratik kaydı silinsin mi?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete this practice session?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu pratik kaydı silinsin mi?"
-          }
-        }
-      }
-    },
-    "Bu işlem geri alınamaz." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This action cannot be undone."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu işlem geri alınamaz."
-          }
-        }
-      }
-    },
-    "Geçmişi Gör" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "View History"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geçmişi Gör"
-          }
-        }
-      }
-    },
-    "Günlük seri" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daily streak"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Günlük seri"
-          }
-        }
-      }
-    },
-    "İLERLEME" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PROGRESS"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İLERLEME"
-          }
-        }
-      }
-    },
-    "Pratik Geçmişi" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Practice History"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pratik Geçmişi"
-          }
-        }
-      }
-    },
-    "Seans" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessions"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seans"
-          }
-        }
-      }
-    },
-    "TAMAMLANAN SEANSLAR" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "COMPLETED SESSIONS"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TAMAMLANAN SEANSLAR"
-          }
-        }
-      }
-    },
-    "Tamamladığın pratik seansları burada görüntülenir." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your completed practice sessions will appear here."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tamamladığın pratik seansları burada görüntülenir."
-          }
-        }
-      }
-    },
-    "Toplam süre" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total time"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toplam süre"
-          }
-        }
-      }
-    },
-    "Tüm pratik geçmişi silinsin mi?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete all practice history?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm pratik geçmişi silinsin mi?"
-          }
-        }
-      }
-    },
-    "Tümünü Sil" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete All"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tümünü Sil"
-          }
-        }
-      }
-    },
-    "Akorio'yu Değerlendir" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rate Akorio"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akorio'yu Değerlendir"
           }
         }
       }
@@ -567,6 +391,22 @@
         }
       }
     },
+    "Akorio'yu Değerlendir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate Akorio"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorio'yu Değerlendir"
+          }
+        }
+      }
+    },
     "Akorlara göz at, pozisyonlarını incele" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -644,6 +484,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AKORU SEÇ"
+          }
+        }
+      }
+    },
+    "Akorun ilk vuruşunu vurgula" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accent the chord's first beat"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akorun ilk vuruşunu vurgula"
           }
         }
       }
@@ -840,6 +696,22 @@
         }
       }
     },
+    "Bitti" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitti"
+          }
+        }
+      }
+    },
     "BPM" : {
       "shouldTranslate" : false
     },
@@ -855,6 +727,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu akor tipi için pozisyon henüz eklenmedi"
+          }
+        }
+      }
+    },
+    "Bu işlem geri alınamaz." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action cannot be undone."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu işlem geri alınamaz."
+          }
+        }
+      }
+    },
+    "Bu pratik kaydı silinsin mi?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete this practice session?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu pratik kaydı silinsin mi?"
           }
         }
       }
@@ -1019,6 +923,22 @@
         }
       }
     },
+    "Geçmişi Gör" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View History"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçmişi Gör"
+          }
+        }
+      }
+    },
     "Geri bildirim gönder" : {
       "localizations" : {
         "en" : {
@@ -1099,6 +1019,22 @@
         }
       }
     },
+    "Günlük seri" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily streak"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük seri"
+          }
+        }
+      }
+    },
     "HAKKINDA" : {
       "localizations" : {
         "en" : {
@@ -1163,6 +1099,70 @@
         }
       }
     },
+    "Hedef" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hedef"
+          }
+        }
+      }
+    },
+    "Hedef süre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration goal"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hedef süre"
+          }
+        }
+      }
+    },
+    "Hedef: %lld dk" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal: %lld min"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hedef: %lld dk"
+          }
+        }
+      }
+    },
+    "Hedefini tamamladın!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed your goal!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hedefini tamamladın!"
+          }
+        }
+      }
+    },
     "Hepsini Seç" : {
       "localizations" : {
         "en" : {
@@ -1207,6 +1207,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İleri Seviye"
+          }
+        }
+      }
+    },
+    "İLERLEME" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PROGRESS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İLERLEME"
+          }
+        }
+      }
+    },
+    "Kalan süre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time remaining"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalan süre"
           }
         }
       }
@@ -1580,6 +1612,38 @@
         }
       }
     },
+    "Pratik Geçmişi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice History"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik Geçmişi"
+          }
+        }
+      }
+    },
+    "Pratik planı" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice Plan"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik planı"
+          }
+        }
+      }
+    },
     "Pratik süresi" : {
       "localizations" : {
         "en" : {
@@ -1640,6 +1704,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pratikten çıkmak istiyor musun?"
+          }
+        }
+      }
+    },
+    "Seans" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seans"
+          }
+        }
+      }
+    },
+    "SEÇİLEN AKORLAR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SELECTED CHORDS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEÇİLEN AKORLAR"
           }
         }
       }
@@ -1772,6 +1868,38 @@
         }
       }
     },
+    "Süre dolduğunda pratik otomatik tamamlanır." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice ends automatically when the timer reaches zero."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süre dolduğunda pratik otomatik tamamlanır."
+          }
+        }
+      }
+    },
+    "Süresiz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlimited"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süresiz"
+          }
+        }
+      }
+    },
     "Sus2" : {
       "localizations" : {
         "en" : {
@@ -1820,6 +1948,38 @@
         }
       }
     },
+    "Tamamladığın pratik seansları burada görüntülenir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your completed practice sessions will appear here."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamamladığın pratik seansları burada görüntülenir."
+          }
+        }
+      }
+    },
+    "TAMAMLANAN SEANSLAR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COMPLETED SESSIONS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAMAMLANAN SEANSLAR"
+          }
+        }
+      }
+    },
     "Tekrar Dene" : {
       "localizations" : {
         "en" : {
@@ -1852,6 +2012,38 @@
         }
       }
     },
+    "Tempo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        }
+      }
+    },
+    "Toplam süre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total time"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toplam süre"
+          }
+        }
+      }
+    },
     "Tüm akorlar, sınırlarını zorla" : {
       "localizations" : {
         "en" : {
@@ -1864,6 +2056,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tüm akorlar, sınırlarını zorla"
+          }
+        }
+      }
+    },
+    "Tüm pratik geçmişi silinsin mi?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all practice history?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm pratik geçmişi silinsin mi?"
+          }
+        }
+      }
+    },
+    "Tümünü Sil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete All"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü Sil"
           }
         }
       }

@@ -27,6 +27,8 @@ final class MetronomeEngine {
         let metronomeSoundEnabled: Bool
         let metronomeSound: MetronomeSound
         let hapticEnabled: Bool
+        let targetDurationSeconds: Int?
+        let accentFirstBeat: Bool
     }
 
     var isPlaying = false
@@ -40,9 +42,12 @@ final class MetronomeEngine {
     var configurationProvider: () -> Configuration = {
         Configuration(
             chordLabels: [], bpm: 80, beatsPerChord: 4, preventBackToBackRepeat: true,
-            countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false
+            countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false,
+            targetDurationSeconds: nil, accentFirstBeat: true
         )
     }
+
+    var goalReachedHandler: () -> Void = {}
 
     private let toneEngine = ToneEngine()
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .rigid)
@@ -62,14 +67,12 @@ final class MetronomeEngine {
     }
 
     var elapsedPracticeSeconds: Int {
-        let activeDuration: TimeInterval
+        max(0, Int(elapsedPracticeDuration))
+    }
 
-        if let practiceStartedAt {
-            activeDuration = Date().timeIntervalSince(practiceStartedAt)
-        } else {
-            activeDuration = 0
-        }
-        return max(0, Int(accumulatedPracticeDuration + activeDuration))
+    private var elapsedPracticeDuration: TimeInterval {
+        let activeDuration = practiceStartedAt.map { Date().timeIntervalSince($0) } ?? 0
+        return accumulatedPracticeDuration + activeDuration
     }
 
     func toggle() {
@@ -103,7 +106,7 @@ final class MetronomeEngine {
             currentChordLabel = first
             nextChordLabel = second
             beatInCurrentChord = 0
-            playClick(accent: true, config: config)
+            playClick(accent: config.accentFirstBeat, config: config)
             scheduleTimer(interval: beatSeconds) { [weak self] in self?.countInTick() }
         } else {
             isPlaying = true
@@ -111,7 +114,7 @@ final class MetronomeEngine {
             currentChordLabel = first
             nextChordLabel = second
             beatInCurrentChord = 0
-            playClick(accent: true, config: config)
+            playClick(accent: config.accentFirstBeat, config: config)
             startChordLoop(first: first, second: second, config: config)
         }
     }
@@ -165,7 +168,7 @@ final class MetronomeEngine {
             countInBeatsLeft = countInLeft
             isCountingIn = true
 
-            playClick(accent: true, config: config)
+            playClick(accent: config.accentFirstBeat, config: config)
 
             scheduleTimer(interval: currentBeatInterval) { [weak self] in
                 self?.countInTick()
@@ -206,7 +209,7 @@ final class MetronomeEngine {
         } else {
             stopTimer()
             isCountingIn = false
-            playClick(accent: true, config: config)
+            playClick(accent: config.accentFirstBeat, config: config)
             startChordLoop(first: loopCurrent, second: loopNext, config: config)
         }
     }
@@ -228,11 +231,18 @@ final class MetronomeEngine {
             currentChordLabel = loopCurrent
             nextChordLabel = loopNext
             beatInCurrentChord = loopBeat
-            playClick(accent: true, config: config)
         } else {
             beatInCurrentChord = loopBeat
-            playClick(accent: false, config: config)
         }
+
+        playClick(accent: config.accentFirstBeat && loopBeat == 0, config: config)
+
+        if let target = config.targetDurationSeconds,
+           elapsedPracticeDuration >= TimeInterval(target) {
+            goalReachedHandler()
+            return
+        }
+
         rearmIfTempoChanged(config: config) { [weak self] in self?.chordLoopTick() }
     }
 

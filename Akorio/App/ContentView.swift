@@ -88,6 +88,12 @@ struct ContentView: View {
                         SettingsView(viewModel: viewModel)
                     case .levelDetail(let level):
                         LevelDetailView(viewModel: viewModel, level: level)
+                    case .practicePlan:
+                        PracticePlanView(
+                            viewModel: viewModel,
+                            onBack: viewModel.cancelPracticePlan,
+                            onStart: viewModel.startPracticeFromPlan
+                        )
                     }
                 }
                 .toolbar(.hidden, for: .navigationBar)

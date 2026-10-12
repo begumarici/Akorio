@@ -17,37 +17,42 @@ struct PracticeFlowView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            ZStack {
-                AkorioBackground()
-                PracticeView(viewModel: viewModel)
-            }
-            .toolbar(.hidden, for: .navigationBar)
-            .navigationDestination(for: PracticeFlowScreen.self) { screen in
-                switch screen {
-                case .summary:
-                    if let summary = viewModel.currentPracticeSummary {
-                        ZStack {
-                            AkorioBackground()
+            practiceScreen
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: PracticeFlowScreen.self) { screen in
+                    switch screen {
+                    case .summary:
+                        if let summary = viewModel.currentPracticeSummary {
+                            ZStack {
+                                AkorioBackground()
 
-                            PracticeSummaryView(
-                                summary: summary,
-                                onRepeat: repeatPractice,
-                                onReturnHome: viewModel.returnHomeFromPracticeSummary
-                            )
+                                PracticeSummaryView(
+                                    summary: summary,
+                                    onRepeat: repeatPractice,
+                                    onReturnHome: viewModel.returnHomeFromPracticeSummary
+                                )
+                            }
+                            .toolbar(.hidden, for: .navigationBar)
                         }
-                        .toolbar(.hidden, for: .navigationBar)
                     }
                 }
-            }
-            .onChange(of: viewModel.currentPracticeSummary) { _, summary in
-                guard summary != nil else { return }
+                .onChange(of: viewModel.currentPracticeSummary) { _, summary in
+                    guard summary != nil else { return }
 
-                if path.last != .summary {
-                    path.append(.summary)
+                    if path.last != .summary {
+                        path.append(.summary)
+                    }
                 }
-            }
         }
         .interactiveDismissDisabled()
+    }
+
+    private var practiceScreen: some View {
+        ZStack {
+            AkorioBackground()
+            PracticeView(viewModel: viewModel)
+        }
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private func repeatPractice() {

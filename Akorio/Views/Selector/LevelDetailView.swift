@@ -67,7 +67,7 @@ struct LevelDetailView: View {
         .akorioIntegralWidth()
         .safeAreaInset(edge: .bottom) {
             if !viewModel.chords.isEmpty {
-                Button("Pratiğe Başla") { viewModel.goToPractice() }
+                Button("Devam Et") { viewModel.goToPractice() }
                     .buttonStyle(AkorioPrimaryButtonStyle())
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)

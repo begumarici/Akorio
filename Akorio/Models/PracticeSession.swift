@@ -17,6 +17,8 @@ final class PracticeSession {
     var bpm: Int
     var beatsPerChord: Int
     var chordLabels: [String]
+    var targetDurationMinutes: Int? = nil
+    var goalCompleted: Bool = false
 
     init(
         completedAt: Date = Date(),
@@ -24,7 +26,9 @@ final class PracticeSession {
         chordTransitionCount: Int,
         bpm: Int,
         beatsPerChord: Int,
-        chordLabels: [String]
+        chordLabels: [String],
+        targetDurationMinutes: Int? = nil,
+        goalCompleted: Bool = false
     ) {
         self.id = UUID()
         self.completedAt = completedAt
@@ -33,6 +37,8 @@ final class PracticeSession {
         self.bpm = bpm
         self.beatsPerChord = beatsPerChord
         self.chordLabels = chordLabels
+        self.targetDurationMinutes = targetDurationMinutes
+        self.goalCompleted = goalCompleted
     }
 }
 

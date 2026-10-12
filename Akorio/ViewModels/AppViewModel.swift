@@ -13,6 +13,7 @@ enum AppScreen: Hashable {
     case practiceHistory
     case settings
     case levelDetail(ChordLevel)
+    case practicePlan
 }
 
 enum AppTab: Hashable {
@@ -27,6 +28,8 @@ struct PracticeSessionSummary: Hashable {
     let bpm: Int
     let beatsPerChord: Int
     let chordLabels: [String]
+    let targetDurationMinutes: Int?
+    let goalCompleted: Bool
 }
 
 @Observable
@@ -48,6 +51,8 @@ final class AppViewModel {
                 chords = []
                 bpm = defaultBpm
                 beatsPerChord = defaultBeatsPerChord
+                practiceDurationGoal = .tenMinutes
+                accentFirstBeat = true
                 isPracticePaused = false
                 currentPracticeSummary = nil
             }
@@ -63,6 +68,8 @@ final class AppViewModel {
     var preventBackToBackRepeat = true
     var countInEnabled = true
     var metronomeSoundEnabled = true
+    var practiceDurationGoal: PracticeDurationGoal = .tenMinutes
+    var accentFirstBeat = true
     var currentPracticeSummary: PracticeSessionSummary?
     var isPracticePaused = false
     var isPracticePresented = false
@@ -97,7 +104,8 @@ final class AppViewModel {
             guard let self else {
                 return MetronomeEngine.Configuration(
                     chordLabels: [], bpm: 80, beatsPerChord: 4, preventBackToBackRepeat: true,
-                    countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false
+                    countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false,
+                    targetDurationSeconds: nil, accentFirstBeat: true
                 )
             }
             return MetronomeEngine.Configuration(
@@ -108,8 +116,13 @@ final class AppViewModel {
                 countInEnabled: self.countInEnabled,
                 metronomeSoundEnabled: self.metronomeSoundEnabled,
                 metronomeSound: self.metronomeSound,
-                hapticEnabled: self.hapticEnabled
+                hapticEnabled: self.hapticEnabled,
+                targetDurationSeconds: self.practiceDurationGoal.minutes.map { $0 * 60 },
+                accentFirstBeat: self.accentFirstBeat
             )
+        }
+        metronome.goalReachedHandler = { [weak self] in
+            self?.finishPracticeSession(goalReached: true)
         }
     }
 
@@ -162,6 +175,8 @@ final class AppViewModel {
         settingsRecord.lastPracticePreventBackToBackRepeat = preventBackToBackRepeat
         settingsRecord.lastPracticeCountInEnabled = countInEnabled
         settingsRecord.lastPracticeMetronomeSoundEnabled = metronomeSoundEnabled
+        settingsRecord.lastPracticeTargetDurationMinutes = practiceDurationGoal.minutes
+        settingsRecord.lastPracticeAccentFirstBeat = accentFirstBeat
         lastPracticeChordLabels = chords.map { $0.label }
         lastPracticeBpm = bpm
     }
@@ -178,7 +193,22 @@ final class AppViewModel {
         currentPracticeSummary = nil
         showPracticeExitAlert = false
         persistLastPracticeSession()
+        path.append(.practicePlan)
+    }
+
+    func startPracticeFromPlan() {
+        persistLastPracticeSession()
         isPracticePresented = true
+    }
+
+    func cancelPracticePlan() {
+        metronome.stop()
+        isPracticePaused = false
+        currentPracticeSummary = nil
+        showPracticeExitAlert = false
+        if path.last == .practicePlan {
+            path.removeLast()
+        }
     }
 
     /// Pops one screen — used by every back button. Mirrors the swipe-back
@@ -256,6 +286,14 @@ final class AppViewModel {
     func toggleBackToBackRepeat() { preventBackToBackRepeat.toggle(); persistLastPracticeSession() }
     func toggleCountIn() { countInEnabled.toggle(); persistLastPracticeSession() }
     func toggleMetronomeSoundEnabled() { metronomeSoundEnabled.toggle(); persistLastPracticeSession() }
+    func selectPracticeDurationGoal(_ goal: PracticeDurationGoal) {
+        practiceDurationGoal = goal
+        persistLastPracticeSession()
+    }
+    func toggleAccentFirstBeat() {
+        accentFirstBeat.toggle()
+        persistLastPracticeSession()
+    }
     func toggleShowChordDiagram() {
         showChordDiagram.toggle()
         persistSettings()
@@ -304,7 +342,9 @@ final class AppViewModel {
             beatsPerChord: beatsPerChord,
             preventBackToBackRepeat: preventBackToBackRepeat,
             countInEnabled: countInEnabled,
-            metronomeSoundEnabled: metronomeSoundEnabled
+            metronomeSoundEnabled: metronomeSoundEnabled,
+            targetDurationMinutes: practiceDurationGoal.minutes,
+            accentFirstBeat: accentFirstBeat
         )
         modelContext.insert(newSet)
         saveDialogOpen = false
@@ -317,6 +357,8 @@ final class AppViewModel {
         preventBackToBackRepeat = savedSet.preventBackToBackRepeat
         countInEnabled = savedSet.countInEnabled
         metronomeSoundEnabled = savedSet.metronomeSoundEnabled
+        practiceDurationGoal = PracticeDurationGoal(minutes: savedSet.targetDurationMinutes)
+        accentFirstBeat = savedSet.accentFirstBeat
         metronome.stop()
         persistLastPracticeSession()
 
@@ -340,6 +382,8 @@ final class AppViewModel {
         preventBackToBackRepeat = settingsRecord.lastPracticePreventBackToBackRepeat
         countInEnabled = settingsRecord.lastPracticeCountInEnabled
         metronomeSoundEnabled = settingsRecord.lastPracticeMetronomeSoundEnabled
+        practiceDurationGoal = PracticeDurationGoal(minutes: settingsRecord.lastPracticeTargetDurationMinutes)
+        accentFirstBeat = settingsRecord.lastPracticeAccentFirstBeat
         metronome.stop()
 
         isPracticePaused = false
@@ -365,6 +409,13 @@ final class AppViewModel {
     var currentChordLabel: String { metronome.currentChordLabel }
     var nextChordLabel: String { metronome.nextChordLabel }
     var beatInCurrentChord: Int { metronome.beatInCurrentChord }
+    var elapsedPracticeSeconds: Int { metronome.elapsedPracticeSeconds }
+    var remainingPracticeSeconds: Int? {
+        PracticeGoalCalculator.remainingSeconds(
+            elapsedSeconds: metronome.elapsedPracticeSeconds,
+            goal: practiceDurationGoal
+        )
+    }
 
     func togglePlay() {
         if metronome.isPlaying {
@@ -391,8 +442,11 @@ final class AppViewModel {
         isPracticePaused = false
     }
 
-    func finishPracticeSession() {
-        let durationSeconds = metronome.elapsedPracticeSeconds
+    func finishPracticeSession(goalReached: Bool = false) {
+        let elapsedSeconds = metronome.elapsedPracticeSeconds
+        let durationSeconds = goalReached
+            ? practiceDurationGoal.minutes.map { $0 * 60 } ?? elapsedSeconds
+            : elapsedSeconds
         let transitionCount = metronome.chordTransitionCount
 
         metronome.stop()
@@ -405,7 +459,12 @@ final class AppViewModel {
             chordTransitionCount: transitionCount,
             bpm: bpm,
             beatsPerChord: beatsPerChord,
-            chordLabels: chords.map(\.label)
+            chordLabels: chords.map(\.label),
+            targetDurationMinutes: practiceDurationGoal.minutes,
+            goalCompleted: goalReached || PracticeGoalCalculator.isCompleted(
+                elapsedSeconds: elapsedSeconds,
+                goal: practiceDurationGoal
+            )
         )
 
         saveCompletedPracticeSession(summary)
@@ -420,7 +479,9 @@ final class AppViewModel {
             chordTransitionCount: summary.chordTransitionCount,
             bpm: summary.bpm,
             beatsPerChord: summary.beatsPerChord,
-            chordLabels: summary.chordLabels
+            chordLabels: summary.chordLabels,
+            targetDurationMinutes: summary.targetDurationMinutes,
+            goalCompleted: summary.goalCompleted
         )
 
         modelContext.insert(session)
@@ -445,6 +506,8 @@ final class AppViewModel {
         chords = []
         bpm = defaultBpm
         beatsPerChord = defaultBeatsPerChord
+        practiceDurationGoal = .tenMinutes
+        accentFirstBeat = true
 
         scheduleReviewRequestIfEligible()
     }

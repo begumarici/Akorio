@@ -153,6 +153,16 @@ struct PracticeHistoryView: View {
                 .font(.akorio(12))
                 .foregroundColor(.akorioNeutral500)
 
+                if let targetMinutes = session.targetDurationMinutes {
+                    Text(
+                        session.goalCompleted
+                            ? String(format: String(localized: "%lld dk hedef tamamlandı"), targetMinutes)
+                            : String(format: String(localized: "Hedef: %lld dk"), targetMinutes)
+                    )
+                    .font(.akorio(11, .medium))
+                    .foregroundColor(session.goalCompleted ? .akorioAccent400 : .akorioNeutral500)
+                }
+
                 Text(session.completedAt.formatted(date: .abbreviated, time: .shortened))
                     .font(.akorio(11))
                     .foregroundColor(.akorioNeutral600)

@@ -24,6 +24,18 @@ struct PracticeSummaryView: View {
         return String(format: "%02d:%02d", minutes, seconds)
     }
 
+    private var goalText: String {
+        guard let targetMinutes = summary.targetDurationMinutes else {
+            return String(localized: "Süresiz")
+        }
+
+        if summary.goalCompleted {
+            return String(format: String(localized: "%lld dk ✓"), targetMinutes)
+        }
+
+        return String(format: String(localized: "%lld dk"), targetMinutes)
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 28) {
@@ -44,7 +56,11 @@ struct PracticeSummaryView: View {
                         .font(.akorioSerif(32, .semibold))
                         .foregroundColor(.akorioText)
 
-                    Text("Harika bir çalışma seansı!")
+                    Text(
+                        summary.goalCompleted
+                            ? String(localized: "Hedefini tamamladın!")
+                            : String(localized: "Harika bir çalışma seansı!")
+                    )
                         .font(.akorio(14))
                         .foregroundColor(.akorioNeutral500)
                 }
@@ -70,6 +86,11 @@ struct PracticeSummaryView: View {
                         value: "\(summary.beatsPerChord)"
                     )
                 }
+
+                SummaryMetricCard(
+                    title: String(localized: "Hedef"),
+                    value: goalText
+                )
 
                 VStack(alignment: .leading, spacing: 12) {
                     Text("ÇALIŞILAN AKORLAR")

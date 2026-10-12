@@ -10,6 +10,7 @@ import SwiftUI
 struct PracticeView: View {
     @Bindable var viewModel: AppViewModel
     @State private var isSettingsExpanded = true
+    @State private var isPracticePlanPresented = false
 
     private var upcomingChordLabel: String {
         if !viewModel.nextChordLabel.isEmpty { return viewModel.nextChordLabel }
@@ -22,6 +23,10 @@ struct PracticeView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
 
+            sessionStatusBar
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+
             GeometryReader { geo in
                 let scale = min(1.6, max(0.35, geo.size.height / 290))
                 chordDisplay(scale: scale)
@@ -31,6 +36,7 @@ struct PracticeView: View {
             DisclosureGroup("Ayarlar", isExpanded: $isSettingsExpanded) {
                 VStack(spacing: 10) {
                     statRow
+                    practicePlanSettings
                     toggleRows
                 }
                 .padding(.top, 10)
@@ -49,10 +55,69 @@ struct PracticeView: View {
             Button("Kaydet") { viewModel.confirmSave() }
             Button("Vazgeç", role: .cancel) { viewModel.closeSaveDialog() }
         }
+        .sheet(isPresented: $isPracticePlanPresented) {
+            PracticePlanSheet(viewModel: viewModel)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
         .onDisappear {
             viewModel.metronome.stop()
             viewModel.persistLastPracticeSession()
         }
+    }
+
+    @ViewBuilder
+    private var sessionStatusBar: some View {
+        if viewModel.isPlaying || viewModel.isPracticePaused {
+            TimelineView(
+                .animation(
+                    minimumInterval: 0.1,
+                    paused: !viewModel.isPlaying
+                )
+            ) { _ in
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(
+                            viewModel.remainingPracticeSeconds == nil
+                                ? String(localized: "Pratik süresi")
+                                : String(localized: "Kalan süre")
+                        )
+                            .textCase(.uppercase)
+                            .font(.akorio(10, .bold))
+                            .tracking(0.8)
+                            .foregroundColor(.akorioNeutral500)
+
+                        Text(formattedSessionTime)
+                            .font(.akorio(18, .bold))
+                            .foregroundColor(.akorioText)
+                            .monospacedDigit()
+                    }
+
+                    Spacer()
+
+                    Text(verbatim: "\(viewModel.bpm) BPM")
+                        .font(.akorio(13, .bold))
+                        .foregroundColor(.akorioAccent100)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 7)
+                        .background(
+                            RoundedRectangle(cornerRadius: AkorioRadius.sm)
+                                .fill(Color.akorioAccent900)
+                        )
+                }
+                .padding(.horizontal, 14)
+                .frame(minHeight: 52)
+                .background(
+                    RoundedRectangle(cornerRadius: AkorioRadius.md)
+                        .fill(Color.akorioSurface)
+                )
+            }
+        }
+    }
+
+    private var formattedSessionTime: String {
+        let seconds = viewModel.remainingPracticeSeconds ?? viewModel.elapsedPracticeSeconds
+        return String(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
 
     // MARK: - Header
@@ -173,6 +238,34 @@ struct PracticeView: View {
         }
     }
 
+    private var practicePlanSettings: some View {
+        Button {
+            isPracticePlanPresented = true
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "timer")
+                    .foregroundColor(.akorioAccent400)
+
+                Text("Hedef süre")
+                    .foregroundColor(.akorioText)
+
+                Spacer()
+
+                Text(viewModel.practiceDurationGoal.title)
+                    .foregroundColor(.akorioNeutral500)
+
+                Image(systemName: "chevron.right")
+                    .font(.akorio(11, .semibold))
+                    .foregroundColor(.akorioNeutral600)
+            }
+            .font(.akorio(14))
+            .padding(14)
+            .background(Color.akorioSurface)
+            .cornerRadius(AkorioRadius.md)
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Toggles
     private var toggleRows: some View {
         VStack(spacing: 1) {
@@ -211,6 +304,7 @@ struct PracticeView: View {
             .font(.akorio(14))
             .padding(14)
             .background(Color.akorioSurface)
+
         }
         .cornerRadius(AkorioRadius.md)
     }
@@ -254,6 +348,37 @@ struct PracticeView: View {
             )
         }
         .buttonStyle(AkorioPrimaryButtonStyle())
+    }
+}
+
+private struct PracticePlanSheet: View {
+    @Bindable var viewModel: AppViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        ZStack {
+            AkorioBackground()
+
+            VStack(alignment: .leading, spacing: 18) {
+                HStack {
+                    Text("Pratik planı")
+                        .font(.akorioSerif(24, .semibold))
+                        .foregroundColor(.akorioText)
+
+                    Spacer()
+
+                    Button("Bitti") { dismiss() }
+                        .font(.akorio(14, .semibold))
+                        .foregroundColor(.akorioAccent400)
+                }
+
+                PracticePlanControls(viewModel: viewModel)
+
+                Spacer(minLength: 0)
+            }
+            .padding(20)
+            .akorioContentWidth()
+        }
     }
 }
 

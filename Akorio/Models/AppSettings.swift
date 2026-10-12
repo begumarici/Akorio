@@ -27,6 +27,8 @@ final class AppSettings {
     var lastPracticePreventBackToBackRepeat: Bool = true
     var lastPracticeCountInEnabled: Bool = true
     var lastPracticeMetronomeSoundEnabled: Bool = true
+    var lastPracticeTargetDurationMinutes: Int? = nil
+    var lastPracticeAccentFirstBeat: Bool = true
     var hasRequestedAppStoreReview: Bool = false
 
     init(
