@@ -37,7 +37,6 @@ struct PracticeView: View {
                 VStack(spacing: 10) {
                     statRow
                     practicePlanSettings
-                    toggleRows
                 }
                 .padding(.top, 10)
             }
@@ -68,43 +67,27 @@ struct PracticeView: View {
 
     @ViewBuilder
     private var sessionStatusBar: some View {
-        if viewModel.isPlaying || viewModel.isPracticePaused {
+        if (viewModel.isPlaying || viewModel.isPracticePaused),
+           viewModel.remainingPracticeSeconds != nil {
             TimelineView(
                 .animation(
                     minimumInterval: 0.1,
                     paused: !viewModel.isPlaying
                 )
             ) { _ in
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(
-                            viewModel.remainingPracticeSeconds == nil
-                                ? String(localized: "Pratik süresi")
-                                : String(localized: "Kalan süre")
-                        )
-                            .textCase(.uppercase)
-                            .font(.akorio(10, .bold))
-                            .tracking(0.8)
-                            .foregroundColor(.akorioNeutral500)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Kalan süre")
+                        .textCase(.uppercase)
+                        .font(.akorio(10, .bold))
+                        .tracking(0.8)
+                        .foregroundColor(.akorioNeutral500)
 
-                        Text(formattedSessionTime)
-                            .font(.akorio(18, .bold))
-                            .foregroundColor(.akorioText)
-                            .monospacedDigit()
-                    }
-
-                    Spacer()
-
-                    Text(verbatim: "\(viewModel.bpm) BPM")
-                        .font(.akorio(13, .bold))
-                        .foregroundColor(.akorioAccent100)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 7)
-                        .background(
-                            RoundedRectangle(cornerRadius: AkorioRadius.sm)
-                                .fill(Color.akorioAccent900)
-                        )
+                    Text(formattedSessionTime)
+                        .font(.akorio(18, .bold))
+                        .foregroundColor(.akorioText)
+                        .monospacedDigit()
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 52)
                 .background(
@@ -243,10 +226,10 @@ struct PracticeView: View {
             isPracticePlanPresented = true
         } label: {
             HStack(spacing: 10) {
-                Image(systemName: "timer")
+                Image(systemName: "slider.horizontal.3")
                     .foregroundColor(.akorioAccent400)
 
-                Text("Hedef süre")
+                Text("Pratik seçenekleri")
                     .foregroundColor(.akorioText)
 
                 Spacer()
@@ -264,49 +247,6 @@ struct PracticeView: View {
             .cornerRadius(AkorioRadius.md)
         }
         .buttonStyle(.plain)
-    }
-
-    // MARK: - Toggles
-    private var toggleRows: some View {
-        VStack(spacing: 1) {
-            HStack {
-                Text("Akor diyagramı göster").foregroundColor(.akorioText)
-                Spacer()
-                AkorioToggle(isOn: viewModel.showChordDiagram) { viewModel.toggleShowChordDiagram() }
-            }
-            .font(.akorio(14))
-            .padding(14)
-            .background(Color.akorioSurface)
-
-            HStack {
-                Text("Üst üste gösterme").foregroundColor(.akorioText)
-                Spacer()
-                AkorioToggle(isOn: viewModel.preventBackToBackRepeat) { viewModel.toggleBackToBackRepeat() }
-            }
-            .font(.akorio(14))
-            .padding(14)
-            .background(Color.akorioSurface)
-
-            HStack {
-                Text("Başlangıç sayımı").foregroundColor(.akorioText)
-                Spacer()
-                AkorioToggle(isOn: viewModel.countInEnabled) { viewModel.toggleCountIn() }
-            }
-            .font(.akorio(14))
-            .padding(14)
-            .background(Color.akorioSurface)
-
-            HStack {
-                Text("Metronom sesi").foregroundColor(.akorioText)
-                Spacer()
-                AkorioToggle(isOn: viewModel.metronomeSoundEnabled) { viewModel.toggleMetronomeSoundEnabled() }
-            }
-            .font(.akorio(14))
-            .padding(14)
-            .background(Color.akorioSurface)
-
-        }
-        .cornerRadius(AkorioRadius.md)
     }
 
     // MARK: - Play button
@@ -335,11 +275,6 @@ struct PracticeView: View {
 
     private var playButton: some View {
         Button {
-            if !viewModel.isPlaying {
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                    isSettingsExpanded = false
-                }
-            }
             viewModel.togglePlay()
         } label: {
             Label(
@@ -361,7 +296,7 @@ private struct PracticePlanSheet: View {
 
             VStack(alignment: .leading, spacing: 18) {
                 HStack {
-                    Text("Pratik planı")
+                    Text("Pratik seçenekleri")
                         .font(.akorioSerif(24, .semibold))
                         .foregroundColor(.akorioText)
 
@@ -372,9 +307,10 @@ private struct PracticePlanSheet: View {
                         .foregroundColor(.akorioAccent400)
                 }
 
-                PracticePlanControls(viewModel: viewModel)
-
-                Spacer(minLength: 0)
+                ScrollView {
+                    PracticePlanControls(viewModel: viewModel)
+                }
+                .scrollBounceBehavior(.basedOnSize)
             }
             .padding(20)
             .akorioContentWidth()

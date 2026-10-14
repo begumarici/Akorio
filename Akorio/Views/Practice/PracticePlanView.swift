@@ -116,6 +116,7 @@ struct PracticePlanView: View {
 
     private func sectionTitle(_ title: LocalizedStringKey) -> some View {
         Text(title)
+            .textCase(.uppercase)
             .font(.akorio(11, .bold))
             .tracking(0.6)
             .foregroundColor(.akorioNeutral500)

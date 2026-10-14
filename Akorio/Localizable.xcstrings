@@ -211,6 +211,22 @@
         }
       }
     },
+    "Aynı akoru art arda getirme" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avoid consecutive repeats"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı akoru art arda getirme"
+          }
+        }
+      }
+    },
     "Akor geçişi" : {
       "localizations" : {
         "en" : {
@@ -1644,6 +1660,22 @@
         }
       }
     },
+    "Pratik seçenekleri" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice Options"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pratik seçenekleri"
+          }
+        }
+      }
+    },
     "Pratik süresi" : {
       "localizations" : {
         "en" : {
@@ -2104,22 +2136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tür seçimini kaldır"
-          }
-        }
-      }
-    },
-    "Üst üste gösterme" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prevent back-to-back repeats"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Üst üste gösterme"
           }
         }
       }

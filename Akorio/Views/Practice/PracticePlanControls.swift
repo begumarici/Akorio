@@ -39,20 +39,40 @@ struct PracticePlanControls: View {
                     .foregroundColor(.akorioNeutral500)
             }
 
-            HStack {
-                Text("Akorun ilk vuruşunu vurgula")
-                    .font(.akorio(14))
-                    .foregroundColor(.akorioText)
+            sectionTitle("Pratik seçenekleri")
 
-                Spacer()
+            VStack(spacing: 1) {
+                optionRow(
+                    title: "Akor diyagramı göster",
+                    isOn: viewModel.showChordDiagram,
+                    action: viewModel.toggleShowChordDiagram
+                )
 
-                AkorioToggle(isOn: viewModel.accentFirstBeat) {
-                    viewModel.toggleAccentFirstBeat()
-                }
+                optionRow(
+                    title: "Aynı akoru art arda getirme",
+                    isOn: viewModel.preventBackToBackRepeat,
+                    action: viewModel.toggleBackToBackRepeat
+                )
+
+                optionRow(
+                    title: "Başlangıç sayımı",
+                    isOn: viewModel.countInEnabled,
+                    action: viewModel.toggleCountIn
+                )
+
+                optionRow(
+                    title: "Metronom sesi",
+                    isOn: viewModel.metronomeSoundEnabled,
+                    action: viewModel.toggleMetronomeSoundEnabled
+                )
+
+                optionRow(
+                    title: "Akorun ilk vuruşunu vurgula",
+                    isOn: viewModel.accentFirstBeat,
+                    action: viewModel.toggleAccentFirstBeat
+                )
             }
-            .padding(14)
-            .background(Color.akorioSurface)
-            .cornerRadius(AkorioRadius.md)
+            .clipShape(RoundedRectangle(cornerRadius: AkorioRadius.md))
         }
     }
 
@@ -66,6 +86,24 @@ struct PracticePlanControls: View {
 
     private func compactTitle(for goal: PracticeDurationGoal) -> String {
         goal == .unlimited ? "∞" : "\(goal.rawValue)"
+    }
+
+    private func optionRow(
+        title: LocalizedStringKey,
+        isOn: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        HStack {
+            Text(title)
+                .font(.akorio(14))
+                .foregroundColor(.akorioText)
+
+            Spacer()
+
+            AkorioToggle(isOn: isOn, onToggle: action)
+        }
+        .padding(14)
+        .background(Color.akorioSurface)
     }
 }
 
