@@ -289,6 +289,7 @@ final class AppViewModel {
     func selectPracticeDurationGoal(_ goal: PracticeDurationGoal) {
         practiceDurationGoal = goal
         persistLastPracticeSession()
+        metronome.refreshDurationGoal()
     }
     func toggleAccentFirstBeat() {
         accentFirstBeat.toggle()
@@ -444,9 +445,11 @@ final class AppViewModel {
 
     func finishPracticeSession(goalReached: Bool = false) {
         let elapsedSeconds = metronome.elapsedPracticeSeconds
-        let durationSeconds = goalReached
-            ? practiceDurationGoal.minutes.map { $0 * 60 } ?? elapsedSeconds
-            : elapsedSeconds
+        let durationSeconds = PracticeGoalCalculator.recordedDurationSeconds(
+            elapsedSeconds: elapsedSeconds,
+            goal: practiceDurationGoal,
+            goalReached: goalReached
+        )
         let transitionCount = metronome.chordTransitionCount
 
         metronome.stop()

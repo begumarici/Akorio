@@ -52,6 +52,7 @@ final class MetronomeEngine {
     private let toneEngine = ToneEngine()
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .rigid)
     private var timer: Timer?
+    private var goalTimer: Timer?
     private var currentBeatInterval: TimeInterval = 0
     private var loopBeat = 0
     private var loopCurrent = ""
@@ -126,6 +127,7 @@ final class MetronomeEngine {
         }
 
         stopTimer()
+        stopGoalTimer()
         isPlaying = false
         isCountingIn = false
         // Clear the chord state too — otherwise the next time this screen
@@ -145,6 +147,7 @@ final class MetronomeEngine {
         }
 
         stopTimer()
+        stopGoalTimer()
         isPlaying = false
         isCountingIn = false
     }
@@ -176,6 +179,7 @@ final class MetronomeEngine {
         } else {
             isCountingIn = false
             practiceStartedAt = Date()
+            scheduleGoalTimer(config: config)
 
             scheduleTimer(interval: currentBeatInterval) { [weak self] in
                 self?.chordLoopTick()
@@ -237,12 +241,6 @@ final class MetronomeEngine {
 
         playClick(accent: config.accentFirstBeat && loopBeat == 0, config: config)
 
-        if let target = config.targetDurationSeconds,
-           elapsedPracticeDuration >= TimeInterval(target) {
-            goalReachedHandler()
-            return
-        }
-
         rearmIfTempoChanged(config: config) { [weak self] in self?.chordLoopTick() }
     }
 
@@ -254,7 +252,20 @@ final class MetronomeEngine {
         loopCurrent = first
         loopNext = second
         currentBeatInterval = 60.0 / Double(config.bpm)
+        scheduleGoalTimer(config: config)
         scheduleTimer(interval: currentBeatInterval) { [weak self] in self?.chordLoopTick() }
+    }
+
+    /// Recalculates the independent goal timer when the duration is changed
+    /// during an active session. The count-in is deliberately excluded because
+    /// practice time starts only when the first chord begins.
+    func refreshDurationGoal() {
+        guard isPlaying, !isCountingIn, practiceStartedAt != nil else {
+            stopGoalTimer()
+            return
+        }
+
+        scheduleGoalTimer(config: configurationProvider())
     }
 
     private func scheduleTimer(interval: TimeInterval, _ tick: @escaping () -> Void) {
@@ -275,6 +286,40 @@ final class MetronomeEngine {
     private func stopTimer() {
         timer?.invalidate()
         timer = nil
+    }
+
+    private func scheduleGoalTimer(config: Configuration) {
+        stopGoalTimer()
+
+        guard let target = config.targetDurationSeconds else { return }
+        let remaining = max(0, TimeInterval(target) - elapsedPracticeDuration)
+        let newTimer = Timer(timeInterval: remaining, repeats: false) { [weak self] _ in
+            self?.handleGoalTimerFired()
+        }
+        goalTimer = newTimer
+        RunLoop.main.add(newTimer, forMode: .common)
+    }
+
+    private func handleGoalTimerFired() {
+        goalTimer = nil
+
+        guard isPlaying, !isCountingIn else { return }
+        let config = configurationProvider()
+        guard let target = config.targetDurationSeconds else { return }
+
+        // A Timer should not fire early, but checking the elapsed duration
+        // protects against clock precision and a goal changed at the same time.
+        guard elapsedPracticeDuration >= TimeInterval(target) else {
+            scheduleGoalTimer(config: config)
+            return
+        }
+
+        goalReachedHandler()
+    }
+
+    private func stopGoalTimer() {
+        goalTimer?.invalidate()
+        goalTimer = nil
     }
 
     private func playClick(accent: Bool, config: Configuration) {

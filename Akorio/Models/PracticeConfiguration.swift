@@ -44,4 +44,20 @@ enum PracticeGoalCalculator {
         guard let targetMinutes = goal.minutes else { return false }
         return elapsedSeconds >= targetMinutes * 60
     }
+
+    static func recordedDurationSeconds(
+        elapsedSeconds: Int,
+        goal: PracticeDurationGoal,
+        goalReached: Bool
+    ) -> Int {
+        let elapsedSeconds = max(0, elapsedSeconds)
+        guard goalReached, let targetMinutes = goal.minutes else {
+            return elapsedSeconds
+        }
+
+        // Preserve real overtime when a shorter goal is selected during the
+        // session, while avoiding a 04:59 summary from subsecond rounding when
+        // a five-minute timer fires exactly at its boundary.
+        return max(elapsedSeconds, targetMinutes * 60)
+    }
 }

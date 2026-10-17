@@ -37,4 +37,29 @@ struct PracticeConfigurationTests {
         #expect(PracticeDurationGoal(minutes: nil) == .unlimited)
         #expect(PracticeDurationGoal(minutes: 7) == .unlimited)
     }
+
+    @Test("Recorded duration preserves real elapsed practice time")
+    func recordedDuration() {
+        #expect(
+            PracticeGoalCalculator.recordedDurationSeconds(
+                elapsedSeconds: 360,
+                goal: .fiveMinutes,
+                goalReached: true
+            ) == 360
+        )
+        #expect(
+            PracticeGoalCalculator.recordedDurationSeconds(
+                elapsedSeconds: 299,
+                goal: .fiveMinutes,
+                goalReached: true
+            ) == 300
+        )
+        #expect(
+            PracticeGoalCalculator.recordedDurationSeconds(
+                elapsedSeconds: 125,
+                goal: .fiveMinutes,
+                goalReached: false
+            ) == 125
+        )
+    }
 }
