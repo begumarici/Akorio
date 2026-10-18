@@ -67,6 +67,12 @@ struct PracticePlanControls: View {
                 )
 
                 optionRow(
+                    title: "Haptik geri bildirim",
+                    isOn: viewModel.hapticEnabled,
+                    action: viewModel.toggleHaptic
+                )
+
+                optionRow(
                     title: "Akorun ilk vuruşunu vurgula",
                     isOn: viewModel.accentFirstBeat,
                     action: viewModel.toggleAccentFirstBeat

@@ -56,7 +56,7 @@ struct PracticeView: View {
         }
         .sheet(isPresented: $isPracticePlanPresented) {
             PracticePlanSheet(viewModel: viewModel)
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
         .onDisappear {

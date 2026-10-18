@@ -270,7 +270,11 @@ final class MetronomeEngine {
 
     private func scheduleTimer(interval: TimeInterval, _ tick: @escaping () -> Void) {
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in tick() }
+        let newTimer = Timer(timeInterval: interval, repeats: true) { _ in tick() }
+        timer = newTimer
+        // Keep the metronome running while a ScrollView or sheet is being
+        // dragged. The default run-loop mode pauses timers during UI tracking.
+        RunLoop.main.add(newTimer, forMode: .common)
     }
 
     /// If the user changed the BPM mid-session, re-arm the timer at the new
