@@ -47,8 +47,7 @@ final class ToneEngine {
     private var isForeground = true
 
     init() {
-        try? AVAudioSession.sharedInstance().setCategory(.ambient, options: [.mixWithOthers])
-        try? AVAudioSession.sharedInstance().setActive(true)
+        try? AudioSessionCoordinator.shared.prepareForPlayback()
 
         let mixer = engine.mainMixerNode
         let format = mixer.outputFormat(forBus: 0)
@@ -81,7 +80,7 @@ final class ToneEngine {
 
     @objc private func handleWillEnterForeground() {
         isForeground = true
-        try? AVAudioSession.sharedInstance().setActive(true)
+        try? AudioSessionCoordinator.shared.prepareForPlayback()
         try? engine.start()
     }
 

@@ -202,6 +202,7 @@ final class TunerEngine {
         guard isListening else { return }
         engine.inputNode.removeTap(onBus: 0)
         engine.stop()
+        AudioSessionCoordinator.shared.endTuning()
         isListening = false
         currentPitch = nil
         pendingFrequency = nil
@@ -218,9 +219,7 @@ final class TunerEngine {
         failedToStart = false
 
         do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
-            try session.setActive(true)
+            try AudioSessionCoordinator.shared.beginTuning()
         } catch {
             failedToStart = true
             return
@@ -229,6 +228,7 @@ final class TunerEngine {
         let inputNode = engine.inputNode
         let format = inputNode.inputFormat(forBus: 0)
         guard format.sampleRate > 0 else {
+            AudioSessionCoordinator.shared.endTuning()
             failedToStart = true
             return
         }
@@ -242,6 +242,7 @@ final class TunerEngine {
             isListening = true
         } catch {
             inputNode.removeTap(onBus: 0)
+            AudioSessionCoordinator.shared.endTuning()
             failedToStart = true
         }
     }
