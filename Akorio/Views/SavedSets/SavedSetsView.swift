@@ -48,7 +48,7 @@ struct SavedSetsView: View {
         ) {
             Button("Sil", role: .destructive) {
                 if let pendingDelete {
-                    viewModel.deleteSavedSet(pendingDelete)
+                    viewModel.savedSets.delete(pendingDelete)
                 }
                 pendingDelete = nil
             }
@@ -113,7 +113,7 @@ struct SavedSetsView: View {
             HStack(spacing: 6) {
                 if editingSet === savedSet {
                     Button {
-                        viewModel.renameSavedSet(savedSet, to: editingName)
+                        viewModel.savedSets.rename(savedSet, to: editingName)
                         editingSet = nil
                     } label: {
                         Image(systemName: "checkmark")

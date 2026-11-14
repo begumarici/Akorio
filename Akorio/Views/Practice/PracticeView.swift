@@ -11,6 +11,8 @@ struct PracticeView: View {
     @Bindable var viewModel: AppViewModel
     @State private var isSettingsExpanded = true
     @State private var isPracticePlanPresented = false
+    @State private var isSaveDialogOpen = false
+    @State private var saveNameInput = ""
 
     private var upcomingChordLabel: String {
         if !viewModel.nextChordLabel.isEmpty { return viewModel.nextChordLabel }
@@ -49,10 +51,10 @@ struct PracticeView: View {
                 .padding(20)
         }
         .akorioContentWidth()
-        .alert("Akor Setini Kaydet", isPresented: $viewModel.saveDialogOpen) {
-            TextField("Set adı", text: $viewModel.saveNameInput)
-            Button("Kaydet") { viewModel.confirmSave() }
-            Button("Vazgeç", role: .cancel) { viewModel.closeSaveDialog() }
+        .alert("Akor Setini Kaydet", isPresented: $isSaveDialogOpen) {
+            TextField("Set adı", text: $saveNameInput)
+            Button("Kaydet") { viewModel.saveCurrentSet(named: saveNameInput) }
+            Button("Vazgeç", role: .cancel) {}
         }
         .sheet(isPresented: $isPracticePlanPresented) {
             PracticePlanSheet(viewModel: viewModel)
@@ -133,7 +135,8 @@ struct PracticeView: View {
             Spacer()
 
             Button("Kaydet") {
-                viewModel.openSaveDialog()
+                saveNameInput = viewModel.savedSets.suggestedName()
+                isSaveDialogOpen = true
             }
             .buttonStyle(AkorioSecondaryButtonStyle())
         }

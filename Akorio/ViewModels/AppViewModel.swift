@@ -68,12 +68,9 @@ final class AppViewModel {
     var showPracticeExitAlert = false
     var shouldRequestReview = false
 
-    // MARK: - Save dialog
-    var saveDialogOpen = false
-    var saveNameInput = ""
-
-    // MARK: - Settings
+    // MARK: - Stores
     let settings = SettingsStore()
+    let savedSets = SavedSetsStore()
 
     // MARK: - Last practice session (for the "continue" card on Home)
     var lastPracticeChordLabels: [String] = []
@@ -105,6 +102,7 @@ final class AppViewModel {
     func configure(context: ModelContext) {
         guard modelContext == nil else { return }
         modelContext = context
+        savedSets.attach(context)
 
         let record = AppSettings.fetchOrCreate(in: context)
         settingsRecord = record
@@ -236,29 +234,8 @@ final class AppViewModel {
     }
 
     // MARK: - Saved sets
-    func openSaveDialog() {
-        var count = 0
-        if let modelContext, let fetched = try? modelContext.fetchCount(FetchDescriptor<SavedChordSet>()) {
-            count = fetched
-        }
-        saveNameInput = String(format: String(localized: "Akor Seti %@"), "\(count + 1)")
-        saveDialogOpen = true
-    }
-
-    func closeSaveDialog() {
-        saveDialogOpen = false
-    }
-
-    func confirmSave() {
-        guard let modelContext else { return }
-        let trimmedName = saveNameInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        let newSet = SavedChordSet(
-            name: trimmedName.isEmpty ? String(localized: "Akor Seti") : trimmedName,
-            chordLabels: chords.map(\.label),
-            configuration: practice
-        )
-        modelContext.insert(newSet)
-        saveDialogOpen = false
+    func saveCurrentSet(named name: String) {
+        savedSets.save(name: name, chordLabels: chords.map(\.label), configuration: practice)
     }
 
     func loadSavedSet(_ savedSet: SavedChordSet) {
@@ -289,16 +266,6 @@ final class AppViewModel {
         currentPracticeSummary = nil
         showPracticeExitAlert = false
         isPracticePresented = true
-    }
-
-    func deleteSavedSet(_ savedSet: SavedChordSet) {
-        modelContext?.delete(savedSet)
-    }
-
-    func renameSavedSet(_ savedSet: SavedChordSet, to newName: String) {
-        let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-        savedSet.name = trimmed
     }
 
     // MARK: - Metronome passthrough
