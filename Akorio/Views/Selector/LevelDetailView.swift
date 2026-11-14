@@ -41,7 +41,7 @@ struct LevelDetailView: View {
                         Spacer()
 
                         Button {
-                            AkorioHaptics.impact(enabled: viewModel.hapticEnabled)
+                            AkorioHaptics.impact(enabled: viewModel.settings.hapticEnabled)
                             if allSelected {
                                 viewModel.deselectAllChordLabels(level.chordLabels)
                             } else {
@@ -135,7 +135,7 @@ struct LevelDetailView: View {
                 .buttonStyle(.plain)
 
                 Button {
-                    AkorioHaptics.impact(enabled: viewModel.hapticEnabled)
+                    AkorioHaptics.impact(enabled: viewModel.settings.hapticEnabled)
                     if allSelected {
                         viewModel.deselectAllChordLabels(allLabels)
                     } else {
@@ -170,7 +170,7 @@ struct LevelDetailView: View {
                     label: label,
                     isSelected: viewModel.chords.contains { $0.label == label }
                 ) {
-                    AkorioHaptics.selection(enabled: viewModel.hapticEnabled)
+                    AkorioHaptics.selection(enabled: viewModel.settings.hapticEnabled)
                     viewModel.toggleChordLabel(label)
                 }
             }

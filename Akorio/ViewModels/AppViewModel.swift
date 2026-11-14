@@ -72,13 +72,8 @@ final class AppViewModel {
     var saveDialogOpen = false
     var saveNameInput = ""
 
-    // MARK: - Settings (mirrors the AppSettings row)
-    var metronomeSound: MetronomeSound = .click
-    var hapticEnabled = false
-    var defaultBpm = PracticeConfiguration.standard.bpm
-    var defaultBeatsPerChord = PracticeConfiguration.standard.beatsPerChord
-    var showChordDiagram = false
-    var soundPickerOpen = false
+    // MARK: - Settings
+    let settings = SettingsStore()
 
     // MARK: - Last practice session (for the "continue" card on Home)
     var lastPracticeChordLabels: [String] = []
@@ -97,8 +92,8 @@ final class AppViewModel {
             return MetronomeEngine.Configuration(
                 chordLabels: self.chords.map(\.label),
                 practice: self.practice,
-                metronomeSound: self.metronomeSound,
-                hapticEnabled: self.hapticEnabled
+                metronomeSound: self.settings.metronomeSound,
+                hapticEnabled: self.settings.hapticEnabled
             )
         }
         metronome.goalReachedHandler = { [weak self] in
@@ -110,41 +105,15 @@ final class AppViewModel {
     func configure(context: ModelContext) {
         guard modelContext == nil else { return }
         modelContext = context
-        loadSettings()
-    }
 
-    private func loadSettings() {
-        guard let modelContext else { return }
-        if let existing = try? modelContext.fetch(FetchDescriptor<AppSettings>()).first {
-            settingsRecord = existing
-        } else {
-            let created = AppSettings()
-            modelContext.insert(created)
-            settingsRecord = created
-        }
-        applySettingsToState()
-    }
+        let record = AppSettings.fetchOrCreate(in: context)
+        settingsRecord = record
+        settings.attach(record)
 
-    private func applySettingsToState() {
-        guard let settingsRecord else { return }
-        metronomeSound = settingsRecord.metronomeSound
-        hapticEnabled = settingsRecord.hapticEnabled
-        defaultBpm = settingsRecord.defaultBpm
-        defaultBeatsPerChord = settingsRecord.defaultBeatsPerChord
-        showChordDiagram = settingsRecord.showChordDiagram
-        practice.bpm = settingsRecord.defaultBpm
-        practice.beatsPerChord = settingsRecord.defaultBeatsPerChord
-        lastPracticeChordLabels = settingsRecord.lastPracticeChordLabels
-        lastPracticeBpm = settingsRecord.lastPracticeBpm
-    }
-
-    private func persistSettings() {
-        guard let settingsRecord else { return }
-        settingsRecord.metronomeSound = metronomeSound
-        settingsRecord.hapticEnabled = hapticEnabled
-        settingsRecord.showChordDiagram = showChordDiagram
-        settingsRecord.defaultBpm = defaultBpm
-        settingsRecord.defaultBeatsPerChord = defaultBeatsPerChord
+        practice.bpm = settings.defaultBpm
+        practice.beatsPerChord = settings.defaultBeatsPerChord
+        lastPracticeChordLabels = record.lastPracticeChordLabels
+        lastPracticeBpm = record.lastPracticeBpm
     }
 
     func persistLastPracticeSession() {
@@ -261,39 +230,9 @@ final class AppViewModel {
     private func resetPracticeForNewSession() {
         chords = []
         practice.resetForNewSession(
-            defaultBPM: defaultBpm,
-            defaultBeatsPerChord: defaultBeatsPerChord
+            defaultBPM: settings.defaultBpm,
+            defaultBeatsPerChord: settings.defaultBeatsPerChord
         )
-    }
-
-    func toggleShowChordDiagram() {
-        showChordDiagram.toggle()
-        persistSettings()
-    }
-
-    // MARK: - Settings screen actions
-    func toggleSoundPicker() { soundPickerOpen.toggle() }
-
-    func selectMetronomeSound(_ sound: MetronomeSound) {
-        metronomeSound = sound
-        soundPickerOpen = false
-        persistSettings()
-    }
-
-    func toggleHaptic() {
-        hapticEnabled.toggle()
-        persistSettings()
-    }
-
-    func changeDefaultBpm(by delta: Int) {
-        defaultBpm = (defaultBpm + delta).clamped(to: PracticeConfiguration.bpmRange)
-        persistSettings()
-    }
-
-    func changeDefaultBeatsPerChord(by delta: Int) {
-        defaultBeatsPerChord = (defaultBeatsPerChord + delta)
-            .clamped(to: PracticeConfiguration.beatsPerChordRange)
-        persistSettings()
     }
 
     // MARK: - Saved sets

@@ -73,10 +73,10 @@ struct TunerView: View {
             .onChange(of: engine.lockedStrings) { oldValue, newValue in
                 guard newValue.count > oldValue.count else { return }
                 if newValue.count == GuitarString.allCases.count {
-                    AkorioHaptics.success(enabled: viewModel.hapticEnabled)
+                    AkorioHaptics.success(enabled: viewModel.settings.hapticEnabled)
                     showAllTunedOverlay = true
                 } else {
-                    AkorioHaptics.impact(enabled: viewModel.hapticEnabled)
+                    AkorioHaptics.impact(enabled: viewModel.settings.hapticEnabled)
                 }
             }
 

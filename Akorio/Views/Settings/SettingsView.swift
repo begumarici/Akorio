@@ -12,6 +12,9 @@ struct SettingsView: View {
     let viewModel: AppViewModel
 
     @State private var showMailCompose = false
+    @State private var isSoundPickerOpen = false
+
+    private var settings: SettingsStore { viewModel.settings }
 
     var body: some View {
         ScrollView {
@@ -62,7 +65,7 @@ struct SettingsView: View {
             HStack {
                 Text("Haptik geri bildirim").foregroundColor(.akorioText)
                 Spacer()
-                AkorioToggle(isOn: viewModel.hapticEnabled) { viewModel.toggleHaptic() }
+                AkorioToggle(isOn: settings.hapticEnabled) { settings.toggleHaptic() }
             }
             .font(.akorio(14))
             .padding(14)
@@ -73,13 +76,13 @@ struct SettingsView: View {
 
     private var soundPicker: some View {
         Button {
-            viewModel.toggleSoundPicker()
+            isSoundPickerOpen.toggle()
         } label: {
             HStack {
                 Text("Metronom sesi")
                     .foregroundColor(.akorioText)
                 Spacer()
-                Text(viewModel.metronomeSound.label)
+                Text(settings.metronomeSound.label)
                     .foregroundColor(.akorioAccent300)
                 Image(systemName: "chevron.down")
                     .font(.akorio(10))
@@ -92,20 +95,21 @@ struct SettingsView: View {
         .background(Color.akorioSurface)
         .cornerRadius(AkorioRadius.md)
         .overlay(alignment: .top) {
-            if viewModel.soundPickerOpen {
+            if isSoundPickerOpen {
                 VStack(spacing: 0) {
                     ForEach(MetronomeSound.allCases, id: \.self) { sound in
                         Button {
-                            viewModel.selectMetronomeSound(sound)
+                            settings.selectMetronomeSound(sound)
+                            isSoundPickerOpen = false
                         } label: {
                             HStack {
                                 Text(sound.label)
-                                    .foregroundColor(sound == viewModel.metronomeSound ? .akorioAccent100 : .akorioText)
+                                    .foregroundColor(sound == settings.metronomeSound ? .akorioAccent100 : .akorioText)
                                 Spacer()
                             }
                             .font(.akorio(14))
                             .padding(14)
-                            .background(sound == viewModel.metronomeSound ? Color.akorioAccent800 : Color.akorioSurface)
+                            .background(sound == settings.metronomeSound ? Color.akorioAccent800 : Color.akorioSurface)
                         }
                         .buttonStyle(.plain)
                     }
@@ -118,7 +122,7 @@ struct SettingsView: View {
             }
         }
         .zIndex(1)
-        .akorioAnimation(.spring(response: 0.3, dampingFraction: 1.0), value: viewModel.soundPickerOpen)
+        .akorioAnimation(.spring(response: 0.3, dampingFraction: 1.0), value: isSoundPickerOpen)
     }
 
     // MARK: - Default practice settings
@@ -129,15 +133,15 @@ struct SettingsView: View {
             HStack(spacing: 10) {
                 AkorioStatBox(
                     title: String(localized: "BPM"),
-                    value: viewModel.defaultBpm,
-                    onDecrement: { viewModel.changeDefaultBpm(by: -1) },
-                    onIncrement: { viewModel.changeDefaultBpm(by: 1) }
+                    value: settings.defaultBpm,
+                    onDecrement: { settings.changeDefaultBpm(by: -1) },
+                    onIncrement: { settings.changeDefaultBpm(by: 1) }
                 )
                 AkorioStatBox(
                     title: String(localized: "Vuruş/Akor"),
-                    value: viewModel.defaultBeatsPerChord,
-                    onDecrement: { viewModel.changeDefaultBeatsPerChord(by: -1) },
-                    onIncrement: { viewModel.changeDefaultBeatsPerChord(by: 1) }
+                    value: settings.defaultBeatsPerChord,
+                    onDecrement: { settings.changeDefaultBeatsPerChord(by: -1) },
+                    onIncrement: { settings.changeDefaultBeatsPerChord(by: 1) }
                 )
             }
 

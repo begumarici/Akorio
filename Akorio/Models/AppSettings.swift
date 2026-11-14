@@ -45,6 +45,17 @@ final class AppSettings {
         self.showChordDiagram = showChordDiagram
     }
 
+    /// The app keeps exactly one settings row; this returns it, creating it
+    /// on first launch.
+    static func fetchOrCreate(in context: ModelContext) -> AppSettings {
+        if let existing = try? context.fetch(FetchDescriptor<AppSettings>()).first {
+            return existing
+        }
+        let created = AppSettings()
+        context.insert(created)
+        return created
+    }
+
     var metronomeSound: MetronomeSound {
         get { MetronomeSound(rawValue: metronomeSoundRaw) ?? .click }
         set { metronomeSoundRaw = newValue.rawValue }

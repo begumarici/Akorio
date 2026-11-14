@@ -44,8 +44,8 @@ struct PracticePlanControls: View {
             VStack(spacing: 1) {
                 optionRow(
                     title: "Akor diyagramı göster",
-                    isOn: viewModel.showChordDiagram,
-                    action: viewModel.toggleShowChordDiagram
+                    isOn: viewModel.settings.showChordDiagram,
+                    action: viewModel.settings.toggleShowChordDiagram
                 )
 
                 optionRow(
@@ -68,8 +68,8 @@ struct PracticePlanControls: View {
 
                 optionRow(
                     title: "Haptik geri bildirim",
-                    isOn: viewModel.hapticEnabled,
-                    action: viewModel.toggleHaptic
+                    isOn: viewModel.settings.hapticEnabled,
+                    action: viewModel.settings.toggleHaptic
                 )
 
                 optionRow(

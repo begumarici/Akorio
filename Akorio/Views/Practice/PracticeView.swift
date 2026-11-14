@@ -155,7 +155,7 @@ struct PracticeView: View {
                     .font(.akorio(14 * scale))
                     .foregroundColor(.akorioNeutral500)
             } else if viewModel.isPlaying || viewModel.isPracticePaused {
-                if viewModel.showChordDiagram {
+                if viewModel.settings.showChordDiagram {
                     Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
                         .font(.akorio(32 * scale, .bold))
                         .foregroundColor(.akorioText)
