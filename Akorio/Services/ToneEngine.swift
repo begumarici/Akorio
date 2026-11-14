@@ -39,7 +39,6 @@ final class ToneEngine {
     private var players: [AVAudioPlayerNode] = []
     private var nextPlayerIndex = 0
     private var bufferCache: [String: AVAudioPCMBuffer] = [:]
-    private let sampleRate = 44_100.0
 
     /// Backgrounding tears down the session's IO cycle; calling `play()` on a
     /// player node while that's happening throws an uncaught `NSException`
@@ -110,6 +109,9 @@ final class ToneEngine {
         let freq = accent ? profile.accentFreq : profile.freq
         let duration = profile.decay
         let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        // Generate at the output's real rate; assuming 44.1 kHz made the
+        // click sharper and shorter on 48 kHz devices.
+        let sampleRate = format.sampleRate
         let frameCount = AVAudioFrameCount(sampleRate * duration)
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
         buffer.frameLength = frameCount

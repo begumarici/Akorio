@@ -59,18 +59,17 @@ final class TunerEngine {
     /// from `isListening`, which also gets torn down while backgrounded.
     /// Lets `handleWillEnterForeground` know whether to resume.
     private var isActive = false
-    private let sampleRate = 44_100.0
     // Small enough to keep updates feeling instant, still several periods of
     // even the lowest guitar string (E2, ~82Hz) for a reliable YIN read.
     private let bufferSize: AVAudioFrameCount = 2048
 
     /// YIN is too heavy to run on the audio tap's real-time thread — do it
-    /// here instead. Guarded by `isProcessing` so a slow analysis never lets
+    /// here instead. Guarded by `analysisGate` so a slow analysis never lets
     /// buffers queue up behind it (that queue would only grow, and the
     /// display would drift further and further behind real time) — we
     /// always work on the freshest audio instead.
     private let analysisQueue = DispatchQueue(label: "com.akorio.tuner.analysis")
-    private var isProcessing = false
+    private let analysisGate = AnalysisGate()
 
     /// Analysis runs over a sliding window 1.5x the tap size: a bigger
     /// window means more string periods per YIN pass, which cuts cents
@@ -248,8 +247,7 @@ final class TunerEngine {
     }
 
     private func process(buffer: AVAudioPCMBuffer, sampleRate: Double) {
-        guard !isProcessing, let channelData = buffer.floatChannelData else { return }
-        isProcessing = true
+        guard let channelData = buffer.floatChannelData, analysisGate.tryEnter() else { return }
 
         let frameCount = Int(buffer.frameLength)
         let samples = Array(UnsafeBufferPointer(start: channelData[0], count: frameCount))
@@ -303,7 +301,7 @@ final class TunerEngine {
 
             DispatchQueue.main.async {
                 self.ingest(frequency: frequency, rms: rms)
-                self.isProcessing = false
+                self.analysisGate.leave()
             }
         }
     }
@@ -433,6 +431,7 @@ final class TunerEngine {
 
     private func makeAllTunedChimeBuffer() -> AVAudioPCMBuffer? {
         let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        let sampleRate = format.sampleRate
         // A major arpeggio, C5 up to C6 — a small "ta-da" resolving upward.
         let notes: [(freq: Double, start: Double)] = [
             (523.25, 0), (659.25, 0.09), (783.99, 0.18), (1046.5, 0.30),
@@ -468,6 +467,7 @@ final class TunerEngine {
 
     private func makeChimeBuffer() -> AVAudioPCMBuffer? {
         let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        let sampleRate = format.sampleRate
         let notes: [(freq: Double, start: Double)] = [(880, 0), (1318.5, 0.07)] // A5, then E6
         let noteDuration = 0.14
         let totalDuration = notes.last!.start + noteDuration
