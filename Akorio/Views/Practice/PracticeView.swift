@@ -195,7 +195,7 @@ struct PracticeView: View {
                     .foregroundColor(.akorioNeutral500)
 
                 HStack(spacing: 8 * scale) {
-                    ForEach(0..<max(viewModel.beatsPerChord, 1), id: \.self) { index in
+                    ForEach(0..<max(viewModel.practice.beatsPerChord, 1), id: \.self) { index in
                         Circle()
                             .fill(index == viewModel.beatInCurrentChord ? Color.akorioAccent500 : Color.akorioNeutral700)
                             .frame(width: 9 * scale, height: 9 * scale)
@@ -216,8 +216,18 @@ struct PracticeView: View {
     // MARK: - BPM / beats
     private var statRow: some View {
         HStack(spacing: 10) {
-            AkorioStatBox(title: String(localized: "BPM"), value: viewModel.bpm, onDecrement: viewModel.decBpm, onIncrement: viewModel.incBpm)
-            AkorioStatBox(title: String(localized: "Vuruş/Akor"), value: viewModel.beatsPerChord, onDecrement: viewModel.decBeats, onIncrement: viewModel.incBeats)
+            AkorioStatBox(
+                title: String(localized: "BPM"),
+                value: viewModel.practice.bpm,
+                onDecrement: { viewModel.updatePractice { $0.bpm -= 1 } },
+                onIncrement: { viewModel.updatePractice { $0.bpm += 1 } }
+            )
+            AkorioStatBox(
+                title: String(localized: "Vuruş/Akor"),
+                value: viewModel.practice.beatsPerChord,
+                onDecrement: { viewModel.updatePractice { $0.beatsPerChord -= 1 } },
+                onIncrement: { viewModel.updatePractice { $0.beatsPerChord += 1 } }
+            )
         }
     }
 
@@ -234,7 +244,7 @@ struct PracticeView: View {
 
                 Spacer()
 
-                Text(viewModel.practiceDurationGoal.title)
+                Text(viewModel.practice.durationGoal.title)
                     .foregroundColor(.akorioNeutral500)
 
                 Image(systemName: "chevron.right")

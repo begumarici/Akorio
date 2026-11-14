@@ -80,9 +80,9 @@ struct PracticePlanView: View {
             VStack(spacing: 0) {
                 PracticePlanStepperRow(
                     title: String(localized: "BPM"),
-                    value: viewModel.bpm,
-                    onDecrement: viewModel.decBpm,
-                    onIncrement: viewModel.incBpm
+                    value: viewModel.practice.bpm,
+                    onDecrement: { viewModel.updatePractice { $0.bpm -= 1 } },
+                    onIncrement: { viewModel.updatePractice { $0.bpm += 1 } }
                 )
 
                 Divider()
@@ -90,9 +90,9 @@ struct PracticePlanView: View {
 
                 PracticePlanStepperRow(
                     title: String(localized: "Vuruş/Akor"),
-                    value: viewModel.beatsPerChord,
-                    onDecrement: viewModel.decBeats,
-                    onIncrement: viewModel.incBeats
+                    value: viewModel.practice.beatsPerChord,
+                    onDecrement: { viewModel.updatePractice { $0.beatsPerChord -= 1 } },
+                    onIncrement: { viewModel.updatePractice { $0.beatsPerChord += 1 } }
                 )
             }
             .padding(.horizontal, 14)

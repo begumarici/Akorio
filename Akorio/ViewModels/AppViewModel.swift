@@ -48,13 +48,9 @@ final class AppViewModel {
         didSet {
             if path.isEmpty && !oldValue.isEmpty {
                 metronome.stop()
-                chords = []
-                bpm = defaultBpm
-                beatsPerChord = defaultBeatsPerChord
-                practiceDurationGoal = .tenMinutes
-                accentFirstBeat = true
                 isPracticePaused = false
                 currentPracticeSummary = nil
+                resetPracticeForNewSession()
             }
         }
     }
@@ -63,13 +59,9 @@ final class AppViewModel {
     var chords: [ChordItem] = []
 
     // MARK: - Practice settings (live, editable; seeded from AppSettings defaults)
-    var bpm = 80
-    var beatsPerChord = 4
-    var preventBackToBackRepeat = true
-    var countInEnabled = true
-    var metronomeSoundEnabled = true
-    var practiceDurationGoal: PracticeDurationGoal = .tenMinutes
-    var accentFirstBeat = true
+    /// Changed only through `updatePractice(_:)`, which also remembers the
+    /// session for the "continue" card.
+    private(set) var practice = PracticeConfiguration.standard
     var currentPracticeSummary: PracticeSessionSummary?
     var isPracticePaused = false
     var isPracticePresented = false
@@ -83,14 +75,14 @@ final class AppViewModel {
     // MARK: - Settings (mirrors the AppSettings row)
     var metronomeSound: MetronomeSound = .click
     var hapticEnabled = false
-    var defaultBpm = 80
-    var defaultBeatsPerChord = 4
+    var defaultBpm = PracticeConfiguration.standard.bpm
+    var defaultBeatsPerChord = PracticeConfiguration.standard.beatsPerChord
     var showChordDiagram = false
     var soundPickerOpen = false
 
     // MARK: - Last practice session (for the "continue" card on Home)
     var lastPracticeChordLabels: [String] = []
-    var lastPracticeBpm = 80
+    var lastPracticeBpm = PracticeConfiguration.standard.bpm
 
     /// The real-time practice session (timer, count-in, click sounds).
     /// Kept as its own `@Observable` engine — see MetronomeEngine.swift.
@@ -101,24 +93,12 @@ final class AppViewModel {
 
     init() {
         metronome.configurationProvider = { [weak self] in
-            guard let self else {
-                return MetronomeEngine.Configuration(
-                    chordLabels: [], bpm: 80, beatsPerChord: 4, preventBackToBackRepeat: true,
-                    countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false,
-                    targetDurationSeconds: nil, accentFirstBeat: true
-                )
-            }
+            guard let self else { return MetronomeEngine.Configuration() }
             return MetronomeEngine.Configuration(
-                chordLabels: self.chords.map { $0.label },
-                bpm: self.bpm,
-                beatsPerChord: self.beatsPerChord,
-                preventBackToBackRepeat: self.preventBackToBackRepeat,
-                countInEnabled: self.countInEnabled,
-                metronomeSoundEnabled: self.metronomeSoundEnabled,
+                chordLabels: self.chords.map(\.label),
+                practice: self.practice,
                 metronomeSound: self.metronomeSound,
-                hapticEnabled: self.hapticEnabled,
-                targetDurationSeconds: self.practiceDurationGoal.minutes.map { $0 * 60 },
-                accentFirstBeat: self.accentFirstBeat
+                hapticEnabled: self.hapticEnabled
             )
         }
         metronome.goalReachedHandler = { [weak self] in
@@ -152,8 +132,8 @@ final class AppViewModel {
         defaultBpm = settingsRecord.defaultBpm
         defaultBeatsPerChord = settingsRecord.defaultBeatsPerChord
         showChordDiagram = settingsRecord.showChordDiagram
-        bpm = settingsRecord.defaultBpm
-        beatsPerChord = settingsRecord.defaultBeatsPerChord
+        practice.bpm = settingsRecord.defaultBpm
+        practice.beatsPerChord = settingsRecord.defaultBeatsPerChord
         lastPracticeChordLabels = settingsRecord.lastPracticeChordLabels
         lastPracticeBpm = settingsRecord.lastPracticeBpm
     }
@@ -169,16 +149,10 @@ final class AppViewModel {
 
     func persistLastPracticeSession() {
         guard let settingsRecord, !chords.isEmpty else { return }
-        settingsRecord.lastPracticeChordLabels = chords.map { $0.label }
-        settingsRecord.lastPracticeBpm = bpm
-        settingsRecord.lastPracticeBeatsPerChord = beatsPerChord
-        settingsRecord.lastPracticePreventBackToBackRepeat = preventBackToBackRepeat
-        settingsRecord.lastPracticeCountInEnabled = countInEnabled
-        settingsRecord.lastPracticeMetronomeSoundEnabled = metronomeSoundEnabled
-        settingsRecord.lastPracticeTargetDurationMinutes = practiceDurationGoal.minutes
-        settingsRecord.lastPracticeAccentFirstBeat = accentFirstBeat
-        lastPracticeChordLabels = chords.map { $0.label }
-        lastPracticeBpm = bpm
+        settingsRecord.lastPracticeChordLabels = chords.map(\.label)
+        settingsRecord.lastPracticeConfiguration = practice
+        lastPracticeChordLabels = chords.map(\.label)
+        lastPracticeBpm = practice.bpm
     }
 
     // MARK: - Navigation
@@ -275,26 +249,23 @@ final class AppViewModel {
     }
 
     // MARK: - Practice setting adjustments
-    private func clampBpm(_ value: Int) -> Int { max(40, min(240, value)) }
-    private func clampBeats(_ value: Int) -> Int { max(1, min(8, value)) }
-
-    func incBpm() { bpm = clampBpm(bpm + 1); persistLastPracticeSession() }
-    func decBpm() { bpm = clampBpm(bpm - 1); persistLastPracticeSession() }
-    func incBeats() { beatsPerChord = clampBeats(beatsPerChord + 1); persistLastPracticeSession() }
-    func decBeats() { beatsPerChord = clampBeats(beatsPerChord - 1); persistLastPracticeSession() }
-
-    func toggleBackToBackRepeat() { preventBackToBackRepeat.toggle(); persistLastPracticeSession() }
-    func toggleCountIn() { countInEnabled.toggle(); persistLastPracticeSession() }
-    func toggleMetronomeSoundEnabled() { metronomeSoundEnabled.toggle(); persistLastPracticeSession() }
-    func selectPracticeDurationGoal(_ goal: PracticeDurationGoal) {
-        practiceDurationGoal = goal
+    func updatePractice(_ change: (inout PracticeConfiguration) -> Void) {
+        let previousGoal = practice.durationGoal
+        change(&practice)
         persistLastPracticeSession()
-        metronome.refreshDurationGoal()
+        if practice.durationGoal != previousGoal {
+            metronome.refreshDurationGoal()
+        }
     }
-    func toggleAccentFirstBeat() {
-        accentFirstBeat.toggle()
-        persistLastPracticeSession()
+
+    private func resetPracticeForNewSession() {
+        chords = []
+        practice.resetForNewSession(
+            defaultBPM: defaultBpm,
+            defaultBeatsPerChord: defaultBeatsPerChord
+        )
     }
+
     func toggleShowChordDiagram() {
         showChordDiagram.toggle()
         persistSettings()
@@ -314,10 +285,16 @@ final class AppViewModel {
         persistSettings()
     }
 
-    func incDefaultBpm() { defaultBpm = clampBpm(defaultBpm + 1); persistSettings() }
-    func decDefaultBpm() { defaultBpm = clampBpm(defaultBpm - 1); persistSettings() }
-    func incDefaultBeats() { defaultBeatsPerChord = clampBeats(defaultBeatsPerChord + 1); persistSettings() }
-    func decDefaultBeats() { defaultBeatsPerChord = clampBeats(defaultBeatsPerChord - 1); persistSettings() }
+    func changeDefaultBpm(by delta: Int) {
+        defaultBpm = (defaultBpm + delta).clamped(to: PracticeConfiguration.bpmRange)
+        persistSettings()
+    }
+
+    func changeDefaultBeatsPerChord(by delta: Int) {
+        defaultBeatsPerChord = (defaultBeatsPerChord + delta)
+            .clamped(to: PracticeConfiguration.beatsPerChordRange)
+        persistSettings()
+    }
 
     // MARK: - Saved sets
     func openSaveDialog() {
@@ -338,14 +315,8 @@ final class AppViewModel {
         let trimmedName = saveNameInput.trimmingCharacters(in: .whitespacesAndNewlines)
         let newSet = SavedChordSet(
             name: trimmedName.isEmpty ? String(localized: "Akor Seti") : trimmedName,
-            chordLabels: chords.map { $0.label },
-            bpm: bpm,
-            beatsPerChord: beatsPerChord,
-            preventBackToBackRepeat: preventBackToBackRepeat,
-            countInEnabled: countInEnabled,
-            metronomeSoundEnabled: metronomeSoundEnabled,
-            targetDurationMinutes: practiceDurationGoal.minutes,
-            accentFirstBeat: accentFirstBeat
+            chordLabels: chords.map(\.label),
+            configuration: practice
         )
         modelContext.insert(newSet)
         saveDialogOpen = false
@@ -353,13 +324,7 @@ final class AppViewModel {
 
     func loadSavedSet(_ savedSet: SavedChordSet) {
         chords = savedSet.chordLabels.map { ChordItem(label: $0) }
-        bpm = savedSet.bpm
-        beatsPerChord = savedSet.beatsPerChord
-        preventBackToBackRepeat = savedSet.preventBackToBackRepeat
-        countInEnabled = savedSet.countInEnabled
-        metronomeSoundEnabled = savedSet.metronomeSoundEnabled
-        practiceDurationGoal = PracticeDurationGoal(minutes: savedSet.targetDurationMinutes)
-        accentFirstBeat = savedSet.accentFirstBeat
+        practice = savedSet.configuration
         metronome.stop()
         persistLastPracticeSession()
 
@@ -378,13 +343,7 @@ final class AppViewModel {
     func continueLastPractice() {
         guard let settingsRecord else { return }
         chords = settingsRecord.lastPracticeChordLabels.map { ChordItem(label: $0) }
-        bpm = settingsRecord.lastPracticeBpm
-        beatsPerChord = settingsRecord.lastPracticeBeatsPerChord
-        preventBackToBackRepeat = settingsRecord.lastPracticePreventBackToBackRepeat
-        countInEnabled = settingsRecord.lastPracticeCountInEnabled
-        metronomeSoundEnabled = settingsRecord.lastPracticeMetronomeSoundEnabled
-        practiceDurationGoal = PracticeDurationGoal(minutes: settingsRecord.lastPracticeTargetDurationMinutes)
-        accentFirstBeat = settingsRecord.lastPracticeAccentFirstBeat
+        practice = settingsRecord.lastPracticeConfiguration
         metronome.stop()
 
         isPracticePaused = false
@@ -414,7 +373,7 @@ final class AppViewModel {
     var remainingPracticeSeconds: Int? {
         PracticeGoalCalculator.remainingSeconds(
             elapsedSeconds: metronome.elapsedPracticeSeconds,
-            goal: practiceDurationGoal
+            goal: practice.durationGoal
         )
     }
 
@@ -447,7 +406,7 @@ final class AppViewModel {
         let elapsedSeconds = metronome.elapsedPracticeSeconds
         let durationSeconds = PracticeGoalCalculator.recordedDurationSeconds(
             elapsedSeconds: elapsedSeconds,
-            goal: practiceDurationGoal,
+            goal: practice.durationGoal,
             goalReached: goalReached
         )
         let transitionCount = metronome.chordTransitionCount
@@ -460,13 +419,13 @@ final class AppViewModel {
         let summary = PracticeSessionSummary(
             durationSeconds: durationSeconds,
             chordTransitionCount: transitionCount,
-            bpm: bpm,
-            beatsPerChord: beatsPerChord,
+            bpm: practice.bpm,
+            beatsPerChord: practice.beatsPerChord,
             chordLabels: chords.map(\.label),
-            targetDurationMinutes: practiceDurationGoal.minutes,
+            targetDurationMinutes: practice.durationGoal.minutes,
             goalCompleted: goalReached || PracticeGoalCalculator.isCompleted(
                 elapsedSeconds: elapsedSeconds,
-                goal: practiceDurationGoal
+                goal: practice.durationGoal
             )
         )
 
@@ -505,12 +464,7 @@ final class AppViewModel {
 
         selectedTab = .home
         path = []
-
-        chords = []
-        bpm = defaultBpm
-        beatsPerChord = defaultBeatsPerChord
-        practiceDurationGoal = .tenMinutes
-        accentFirstBeat = true
+        resetPracticeForNewSession()
 
         scheduleReviewRequestIfEligible()
     }

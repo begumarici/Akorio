@@ -16,7 +16,7 @@ struct PracticePlanControls: View {
 
                 Spacer()
 
-                Text(viewModel.practiceDurationGoal.title)
+                Text(viewModel.practice.durationGoal.title)
                     .font(.akorio(12, .medium))
                     .foregroundColor(.akorioNeutral500)
             }
@@ -26,9 +26,9 @@ struct PracticePlanControls: View {
                     PracticeSettingOptionButton(
                         title: compactTitle(for: goal),
                         accessibilityLabel: goal.title,
-                        isSelected: viewModel.practiceDurationGoal == goal
+                        isSelected: viewModel.practice.durationGoal == goal
                     ) {
-                        viewModel.selectPracticeDurationGoal(goal)
+                        viewModel.updatePractice { $0.durationGoal = goal }
                     }
                 }
             }
@@ -50,20 +50,20 @@ struct PracticePlanControls: View {
 
                 optionRow(
                     title: "Aynı akoru art arda getirme",
-                    isOn: viewModel.preventBackToBackRepeat,
-                    action: viewModel.toggleBackToBackRepeat
+                    isOn: viewModel.practice.preventBackToBackRepeat,
+                    action: { viewModel.updatePractice { $0.preventBackToBackRepeat.toggle() } }
                 )
 
                 optionRow(
                     title: "Başlangıç sayımı",
-                    isOn: viewModel.countInEnabled,
-                    action: viewModel.toggleCountIn
+                    isOn: viewModel.practice.countInEnabled,
+                    action: { viewModel.updatePractice { $0.countInEnabled.toggle() } }
                 )
 
                 optionRow(
                     title: "Metronom sesi",
-                    isOn: viewModel.metronomeSoundEnabled,
-                    action: viewModel.toggleMetronomeSoundEnabled
+                    isOn: viewModel.practice.metronomeSoundEnabled,
+                    action: { viewModel.updatePractice { $0.metronomeSoundEnabled.toggle() } }
                 )
 
                 optionRow(
@@ -74,8 +74,8 @@ struct PracticePlanControls: View {
 
                 optionRow(
                     title: "Akorun ilk vuruşunu vurgula",
-                    isOn: viewModel.accentFirstBeat,
-                    action: viewModel.toggleAccentFirstBeat
+                    isOn: viewModel.practice.accentFirstBeat,
+                    action: { viewModel.updatePractice { $0.accentFirstBeat.toggle() } }
                 )
             }
             .clipShape(RoundedRectangle(cornerRadius: AkorioRadius.md))

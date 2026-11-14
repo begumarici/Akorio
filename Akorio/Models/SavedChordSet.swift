@@ -29,25 +29,33 @@ final class SavedChordSet {
     init(
         name: String,
         chordLabels: [String],
-        bpm: Int,
-        beatsPerChord: Int,
-        preventBackToBackRepeat: Bool,
-        countInEnabled: Bool,
-        metronomeSoundEnabled: Bool,
-        targetDurationMinutes: Int? = nil,
-        accentFirstBeat: Bool = true
+        configuration: PracticeConfiguration
     ) {
         self.id = UUID()
         self.name = name
         self.chordLabels = chordLabels
-        self.bpm = bpm
-        self.beatsPerChord = beatsPerChord
-        self.preventBackToBackRepeat = preventBackToBackRepeat
-        self.countInEnabled = countInEnabled
-        self.metronomeSoundEnabled = metronomeSoundEnabled
-        self.targetDurationMinutes = targetDurationMinutes
-        self.accentFirstBeat = accentFirstBeat
+        self.bpm = configuration.bpm
+        self.beatsPerChord = configuration.beatsPerChord
+        self.preventBackToBackRepeat = configuration.preventBackToBackRepeat
+        self.countInEnabled = configuration.countInEnabled
+        self.metronomeSoundEnabled = configuration.metronomeSoundEnabled
+        self.targetDurationMinutes = configuration.durationGoal.minutes
+        self.accentFirstBeat = configuration.accentFirstBeat
         self.createdAt = Date()
+    }
+
+    /// The stored columns stay flat so existing databases keep loading;
+    /// the rest of the app reads them through this single value.
+    var configuration: PracticeConfiguration {
+        PracticeConfiguration(
+            bpm: bpm,
+            beatsPerChord: beatsPerChord,
+            preventBackToBackRepeat: preventBackToBackRepeat,
+            countInEnabled: countInEnabled,
+            metronomeSoundEnabled: metronomeSoundEnabled,
+            durationGoal: PracticeDurationGoal(minutes: targetDurationMinutes),
+            accentFirstBeat: accentFirstBeat
+        )
     }
 
     var subtitle: String {

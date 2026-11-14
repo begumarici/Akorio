@@ -19,16 +19,10 @@ final class MetronomeEngine {
     /// `configurationProvider` — `AppViewModel` still owns the actual values
     /// (Selector/Settings screens need them too), so nothing is duplicated.
     struct Configuration {
-        let chordLabels: [String]
-        let bpm: Int
-        let beatsPerChord: Int
-        let preventBackToBackRepeat: Bool
-        let countInEnabled: Bool
-        let metronomeSoundEnabled: Bool
-        let metronomeSound: MetronomeSound
-        let hapticEnabled: Bool
-        let targetDurationSeconds: Int?
-        let accentFirstBeat: Bool
+        var chordLabels: [String] = []
+        var practice = PracticeConfiguration.standard
+        var metronomeSound: MetronomeSound = .click
+        var hapticEnabled = false
     }
 
     var isPlaying = false
@@ -39,13 +33,7 @@ final class MetronomeEngine {
     var beatInCurrentChord = -1
 
     /// Set once by `AppViewModel` at startup.
-    var configurationProvider: () -> Configuration = {
-        Configuration(
-            chordLabels: [], bpm: 80, beatsPerChord: 4, preventBackToBackRepeat: true,
-            countInEnabled: true, metronomeSoundEnabled: true, metronomeSound: .click, hapticEnabled: false,
-            targetDurationSeconds: nil, accentFirstBeat: true
-        )
-    }
+    var configurationProvider: () -> Configuration = { Configuration() }
 
     var goalReachedHandler: () -> Void = {}
 
@@ -89,15 +77,15 @@ final class MetronomeEngine {
         chordTransitionCount = 0
         accumulatedPracticeDuration = 0
 
-        let beatSeconds = 60.0 / Double(config.bpm)
+        let beatSeconds = 60.0 / Double(config.practice.bpm)
         // The first chord is always the first one the user selected — not
         // randomized — so whatever's shown as "next" before the session
         // starts is guaranteed to be what actually plays first.
         let first = config.chordLabels[0]
         let second = pickNextChord(from: config, excluding: first)
 
-        if config.countInEnabled {
-            countInLeft = config.beatsPerChord
+        if config.practice.countInEnabled {
+            countInLeft = config.practice.beatsPerChord
             loopCurrent = first
             loopNext = second
             currentBeatInterval = beatSeconds
@@ -107,7 +95,7 @@ final class MetronomeEngine {
             currentChordLabel = first
             nextChordLabel = second
             beatInCurrentChord = 0
-            playClick(accent: config.accentFirstBeat, config: config)
+            playClick(accent: config.practice.accentFirstBeat, config: config)
             scheduleTimer(interval: beatSeconds) { [weak self] in self?.countInTick() }
         } else {
             isPlaying = true
@@ -115,7 +103,7 @@ final class MetronomeEngine {
             currentChordLabel = first
             nextChordLabel = second
             beatInCurrentChord = 0
-            playClick(accent: config.accentFirstBeat, config: config)
+            playClick(accent: config.practice.accentFirstBeat, config: config)
             startChordLoop(first: first, second: second, config: config)
         }
     }
@@ -158,7 +146,7 @@ final class MetronomeEngine {
         let config = configurationProvider()
         guard !config.chordLabels.isEmpty else { return }
 
-        currentBeatInterval = 60.0 / Double(config.bpm)
+        currentBeatInterval = 60.0 / Double(config.practice.bpm)
         isPlaying = true
 
         currentChordLabel = loopCurrent
@@ -166,12 +154,12 @@ final class MetronomeEngine {
         loopBeat = 0
         beatInCurrentChord = 0
 
-        if config.countInEnabled {
-            countInLeft = config.beatsPerChord
+        if config.practice.countInEnabled {
+            countInLeft = config.practice.beatsPerChord
             countInBeatsLeft = countInLeft
             isCountingIn = true
 
-            playClick(accent: config.accentFirstBeat, config: config)
+            playClick(accent: config.practice.accentFirstBeat, config: config)
 
             scheduleTimer(interval: currentBeatInterval) { [weak self] in
                 self?.countInTick()
@@ -192,7 +180,7 @@ final class MetronomeEngine {
         guard !labels.isEmpty else { return "" }
         if labels.count == 1 { return labels[0] }
 
-        guard config.preventBackToBackRepeat else {
+        guard config.practice.preventBackToBackRepeat else {
             return labels.randomElement() ?? ""
         }
         var pool = labels
@@ -213,7 +201,7 @@ final class MetronomeEngine {
         } else {
             stopTimer()
             isCountingIn = false
-            playClick(accent: config.accentFirstBeat, config: config)
+            playClick(accent: config.practice.accentFirstBeat, config: config)
             startChordLoop(first: loopCurrent, second: loopNext, config: config)
         }
     }
@@ -221,7 +209,7 @@ final class MetronomeEngine {
     private func chordLoopTick() {
         let config = configurationProvider()
         loopBeat += 1
-        if loopBeat >= config.beatsPerChord {
+        if loopBeat >= config.practice.beatsPerChord {
             loopBeat = 0
 
             let previousChord = loopCurrent
@@ -239,7 +227,7 @@ final class MetronomeEngine {
             beatInCurrentChord = loopBeat
         }
 
-        playClick(accent: config.accentFirstBeat && loopBeat == 0, config: config)
+        playClick(accent: config.practice.accentFirstBeat && loopBeat == 0, config: config)
 
         rearmIfTempoChanged(config: config) { [weak self] in self?.chordLoopTick() }
     }
@@ -251,7 +239,7 @@ final class MetronomeEngine {
         loopBeat = 0
         loopCurrent = first
         loopNext = second
-        currentBeatInterval = 60.0 / Double(config.bpm)
+        currentBeatInterval = 60.0 / Double(config.practice.bpm)
         scheduleGoalTimer(config: config)
         scheduleTimer(interval: currentBeatInterval) { [weak self] in self?.chordLoopTick() }
     }
@@ -280,7 +268,7 @@ final class MetronomeEngine {
     /// If the user changed the BPM mid-session, re-arm the timer at the new
     /// interval on the next beat instead of waiting for it to stop and restart.
     private func rearmIfTempoChanged(config: Configuration, _ tick: @escaping () -> Void) {
-        let wanted = 60.0 / Double(config.bpm)
+        let wanted = 60.0 / Double(config.practice.bpm)
         if abs(wanted - currentBeatInterval) > 0.0001 {
             currentBeatInterval = wanted
             scheduleTimer(interval: wanted, tick)
@@ -295,7 +283,7 @@ final class MetronomeEngine {
     private func scheduleGoalTimer(config: Configuration) {
         stopGoalTimer()
 
-        guard let target = config.targetDurationSeconds else { return }
+        guard let target = config.practice.durationGoal.seconds else { return }
         let remaining = max(0, TimeInterval(target) - elapsedPracticeDuration)
         let newTimer = Timer(timeInterval: remaining, repeats: false) { [weak self] _ in
             self?.handleGoalTimerFired()
@@ -309,7 +297,7 @@ final class MetronomeEngine {
 
         guard isPlaying, !isCountingIn else { return }
         let config = configurationProvider()
-        guard let target = config.targetDurationSeconds else { return }
+        guard let target = config.practice.durationGoal.seconds else { return }
 
         // A Timer should not fire early, but checking the elapsed duration
         // protects against clock precision and a goal changed at the same time.
@@ -330,7 +318,7 @@ final class MetronomeEngine {
         if config.hapticEnabled {
             hapticGenerator.impactOccurred(intensity: accent ? 1.0 : 0.5)
         }
-        guard config.metronomeSoundEnabled else { return }
+        guard config.practice.metronomeSoundEnabled else { return }
         toneEngine.play(config.metronomeSound, accent: accent)
     }
 }

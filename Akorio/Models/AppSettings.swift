@@ -34,8 +34,8 @@ final class AppSettings {
     init(
         metronomeSound: MetronomeSound = .click,
         hapticEnabled: Bool = false,
-        defaultBpm: Int = 80,
-        defaultBeatsPerChord: Int = 4,
+        defaultBpm: Int = PracticeConfiguration.standard.bpm,
+        defaultBeatsPerChord: Int = PracticeConfiguration.standard.beatsPerChord,
         showChordDiagram: Bool = false
     ) {
         self.metronomeSoundRaw = metronomeSound.rawValue
@@ -48,5 +48,30 @@ final class AppSettings {
     var metronomeSound: MetronomeSound {
         get { MetronomeSound(rawValue: metronomeSoundRaw) ?? .click }
         set { metronomeSoundRaw = newValue.rawValue }
+    }
+
+    /// The last session's options, read and written as one value. The
+    /// stored columns stay flat so existing databases keep loading.
+    var lastPracticeConfiguration: PracticeConfiguration {
+        get {
+            PracticeConfiguration(
+                bpm: lastPracticeBpm,
+                beatsPerChord: lastPracticeBeatsPerChord,
+                preventBackToBackRepeat: lastPracticePreventBackToBackRepeat,
+                countInEnabled: lastPracticeCountInEnabled,
+                metronomeSoundEnabled: lastPracticeMetronomeSoundEnabled,
+                durationGoal: PracticeDurationGoal(minutes: lastPracticeTargetDurationMinutes),
+                accentFirstBeat: lastPracticeAccentFirstBeat
+            )
+        }
+        set {
+            lastPracticeBpm = newValue.bpm
+            lastPracticeBeatsPerChord = newValue.beatsPerChord
+            lastPracticePreventBackToBackRepeat = newValue.preventBackToBackRepeat
+            lastPracticeCountInEnabled = newValue.countInEnabled
+            lastPracticeMetronomeSoundEnabled = newValue.metronomeSoundEnabled
+            lastPracticeTargetDurationMinutes = newValue.durationGoal.minutes
+            lastPracticeAccentFirstBeat = newValue.accentFirstBeat
+        }
     }
 }
