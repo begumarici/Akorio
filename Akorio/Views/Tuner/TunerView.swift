@@ -115,7 +115,7 @@ struct TunerView: View {
                     if viewModel.hasLastPracticeSession {
                         Button {
                             showAllTunedOverlay = false
-                            viewModel.selectedTab = .home
+                            viewModel.router.selectedTab = .home
                             viewModel.continueLastPractice()
                         } label: {
                             Text("Son Pratik Seansına Devam Et")
@@ -126,7 +126,7 @@ struct TunerView: View {
 
                     Button {
                         showAllTunedOverlay = false
-                        viewModel.selectedTab = .home
+                        viewModel.router.selectedTab = .home
                     } label: {
                         Text("Akor Seç")
                             .frame(maxWidth: .infinity)

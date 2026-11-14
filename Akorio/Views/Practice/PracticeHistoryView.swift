@@ -77,7 +77,7 @@ struct PracticeHistoryView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Button {
-                viewModel.goBack()
+                viewModel.router.goBack()
             } label: {
                 Image(systemName: "chevron.left")
             }

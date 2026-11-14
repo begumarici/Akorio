@@ -51,14 +51,14 @@ struct SelectorView: View {
                 Spacer()
 
                 Button("Geçmişi Gör") {
-                    viewModel.goToPracticeHistory()
+                    viewModel.router.goToPracticeHistory()
                 }
                 .font(.akorio(12, .medium))
                 .foregroundColor(.akorioAccent300)
             }
 
             Button {
-                viewModel.goToPracticeHistory()
+                viewModel.router.goToPracticeHistory()
             } label: {
                 HStack(spacing: 8) {
                     ProgressMetric(
@@ -107,7 +107,7 @@ struct SelectorView: View {
             Spacer()
 
             Button {
-                viewModel.goToSaved()
+                viewModel.router.goToSaved()
             } label: {
                 Image(systemName: "music.note.list")
             }
@@ -124,7 +124,7 @@ struct SelectorView: View {
             }
 
             Button {
-                viewModel.goToSettings()
+                viewModel.router.goToSettings()
             } label: {
                 Image(systemName: "gearshape")
             }
@@ -228,7 +228,7 @@ struct SelectorView: View {
             VStack(spacing: 10) {
                 ForEach(ChordLevel.allCases, id: \.self) { level in
                     LevelRow(level: level) {
-                        viewModel.goToLevelDetail(level)
+                        viewModel.router.goToLevelDetail(level)
                     }
                 }
             }

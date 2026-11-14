@@ -16,8 +16,9 @@ struct ContentView: View {
     @State private var viewModel = AppViewModel()
 
     var body: some View {
-        ZStack {
-            TabView(selection: $viewModel.selectedTab) {
+        @Bindable var router = viewModel.router
+        return ZStack {
+            TabView(selection: $router.selectedTab) {
                 homeTab
                     .tabItem { Label("Ana Sayfa", systemImage: "house.fill") }
                     .tag(AppTab.home)
@@ -69,7 +70,8 @@ struct ContentView: View {
     }
 
     private var homeTab: some View {
-        NavigationStack(path: $viewModel.path) {
+        @Bindable var router = viewModel.router
+        return NavigationStack(path: $router.path) {
             ZStack {
                 AkorioBackground()
                 SelectorView(viewModel: viewModel)

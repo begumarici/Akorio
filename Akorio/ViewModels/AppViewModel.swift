@@ -8,20 +8,6 @@
 import SwiftUI
 import SwiftData
 
-enum AppScreen: Hashable {
-    case saved
-    case practiceHistory
-    case settings
-    case levelDetail(ChordLevel)
-    case practicePlan
-}
-
-enum AppTab: Hashable {
-    case home
-    case library
-    case tuner
-}
-
 struct PracticeSessionSummary: Hashable {
     let durationSeconds: Int
     let chordTransitionCount: Int
@@ -34,26 +20,7 @@ struct PracticeSessionSummary: Hashable {
 
 @Observable
 final class AppViewModel {
-    var selectedTab: AppTab = .home
-
-    /// The Selector screen is always the root; pushed screens live here.
-    /// Bound directly to a `NavigationStack(path:)`, so pop (including the
-    /// edge-swipe-back gesture) is handled natively.
-    ///
-    /// Cleanup lives here (not in a navigation function) because the native
-    /// swipe-back gesture mutates `path` directly — it never calls our
-    /// methods, so any "reset when returning home" logic has to react to
-    /// `path` itself, not to how it changed.
-    var path: [AppScreen] = [] {
-        didSet {
-            if path.isEmpty && !oldValue.isEmpty {
-                metronome.stop()
-                isPracticePaused = false
-                currentPracticeSummary = nil
-                resetPracticeForNewSession()
-            }
-        }
-    }
+    let router = AppRouter()
 
     // MARK: - Selector
     var chords: [ChordItem] = []
@@ -93,6 +60,13 @@ final class AppViewModel {
                 hapticEnabled: self.settings.hapticEnabled
             )
         }
+        router.onReturnedHome = { [weak self] in
+            guard let self else { return }
+            metronome.stop()
+            isPracticePaused = false
+            currentPracticeSummary = nil
+            resetPracticeForNewSession()
+        }
         metronome.goalReachedHandler = { [weak self] in
             self?.finishPracticeSession(goalReached: true)
         }
@@ -123,18 +97,13 @@ final class AppViewModel {
     }
 
     // MARK: - Navigation
-    func goToSettings() { path.append(.settings) }
-    func goToSaved() { path.append(.saved) }
-    func goToPracticeHistory() { path.append(.practiceHistory) }
-    func goToLevelDetail(_ level: ChordLevel) { path.append(.levelDetail(level)) }
-
     func goToPractice() {
         metronome.stop()
         isPracticePaused = false
         currentPracticeSummary = nil
         showPracticeExitAlert = false
         persistLastPracticeSession()
-        path.append(.practicePlan)
+        router.goToPracticePlan()
     }
 
     func startPracticeFromPlan() {
@@ -147,16 +116,7 @@ final class AppViewModel {
         isPracticePaused = false
         currentPracticeSummary = nil
         showPracticeExitAlert = false
-        if path.last == .practicePlan {
-            path.removeLast()
-        }
-    }
-
-    /// Pops one screen — used by every back button. Mirrors the swipe-back
-    /// gesture (one step at a time) instead of jumping straight to Home.
-    func goBack() {
-        guard !path.isEmpty else { return }
-        path.removeLast()
+        router.popPracticePlan()
     }
 
     func requestPracticeExit() {
@@ -368,8 +328,7 @@ final class AppViewModel {
         showPracticeExitAlert = false
         isPracticePresented = false
 
-        selectedTab = .home
-        path = []
+        router.goHome()
         resetPracticeForNewSession()
 
         scheduleReviewRequestIfEligible()
