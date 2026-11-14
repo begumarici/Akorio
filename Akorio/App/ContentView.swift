@@ -33,7 +33,7 @@ struct ContentView: View {
             }
             .tint(.akorioAccent400)
 
-            if viewModel.isPracticePresented {
+            if viewModel.session.isPresented {
                 PracticeFlowView(viewModel: viewModel)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background {
@@ -46,7 +46,7 @@ struct ContentView: View {
         }
         .animation(
             .easeInOut(duration: 0.28),
-            value: viewModel.isPracticePresented
+            value: viewModel.session.isPresented
         )
         .preferredColorScheme(.dark)
         .onAppear {
@@ -54,17 +54,17 @@ struct ContentView: View {
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase != .active {
-                viewModel.metronome.stop()
+                viewModel.session.metronome.stop()
             }
         }
-        .onChange(of: viewModel.shouldRequestReview) { _, shouldRequestReview in
+        .onChange(of: viewModel.session.shouldRequestReview) { _, shouldRequestReview in
             guard shouldRequestReview else { return }
 
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(800))
-                guard viewModel.shouldRequestReview else { return }
+                guard viewModel.session.shouldRequestReview else { return }
                 requestReview()
-                viewModel.appStoreReviewRequestWasHandled()
+                viewModel.session.reviewRequestWasHandled()
             }
         }
     }

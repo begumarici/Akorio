@@ -185,7 +185,7 @@ struct SettingsView: View {
                 feedbackRow
 
                 Button {
-                    viewModel.appStoreReviewRequestWasHandled()
+                    viewModel.session.reviewRequestWasHandled()
                     guard let url = URL(
                         string: "https://apps.apple.com/app/id6794922746?action=write-review"
                     ) else { return }

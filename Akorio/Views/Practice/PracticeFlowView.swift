@@ -22,7 +22,7 @@ struct PracticeFlowView: View {
                 .navigationDestination(for: PracticeFlowScreen.self) { screen in
                     switch screen {
                     case .summary:
-                        if let summary = viewModel.currentPracticeSummary {
+                        if let summary = viewModel.session.currentSummary {
                             ZStack {
                                 AkorioBackground()
 
@@ -36,7 +36,7 @@ struct PracticeFlowView: View {
                         }
                     }
                 }
-                .onChange(of: viewModel.currentPracticeSummary) { _, summary in
+                .onChange(of: viewModel.session.currentSummary) { _, summary in
                     guard summary != nil else { return }
 
                     if path.last != .summary {
@@ -56,7 +56,7 @@ struct PracticeFlowView: View {
     }
 
     private func repeatPractice() {
-        viewModel.repeatPracticeSession()
+        viewModel.session.repeatSession()
         path = []
     }
 }

@@ -8,16 +8,6 @@
 import SwiftUI
 import SwiftData
 
-struct PracticeSessionSummary: Hashable {
-    let durationSeconds: Int
-    let chordTransitionCount: Int
-    let bpm: Int
-    let beatsPerChord: Int
-    let chordLabels: [String]
-    let targetDurationMinutes: Int?
-    let goalCompleted: Bool
-}
-
 @Observable
 final class AppViewModel {
     let router = AppRouter()
@@ -29,29 +19,21 @@ final class AppViewModel {
     /// Changed only through `updatePractice(_:)`, which also remembers the
     /// session for the "continue" card.
     private(set) var practice = PracticeConfiguration.standard
-    var currentPracticeSummary: PracticeSessionSummary?
-    var isPracticePaused = false
-    var isPracticePresented = false
-    var showPracticeExitAlert = false
-    var shouldRequestReview = false
 
     // MARK: - Stores
     let settings = SettingsStore()
     let savedSets = SavedSetsStore()
+    let session = PracticeSessionController()
 
     // MARK: - Last practice session (for the "continue" card on Home)
     var lastPracticeChordLabels: [String] = []
     var lastPracticeBpm = PracticeConfiguration.standard.bpm
 
-    /// The real-time practice session (timer, count-in, click sounds).
-    /// Kept as its own `@Observable` engine — see MetronomeEngine.swift.
-    let metronome = MetronomeEngine()
-
     private var modelContext: ModelContext?
     private var settingsRecord: AppSettings?
 
     init() {
-        metronome.configurationProvider = { [weak self] in
+        session.metronome.configurationProvider = { [weak self] in
             guard let self else { return MetronomeEngine.Configuration() }
             return MetronomeEngine.Configuration(
                 chordLabels: self.chords.map(\.label),
@@ -60,15 +42,17 @@ final class AppViewModel {
                 hapticEnabled: self.settings.hapticEnabled
             )
         }
+        session.planProvider = { [weak self] in
+            guard let self else { return PracticeSessionController.Plan() }
+            return .init(chordLabels: self.chords.map(\.label), configuration: self.practice)
+        }
+        session.willClose = { [weak self] in
+            self?.persistLastPracticeSession()
+        }
         router.onReturnedHome = { [weak self] in
             guard let self else { return }
-            metronome.stop()
-            isPracticePaused = false
-            currentPracticeSummary = nil
+            session.reset()
             resetPracticeForNewSession()
-        }
-        metronome.goalReachedHandler = { [weak self] in
-            self?.finishPracticeSession(goalReached: true)
         }
     }
 
@@ -81,6 +65,7 @@ final class AppViewModel {
         let record = AppSettings.fetchOrCreate(in: context)
         settingsRecord = record
         settings.attach(record)
+        session.attach(context: context, settings: record)
 
         practice.bpm = settings.defaultBpm
         practice.beatsPerChord = settings.defaultBeatsPerChord
@@ -96,64 +81,28 @@ final class AppViewModel {
         lastPracticeBpm = practice.bpm
     }
 
-    // MARK: - Navigation
+    // MARK: - Practice flow
     func goToPractice() {
-        metronome.stop()
-        isPracticePaused = false
-        currentPracticeSummary = nil
-        showPracticeExitAlert = false
+        session.reset()
         persistLastPracticeSession()
         router.goToPracticePlan()
     }
 
     func startPracticeFromPlan() {
         persistLastPracticeSession()
-        isPracticePresented = true
+        session.isPresented = true
     }
 
     func cancelPracticePlan() {
-        metronome.stop()
-        isPracticePaused = false
-        currentPracticeSummary = nil
-        showPracticeExitAlert = false
+        session.reset()
         router.popPracticePlan()
     }
 
-    func requestPracticeExit() {
-        let shouldConfirmExit =
-            metronome.isPlaying ||
-            isPracticePaused ||
-            metronome.hasStartedPractice
-
-        guard shouldConfirmExit else {
-            closePracticeFlow()
-            return
-        }
-
-        if metronome.isPlaying {
-            metronome.pause()
-        }
-
-        isPracticePaused = metronome.hasStartedPractice
-        showPracticeExitAlert = true
-    }
-
-    func cancelPracticeExit() {
-        showPracticeExitAlert = false
-    }
-
-    func confirmPracticeExit() {
-        closePracticeFlow()
-    }
-
-    private func closePracticeFlow() {
-        metronome.stop()
-        persistLastPracticeSession()
-
-        isPracticePaused = false
-        currentPracticeSummary = nil
-        showPracticeExitAlert = false
-        isPracticePresented = false
+    func returnHomeFromPracticeSummary() {
+        session.finishSummary()
+        router.goHome()
+        resetPracticeForNewSession()
+        session.requestReviewIfEligible()
     }
 
     // MARK: - Chord selection
@@ -181,7 +130,7 @@ final class AppViewModel {
         change(&practice)
         persistLastPracticeSession()
         if practice.durationGoal != previousGoal {
-            metronome.refreshDurationGoal()
+            session.metronome.refreshDurationGoal()
         }
     }
 
@@ -201,13 +150,8 @@ final class AppViewModel {
     func loadSavedSet(_ savedSet: SavedChordSet) {
         chords = savedSet.chordLabels.map { ChordItem(label: $0) }
         practice = savedSet.configuration
-        metronome.stop()
         persistLastPracticeSession()
-
-        isPracticePaused = false
-        currentPracticeSummary = nil
-        showPracticeExitAlert = false
-        isPracticePresented = true
+        session.start()
     }
 
     var hasLastPracticeSession: Bool { !lastPracticeChordLabels.isEmpty }
@@ -220,138 +164,6 @@ final class AppViewModel {
         guard let settingsRecord else { return }
         chords = settingsRecord.lastPracticeChordLabels.map { ChordItem(label: $0) }
         practice = settingsRecord.lastPracticeConfiguration
-        metronome.stop()
-
-        isPracticePaused = false
-        currentPracticeSummary = nil
-        showPracticeExitAlert = false
-        isPracticePresented = true
-    }
-
-    // MARK: - Metronome passthrough
-    var isPlaying: Bool { metronome.isPlaying }
-    var isCountingIn: Bool { metronome.isCountingIn }
-    var countInBeatsLeft: Int { metronome.countInBeatsLeft }
-    var currentChordLabel: String { metronome.currentChordLabel }
-    var nextChordLabel: String { metronome.nextChordLabel }
-    var beatInCurrentChord: Int { metronome.beatInCurrentChord }
-    var elapsedPracticeSeconds: Int { metronome.elapsedPracticeSeconds }
-    var remainingPracticeSeconds: Int? {
-        PracticeGoalCalculator.remainingSeconds(
-            elapsedSeconds: metronome.elapsedPracticeSeconds,
-            goal: practice.durationGoal
-        )
-    }
-
-    func togglePlay() {
-        if metronome.isPlaying {
-            pausePracticeSession()
-        } else {
-            currentPracticeSummary = nil
-            isPracticePaused = false
-            metronome.toggle()
-        }
-    }
-
-    func pausePracticeSession() {
-        if metronome.isCountingIn && !metronome.hasStartedPractice {
-            metronome.stop()
-            isPracticePaused = false
-            return
-        }
-        metronome.pause()
-        isPracticePaused = true
-    }
-
-    func resumePracticeSession() {
-        metronome.resume()
-        isPracticePaused = false
-    }
-
-    func finishPracticeSession(goalReached: Bool = false) {
-        let elapsedSeconds = metronome.elapsedPracticeSeconds
-        let durationSeconds = PracticeGoalCalculator.recordedDurationSeconds(
-            elapsedSeconds: elapsedSeconds,
-            goal: practice.durationGoal,
-            goalReached: goalReached
-        )
-        let transitionCount = metronome.chordTransitionCount
-
-        metronome.stop()
-        isPracticePaused = false
-
-        guard durationSeconds > 0 else { return }
-
-        let summary = PracticeSessionSummary(
-            durationSeconds: durationSeconds,
-            chordTransitionCount: transitionCount,
-            bpm: practice.bpm,
-            beatsPerChord: practice.beatsPerChord,
-            chordLabels: chords.map(\.label),
-            targetDurationMinutes: practice.durationGoal.minutes,
-            goalCompleted: goalReached || PracticeGoalCalculator.isCompleted(
-                elapsedSeconds: elapsedSeconds,
-                goal: practice.durationGoal
-            )
-        )
-
-        saveCompletedPracticeSession(summary)
-        currentPracticeSummary = summary
-    }
-
-    private func saveCompletedPracticeSession(_ summary: PracticeSessionSummary) {
-        guard let modelContext else { return }
-
-        let session = PracticeSession(
-            durationSeconds: summary.durationSeconds,
-            chordTransitionCount: summary.chordTransitionCount,
-            bpm: summary.bpm,
-            beatsPerChord: summary.beatsPerChord,
-            chordLabels: summary.chordLabels,
-            targetDurationMinutes: summary.targetDurationMinutes,
-            goalCompleted: summary.goalCompleted
-        )
-
-        modelContext.insert(session)
-        try? modelContext.save()
-    }
-
-    func repeatPracticeSession() {
-        currentPracticeSummary = nil
-        isPracticePaused = false
-    }
-
-    func returnHomeFromPracticeSummary() {
-        metronome.stop()
-        currentPracticeSummary = nil
-        isPracticePaused = false
-        showPracticeExitAlert = false
-        isPracticePresented = false
-
-        router.goHome()
-        resetPracticeForNewSession()
-
-        scheduleReviewRequestIfEligible()
-    }
-
-    private func scheduleReviewRequestIfEligible() {
-        guard let modelContext, let settingsRecord else { return }
-        guard let completedSessionCount = try? modelContext.fetchCount(FetchDescriptor<PracticeSession>()) else {
-            return
-        }
-        guard ReviewRequestPolicy.isEligible(
-            completedSessionCount: completedSessionCount,
-            hasRequestedReview: settingsRecord.hasRequestedAppStoreReview
-        ) else {
-            return
-        }
-
-        shouldRequestReview = true
-    }
-
-    func appStoreReviewRequestWasHandled() {
-        shouldRequestReview = false
-        settingsRecord?.hasRequestedAppStoreReview = true
-        try? modelContext?.save()
+        session.start()
     }
 }

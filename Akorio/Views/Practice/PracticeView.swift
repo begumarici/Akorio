@@ -15,7 +15,7 @@ struct PracticeView: View {
     @State private var saveNameInput = ""
 
     private var upcomingChordLabel: String {
-        if !viewModel.nextChordLabel.isEmpty { return viewModel.nextChordLabel }
+        if !viewModel.session.nextChordLabel.isEmpty { return viewModel.session.nextChordLabel }
         return viewModel.chords.first?.label ?? "—"
     }
 
@@ -62,19 +62,19 @@ struct PracticeView: View {
                 .presentationDragIndicator(.visible)
         }
         .onDisappear {
-            viewModel.metronome.stop()
+            viewModel.session.metronome.stop()
             viewModel.persistLastPracticeSession()
         }
     }
 
     @ViewBuilder
     private var sessionStatusBar: some View {
-        if (viewModel.isPlaying || viewModel.isPracticePaused),
-           viewModel.remainingPracticeSeconds != nil {
+        if (viewModel.session.isPlaying || viewModel.session.isPaused),
+           viewModel.session.remainingSeconds != nil {
             TimelineView(
                 .animation(
                     minimumInterval: 0.1,
-                    paused: !viewModel.isPlaying
+                    paused: !viewModel.session.isPlaying
                 )
             ) { _ in
                 VStack(alignment: .leading, spacing: 2) {
@@ -101,7 +101,7 @@ struct PracticeView: View {
     }
 
     private var formattedSessionTime: String {
-        let seconds = viewModel.remainingPracticeSeconds ?? viewModel.elapsedPracticeSeconds
+        let seconds = viewModel.session.remainingSeconds ?? viewModel.session.elapsedSeconds
         return String(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
 
@@ -109,20 +109,20 @@ struct PracticeView: View {
     private var header: some View {
         HStack(spacing: 12) {
             Button {
-                viewModel.requestPracticeExit()
+                viewModel.session.requestExit()
             } label: {
                 Image(systemName: "chevron.left")
             }
             .buttonStyle(AkorioIconButtonStyle())
             .alert(
                 "Pratikten çıkmak istiyor musun?",
-                isPresented: $viewModel.showPracticeExitAlert
+                isPresented: Bindable(viewModel.session).showExitAlert
             ) {
                 Button("Vazgeç", role: .cancel) {
-                    viewModel.cancelPracticeExit()
+                    viewModel.session.cancelExit()
                 }
                 Button("Pratikten Çık", role: .destructive) {
-                    viewModel.confirmPracticeExit()
+                    viewModel.session.confirmExit()
                 }
             } message: {
                 Text("Mevcut pratik seansı sona erecek.")
@@ -146,25 +146,25 @@ struct PracticeView: View {
     @ViewBuilder
     private func chordDisplay(scale: CGFloat) -> some View {
         VStack(spacing: 18 * scale) {
-            if viewModel.isCountingIn {
+            if viewModel.session.isCountingIn {
                 Text("BAŞLIYOR")
                     .font(.akorio(13, .medium))
                     .tracking(1)
                     .foregroundColor(.akorioAccent300)
-                Text("\(viewModel.countInBeatsLeft)")
+                Text("\(viewModel.session.countInBeatsLeft)")
                     .font(.akorio(104 * scale, .medium))
                     .foregroundColor(.akorioNeutral300)
-                Text(String(format: String(localized: "Sıradaki: %@"), viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel))
+                Text(String(format: String(localized: "Sıradaki: %@"), viewModel.session.currentChordLabel.isEmpty ? "—" : viewModel.session.currentChordLabel))
                     .font(.akorio(14 * scale))
                     .foregroundColor(.akorioNeutral500)
-            } else if viewModel.isPlaying || viewModel.isPracticePaused {
+            } else if viewModel.session.isPlaying || viewModel.session.isPaused {
                 if viewModel.settings.showChordDiagram {
-                    Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
+                    Text(viewModel.session.currentChordLabel.isEmpty ? "—" : viewModel.session.currentChordLabel)
                         .font(.akorio(32 * scale, .bold))
                         .foregroundColor(.akorioText)
 
-                    if !viewModel.currentChordLabel.isEmpty {
-                        ChordDiagramView(shape: ChordShapeLibrary.shape(for: viewModel.currentChordLabel), scale: 1.4 * scale)
+                    if !viewModel.session.currentChordLabel.isEmpty {
+                        ChordDiagramView(shape: ChordShapeLibrary.shape(for: viewModel.session.currentChordLabel), scale: 1.4 * scale)
                             .padding(10 * scale)
                             .background(
                                 RoundedRectangle(cornerRadius: AkorioRadius.md)
@@ -187,7 +187,7 @@ struct PracticeView: View {
                             .stroke(Color.akorioStroke, lineWidth: 1)
                             .frame(width: 190 * scale, height: 190 * scale)
 
-                        Text(viewModel.currentChordLabel.isEmpty ? "—" : viewModel.currentChordLabel)
+                        Text(viewModel.session.currentChordLabel.isEmpty ? "—" : viewModel.session.currentChordLabel)
                             .font(.akorio(64 * scale, .semibold))
                             .foregroundColor(.akorioAccent100)
                     }
@@ -200,7 +200,7 @@ struct PracticeView: View {
                 HStack(spacing: 8 * scale) {
                     ForEach(0..<max(viewModel.practice.beatsPerChord, 1), id: \.self) { index in
                         Circle()
-                            .fill(index == viewModel.beatInCurrentChord ? Color.akorioAccent500 : Color.akorioNeutral700)
+                            .fill(index == viewModel.session.beatInCurrentChord ? Color.akorioAccent500 : Color.akorioNeutral700)
                             .frame(width: 9 * scale, height: 9 * scale)
                     }
                 }
@@ -265,17 +265,17 @@ struct PracticeView: View {
     // MARK: - Play button
     @ViewBuilder
     private var practiceControls: some View {
-        if viewModel.isPracticePaused {
+        if viewModel.session.isPaused {
             HStack(spacing: 12) {
                 Button {
-                    viewModel.resumePracticeSession()
+                    viewModel.session.resume()
                 } label: {
                     Label("Devam Et", systemImage: "play.fill")
                 }
                 .buttonStyle(AkorioPrimaryButtonStyle())
 
                 Button {
-                    viewModel.finishPracticeSession()
+                    viewModel.session.finish()
                 } label: {
                     Label("Bitir", systemImage: "checkmark")
                 }
@@ -288,11 +288,11 @@ struct PracticeView: View {
 
     private var playButton: some View {
         Button {
-            viewModel.togglePlay()
+            viewModel.session.togglePlay()
         } label: {
             Label(
-                viewModel.isPlaying ? "Durdur" : "Başlat",
-                systemImage: viewModel.isPlaying ? "stop.fill" : "play.fill"
+                viewModel.session.isPlaying ? "Durdur" : "Başlat",
+                systemImage: viewModel.session.isPlaying ? "stop.fill" : "play.fill"
             )
         }
         .buttonStyle(AkorioPrimaryButtonStyle())
